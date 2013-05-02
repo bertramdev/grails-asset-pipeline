@@ -10,7 +10,7 @@ class AssetsController {
         def format = request.getHeader('Content-Type')
         if(uri.lastIndexOf(".") >= 0) {
             uri = params.id.substring(0,uri.lastIndexOf("."))
-            extension = params.id.substring(params.id.lastIndexOf("."))
+            extension = params.id.substring(params.id.lastIndexOf(".") + 1)
         }
         if(extension) {
             format = servletContext.getMimeType(request.forwardURI)
