@@ -49,7 +49,15 @@ The Grails asset-pipeline is a port from the rails asset-pipeline into the grail
         // TODO Implement runtime spring config (optional)
         def pluginManager = PluginManagerHolder.pluginManager
         def plugins = pluginManager.getAllPlugins()
-
+        def manifestFile = new File("web-app/assets/manifest.groovy")
+        if(manifestFile.exists()) {
+            println "We have a manifest"
+            try {
+                def config = new ConfigSlurper().parse(manifestFile.text)
+            } catch(e) {
+                println "Failed to load Manifest"
+            }
+        }
         // grails.config.assetPipeline.preProcessors
 
         // println getAssetPaths()

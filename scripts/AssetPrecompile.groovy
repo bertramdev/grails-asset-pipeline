@@ -1,13 +1,16 @@
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.apache.tools.ant.DirectoryScanner
 import java.security.MessageDigest
+import java.util.Properties;
+
 // import asset.pipeline.*;
 
 includeTargets << grailsScript("_GrailsBootstrap")
 
 target(assetPrecompile: "Precompiles assets in the application as specified by the precompile glob!") {
     depends(configureProxy,compile, packageApp, bootstrap)
-    def manifestMap = [:]
+    // def manifestMap = [:]
+    Properties manifestProperties = new Properties()
     def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
     def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
     def uglifyJsProcessor 		= classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
@@ -89,7 +92,7 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 			def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}.${extension}");
 			digestedFile.createNewFile()
 			digestedFile.bytes = outputFile.bytes
-			manifestMap["${fileName}.${extension}"] = "${fileName}-${checksum.encodeHex()}.${extension}"
+			manifestProperties.setProperty("${fileName}.${extension}", "\'${fileName}-${checksum.encodeHex()}.${extension}\'")
 			// println "Generated digest ${checksum.encodeHex().toString()}"
 			// Zip it Good!
 			def targetStream = new java.io.ByteArrayOutputStream()
@@ -115,11 +118,9 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 
 
 	// Update Manifest
-	def manifestConfig = new ConfigObject()
-	manifestConfig.manifest = manifestMap
-	new File( 'web-app/assets/manifest.groovy' ).withWriter{ writer ->
-		  manifestConfig.writeTo( writer )
-	}
+	manifestProperties.store(new File( 'web-app/assets/manifest.properties' ).newWriter(),"")
+
+
 }
 
 setDefaultTarget(assetPrecompile)

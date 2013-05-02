@@ -12,6 +12,7 @@
     <resource>asset.pipeline.AssetProcessorService</resource>
     <resource>asset.pipeline.CssAssetFile</resource>
     <resource>asset.pipeline.JsAssetFile</resource>
+    <resource>asset.pipeline.AssetsTagLib</resource>
   </resources>
   <repositories>
     <repository name='grailsCentral' url='http://grails.org/plugins' />
@@ -28,9 +29,9 @@
       <plugin group='org.grails.plugins' name='cache' version='1.0.1' />
     </compile>
     <runtime>
-      <plugin group='org.grails.plugins' name='hibernate' version='2.2.1' />
       <plugin group='org.grails.plugins' name='database-migration' version='1.2.1' />
       <plugin group='org.grails.plugins' name='jquery' version='1.8.3' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.2.1' />
     </runtime>
     <build>
       <plugin group='org.grails.plugins' name='tomcat' version='2.2.1' />

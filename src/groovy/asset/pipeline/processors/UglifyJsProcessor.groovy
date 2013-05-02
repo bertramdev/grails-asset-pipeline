@@ -14,12 +14,7 @@ class UglifyJsProcessor {
     URL processLib = classLoader.getResource('uglifyjs/lib/process.js')
     URL consolidatorLib = classLoader.getResource('uglifyjs/lib/consolidator.js')
     URL squeezeLib = classLoader.getResource('uglifyjs/lib/squeeze-more.js')
-    // URL consolidatorLib = classLoader.getResource('uglifyjs/lib/consolidator.js')
-    // URL parseJsLib = classLoader.getResource('uglifyjs/lib/parse-js.js')
-    // URL processLib = classLoader.getResource('uglifyjs/lib/process.js')
-    // URL squeezeMoreLib = classLoader.getResource('uglifyjs/lib/squeeze-more.js')
     URL uglifyJs = classLoader.getResource('uglifyjs/uglify-js.js')
-    // URL emberTemplateCompiler = classLoader.getResource('ember-template-compiler.js')
     Context cx = Context.enter()
     cx.optimizationLevel = 9
     Global global = new Global()
@@ -30,10 +25,7 @@ class UglifyJsProcessor {
     cx.evaluateString scope, processLib.text, processLib.file, 1, null
     cx.evaluateString scope, consolidatorLib.text, consolidatorLib.file, 1, null
     cx.evaluateString scope, squeezeLib.text, squeezeLib.file, 1, null
-
-    // cx.evaluateString scope, emberTemplateCompiler.text, emberTemplateCompiler.file, 1, null
     uglify = scope.get("uglify", scope);
-    // precompile = scope.get("precompileEmberHandlebars", scope)
     Context.exit();
   }
 
