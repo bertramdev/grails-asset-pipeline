@@ -1,7 +1,6 @@
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 import grails.util.GrailsUtil
-
 class AssetPipelineGrailsPlugin {
     // the plugin version
     def version = "0.1"

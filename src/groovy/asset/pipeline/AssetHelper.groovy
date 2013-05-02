@@ -33,7 +33,11 @@ class AssetHelper {
       }
     } else {
       // println "Looking for file: ${uri  + "." + ext}"
-      def assetFile = AssetHelper.fileForFullName(uri + "." + ext)
+      def fullName = uri
+      if(ext) {
+        fullName = uri + "." + ext
+      }
+      def assetFile = AssetHelper.fileForFullName(fullName)
       if(assetFile) {
         return assetFile
       }
