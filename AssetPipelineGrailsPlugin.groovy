@@ -14,9 +14,9 @@ class AssetPipelineGrailsPlugin {
     // TODO Fill in these fields
     def title = "Asset Pipeline Plugin" // Headline display name of the plugin
     def author = "David Estes"
-    def authorEmail = ""
+    def authorEmail = "destes@bcap.com"
     def description = '''\
-Brief summary/description of the plugin.
+The Grails asset-pipeline is a port from the rails asset-pipeline into the grails world. It allows similar require directives within the grails-app/assets folder.
 '''
 
     // URL to the plugin's documentation

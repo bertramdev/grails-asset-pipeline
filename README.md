@@ -30,7 +30,7 @@ Asset Pipeline has defined a new grails artefact type called `AssetFile`. By def
 
 Precompiling For Production
 ---------------------------
-This is still in development but a gant script is started that needs finished called `assets-precompile`. UglifyJs has been ported, in this project, to Rhino, and is ready to be added as a precompile postprocessor.
+Assets are automatically compiled when a war is created into the web-app/assets folder. They can also manually be recompiled by calling `grails asset-precompile`.
 
 
 Things to be Done
