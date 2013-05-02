@@ -45,7 +45,8 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		def fileName = filesToProcess[counter]
 		event("StatusUpdate",["Processing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
 		def extension = assetHelper.extensionFromURI(fileName)
-		fileName = fileName.substring(0,fileName.lastIndexOf("."))
+		fileName  = assetHelper.nameWithoutExtension(fileName)
+
 
 		def assetFile = assetHelper.artefactForFileWithExtension(assetHelper.fileForUri(fileName,null,extension), extension)
 		if(assetFile) {
@@ -93,7 +94,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}.${extension}");
 			digestedFile.createNewFile()
 			digestedFile.bytes = outputFile.bytes
-			manifestProperties.setProperty("${fileName}.${extension}", "\'${fileName}-${checksum.encodeHex()}.${extension}\'")
+			manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${checksum.encodeHex()}.${extension}")
 			// println "Generated digest ${checksum.encodeHex().toString()}"
 			// Zip it Good!
 			def targetStream = new java.io.ByteArrayOutputStream()

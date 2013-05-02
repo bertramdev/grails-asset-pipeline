@@ -1,5 +1,6 @@
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
+import grails.util.GrailsUtil
 
 class AssetPipelineGrailsPlugin {
     // the plugin version
@@ -49,15 +50,27 @@ The Grails asset-pipeline is a port from the rails asset-pipeline into the grail
         // TODO Implement runtime spring config (optional)
         def pluginManager = PluginManagerHolder.pluginManager
         def plugins = pluginManager.getAllPlugins()
-        def manifestFile = new File("web-app/assets/manifest.groovy")
+        def manifestProps = new Properties()
+
+        def manifestFile = new File("web-app/assets/manifest.properties")
         if(manifestFile.exists()) {
-            println "We have a manifest"
             try {
-                def config = new ConfigSlurper().parse(manifestFile.text)
+                manifestProps.load(manifestFile.newDataInputStream())
+                application.config.grails.assets.manifest = manifestProps
+
             } catch(e) {
                 println "Failed to load Manifest"
             }
         }
+
+        if(!application.config.grails.assets.containsKey("precompiled")) {
+            if(GrailsUtil.environment == "development") {
+                application.config.grails.assets.precompiled = false
+            } else {
+                application.config.grails.assets.precompiled = true
+            }
+        }
+
         // grails.config.assetPipeline.preProcessors
 
         // println getAssetPaths()

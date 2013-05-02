@@ -126,6 +126,13 @@ class AssetHelper {
     return extension;
   }
 
+  static def nameWithoutExtension(uri) {
+    if(uri.lastIndexOf(".") >= 0) {
+      return uri.substring(0,uri.lastIndexOf("."))
+    }
+    return uri
+  }
+
   static def assetMimeTypeForURI(uri) {
     def extension = AssetHelper.extensionFromURI(uri);
     def fileSpec = artefactForExtension(extension);
