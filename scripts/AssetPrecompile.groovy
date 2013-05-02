@@ -13,7 +13,14 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 	def grailsApplication       = ApplicationHolder.getApplication()
     event("StatusUpdate",["Precompiling Assets!"]);
 
-	// TODO: Find all Files we want to process
+    // Clear compiled assets folder
+    def assetDir = new File("web-app/assets")
+    if(assetDir.exists()) {
+    	assetDir.deleteDir()
+    }
+
+
+	//Find all files we want to process
 	DirectoryScanner scanner = new DirectoryScanner()
 	scanner.setExcludes(["**/.*","**/.DS_Store"] as String[])
 	scanner.setIncludes(["**/*"] as String[])
@@ -26,7 +33,6 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 	    scanner.setCaseSensitive(false)
 	    scanner.scan()
 	    filesToProcess += scanner.getIncludedFiles().flatten()
-
 	}
 	filesToProcess.unique()
 
@@ -49,6 +55,7 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 				if(assetFile.contentType == 'application/javascript') {
 					def newFileData = fileData
 					try {
+						event("StatusUpdate",["Uglifying File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
 						newFileData = uglifyJsProcessor.process(fileData)
 					} catch(e) {
 						println "Uglify JS Exception ${e}"
@@ -75,9 +82,11 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 			def targetStream = new java.io.ByteArrayOutputStream()
 
 			def zipStream = new java.util.zip.GZIPOutputStream(targetStream)
+			event("StatusUpdate",["Compressing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
 			zipStream.write(outputFile.bytes)
 			def zipFile = new File("${outputFile.getAbsolutePath()}.gz")
 			zipFile.createNewFile()
+			zipStream.finish()
 			zipFile.bytes = targetStream.toByteArray()
 			targetStream.close()
 
@@ -88,9 +97,7 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 		}
 	}
 
-	// Save File
 	// Save File Digest
-	// Gzip File
 	// Update Manifest
 }
 
