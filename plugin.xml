@@ -20,8 +20,8 @@
   </repositories>
   <dependencies>
     <runtime>
-      <dependency group='mysql' name='mysql-connector-java' version='5.1.13' />
       <dependency group='org.mozilla' name='rhino' version='1.7R4' />
+      <dependency group='mysql' name='mysql-connector-java' version='5.1.13' />
     </runtime>
   </dependencies>
   <plugins>
@@ -29,9 +29,9 @@
       <plugin group='org.grails.plugins' name='cache' version='1.0.1' />
     </compile>
     <runtime>
-      <plugin group='org.grails.plugins' name='hibernate' version='2.2.1' />
       <plugin group='org.grails.plugins' name='database-migration' version='1.2.1' />
       <plugin group='org.grails.plugins' name='jquery' version='1.8.3' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.2.1' />
     </runtime>
     <build>
       <plugin group='org.grails.plugins' name='tomcat' version='2.2.1' />
