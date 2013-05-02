@@ -47,7 +47,7 @@ The Grails asset-pipeline is a port from the rails asset-pipeline into the grail
     }
 
     def doWithSpring = {
-        println "Who needs spring"
+
         // TODO Implement runtime spring config (optional)
         def pluginManager = PluginManagerHolder.pluginManager
         def plugins = pluginManager.getAllPlugins()
