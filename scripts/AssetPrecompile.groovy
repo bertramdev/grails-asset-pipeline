@@ -4,11 +4,12 @@ import org.apache.tools.ant.DirectoryScanner
 
 includeTargets << grailsScript("_GrailsBootstrap")
 
-target(main: "Precompiles assets in the application as specified by the precompile glob!") {
+target(assetPrecompile: "Precompiles assets in the application as specified by the precompile glob!") {
     depends(configureProxy,compile, packageApp, bootstrap)
 
     def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
     def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
+    def uglifyJsProcessor 		= classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
 	def grailsApplication       = ApplicationHolder.getApplication()
     event("StatusUpdate",["Precompiling Assets!"]);
 
@@ -28,25 +29,57 @@ target(main: "Precompiles assets in the application as specified by the precompi
 
 	}
 	filesToProcess.unique()
-	def directiveProcessor = directiveProcessorClass.newInstance()
+
 	for(counter = 0 ; counter < filesToProcess.size(); counter++) {
 		def fileName = filesToProcess[counter]
 		event("StatusUpdate",["Processing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
 		def extension = assetHelper.extensionFromURI(fileName)
 		fileName = fileName.substring(0,fileName.lastIndexOf("."))
 
-		def assetFile = assetHelper.artefactForFile(assetHelper.fileForUri(fileName,null,extension))
+		def assetFile = assetHelper.artefactForFileWithExtension(assetHelper.fileForUri(fileName,null,extension), extension)
 		if(assetFile) {
-			def fileData = directiveProcessor.compile(assetFile)
+			def fileData = null
+
 			if(assetFile.class.name == 'java.io.File') {
-				println "Non Asset File"
+				// println "Non Asset File"
 			}
 			else {
+				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType)
+				fileData = directiveProcessor.compile(assetFile)
 				if(assetFile.contentType == 'application/javascript') {
-					def ps = classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
-		            fileData = ps.process(fileData)
+					def newFileData = fileData
+					try {
+						newFileData = uglifyJsProcessor.process(fileData)
+					} catch(e) {
+						println "Uglify JS Exception ${e}"
+						newFileData = fileData
+					}
+					fileData = newFileData
 				}
 			}
+
+
+			def outputFile = new File("web-app/assets/${fileName}.${extension}");
+			def parentTree = new File(outputFile.parent)
+			parentTree.mkdirs()
+			outputFile.createNewFile();
+			if(fileData) {
+				outputFile.text = fileData
+			} else {
+				if(assetFile.class.name == 'java.io.File') {
+					outputFile.bytes = assetFile.bytes
+				} else {
+					outputFile.bytes = assetFile.file.bytes
+				}
+			}
+			def targetStream = new java.io.ByteArrayOutputStream()
+
+			def zipStream = new java.util.zip.GZIPOutputStream(targetStream)
+			zipStream.write(outputFile.bytes)
+			def zipFile = new File("${outputFile.getAbsolutePath()}.gz")
+			zipFile.createNewFile()
+			zipFile.bytes = targetStream.toByteArray()
+			targetStream.close()
 
 
 		}
@@ -59,12 +92,6 @@ target(main: "Precompiles assets in the application as specified by the precompi
 	// Save File Digest
 	// Gzip File
 	// Update Manifest
-
-  def possibleFileSpecs = grailsApplication.assetFileClasses
-
-	for(fileSpec in possibleFileSpecs) {
-	  println "Filespec Extensions: ${fileSpec.getPropertyValue('extensions')}"
-	}
 }
 
-setDefaultTarget(main)
+setDefaultTarget(assetPrecompile)

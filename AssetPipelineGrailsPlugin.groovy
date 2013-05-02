@@ -13,7 +13,7 @@ class AssetPipelineGrailsPlugin {
 
     // TODO Fill in these fields
     def title = "Asset Pipeline Plugin" // Headline display name of the plugin
-    def author = "Your name"
+    def author = "David Estes"
     def authorEmail = ""
     def description = '''\
 Brief summary/description of the plugin.

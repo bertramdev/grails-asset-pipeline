@@ -107,13 +107,15 @@ class DirectiveProcessor {
 
   def recursiveTreeAppend(directory,tree) {
     def files = directory.listFiles()
+
     for(file in files) {
+      // println("Finding FIle with Type: ${AssetHelper.assetMimeTypeForURI(file.getAbsolutePath())} against ${contentType}")
       if(file.isDirectory()) {
         recursiveTreeAppend(file,tree);
       }
-      else if(servletContext.getMimeType(file.getAbsolutePath()) == contentType) {
+      else if(AssetHelper.assetMimeTypeForURI(file.getAbsolutePath()) == contentType) {
         if(!isFileInTree(file,tree)) {
-          println "Appending to Tree, ${file}"
+          // println "Appending to Tree, ${file}"
           tree.tree << getDependencyTree(AssetHelper.artefactForFile(file,contentType))
         }
       }

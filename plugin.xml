@@ -1,0 +1,41 @@
+<plugin name='asset-pipeline' version='0.1' grailsVersion='2.2.1 &gt; *'>
+  <author>David Estes</author>
+  <title>Asset Pipeline Plugin</title>
+  <description>Brief summary/description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/asset-pipeline</documentation>
+  <type>AssetPipelineGrailsPlugin</type>
+  <resources>
+    <resource>AssetUrlMappings</resource>
+    <resource>asset.pipeline.AssetsFilters</resource>
+    <resource>asset.pipeline.AssetsController</resource>
+    <resource>asset.pipeline.AssetProcessorService</resource>
+    <resource>asset.pipeline.CssAssetFile</resource>
+    <resource>asset.pipeline.JsAssetFile</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+  </repositories>
+  <dependencies>
+    <runtime>
+      <dependency group='org.mozilla' name='rhino' version='1.7R4' />
+      <dependency group='mysql' name='mysql-connector-java' version='5.1.13' />
+    </runtime>
+  </dependencies>
+  <plugins>
+    <compile>
+      <plugin group='org.grails.plugins' name='cache' version='1.0.1' />
+    </compile>
+    <runtime>
+      <plugin group='org.grails.plugins' name='hibernate' version='2.2.1' />
+      <plugin group='org.grails.plugins' name='database-migration' version='1.2.1' />
+      <plugin group='org.grails.plugins' name='jquery' version='1.8.3' />
+    </runtime>
+    <build>
+      <plugin group='org.grails.plugins' name='tomcat' version='2.2.1' />
+    </build>
+  </plugins>
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>

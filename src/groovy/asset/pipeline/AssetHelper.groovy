@@ -11,7 +11,7 @@ class AssetHelper {
       if(possibleFileSpecs) {
         for(fileSpec in possibleFileSpecs) {
           for(extension in fileSpec.getPropertyValue('extensions')) {
-            println "Checking Extension : ${extension}"
+            // println "Checking Extension : ${extension}"
             def fullName = uri
             if(!fullName.endsWith("." + extension)) {
               fullName += "." + extension
@@ -25,15 +25,15 @@ class AssetHelper {
         }
       }
       else {
-        println "Looking for file: ${uri + ext}"
-        def assetFile = AssetHelper.fileForFullName(uri + ext)
+        // println "Looking for file: ${uri + "." + ext}"
+        def assetFile = AssetHelper.fileForFullName(uri + "." + ext)
         if(assetFile) {
           return assetFile
         }
       }
     } else {
-      println "Looking for file: ${uri + ext}"
-      def assetFile = AssetHelper.fileForFullName(uri + ext)
+      // println "Looking for file: ${uri  + "." + ext}"
+      def assetFile = AssetHelper.fileForFullName(uri + "." + ext)
       if(assetFile) {
         return assetFile
       }
@@ -62,12 +62,29 @@ class AssetHelper {
     return file
   }
 
+  static def artefactForFileWithExtension(file, extension) {
+    if(extension == null || file == null) {
+      return file;
+    }
+
+    def possibleFileSpec = AssetHelper.artefactForExtension(extension)
+    if(possibleFileSpec) {
+      return possibleFileSpec.clazz.newInstance(file)
+    }
+    return file
+  }
+
+  static def artefactForExtension(extension) {
+    def grailsApplication = grails.util.Holders.getGrailsApplication()
+    return grailsApplication.assetFileClasses.find{ it.getPropertyValue('extensions').contains(extension) }
+  }
+
   static def fileForFullName(uri) {
     def assetPaths = AssetHelper.getAssetPaths();
     for(assetPath in assetPaths) {
       def path = [assetPath, uri].join(File.separator)
       def fileDescriptor = new File(path)
-      println "Checking ${path}"
+      // println "Checking ${path}"
       if(fileDescriptor.exists()) {
         return fileDescriptor
       }
@@ -104,8 +121,17 @@ class AssetHelper {
 
     def extension = null
     if(uri.lastIndexOf(".") >= 0) {
-      extension = uri.substring(uri.lastIndexOf("."))
+      extension = uri.substring(uri.lastIndexOf(".") + 1)
     }
     return extension;
+  }
+
+  static def assetMimeTypeForURI(uri) {
+    def extension = AssetHelper.extensionFromURI(uri);
+    def fileSpec = artefactForExtension(extension);
+    if(fileSpec) {
+      return fileSpec.getPropertyValue('contentType')
+    }
+    return null
   }
 }
