@@ -89,29 +89,32 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 			// Generate Checksum
 			if(extension) {
-				MessageDigest md = MessageDigest.getInstance("MD5");
-				md.update(outputFile.bytes)
-				def checksum = md.digest()
-				def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}.${extension}");
-				digestedFile.createNewFile()
-				digestedFile.bytes = outputFile.bytes
-				manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${checksum.encodeHex()}.${extension}")
-				// println "Generated digest ${checksum.encodeHex().toString()}"
-				// Zip it Good!
-				def targetStream = new java.io.ByteArrayOutputStream()
-				def zipStream = new java.util.zip.GZIPOutputStream(targetStream)
-				event("StatusUpdate",["Compressing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
-				zipStream.write(outputFile.bytes)
-				def zipFile = new File("${outputFile.getAbsolutePath()}.gz")
-				def zipFileDigest = new File("${digestedFile.getAbsolutePath()}.gz")
-				zipFile.createNewFile()
-				zipFileDigest.createNewFile()
-				zipStream.finish()
+				try {
+					MessageDigest md = MessageDigest.getInstance("MD5");
+					md.update(outputFile.bytes)
+					def checksum = md.digest()
+					def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}.${extension}");
+					digestedFile.createNewFile()
+					digestedFile.bytes = outputFile.bytes
+					manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${checksum.encodeHex()}.${extension}")
+					// println "Generated digest ${checksum.encodeHex().toString()}"
+					// Zip it Good!
+					def targetStream = new java.io.ByteArrayOutputStream()
+					def zipStream = new java.util.zip.GZIPOutputStream(targetStream)
+					event("StatusUpdate",["Compressing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
+					zipStream.write(outputFile.bytes)
+					def zipFile = new File("${outputFile.getAbsolutePath()}.gz")
+					def zipFileDigest = new File("${digestedFile.getAbsolutePath()}.gz")
+					zipFile.createNewFile()
+					zipFileDigest.createNewFile()
+					zipStream.finish()
 
-				zipFile.bytes = targetStream.toByteArray()
-				zipFileDigest.bytes = targetStream.toByteArray()
-				targetStream.close()
-
+					zipFile.bytes = targetStream.toByteArray()
+					zipFileDigest.bytes = targetStream.toByteArray()
+					targetStream.close()
+				} catch(ex) {
+					println("Error Compiling File ${fileName}.${extension}")
+				}
 			}
 
 
