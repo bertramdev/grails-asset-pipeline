@@ -2,15 +2,15 @@ package asset.pipeline
 import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 
 class AssetHelper {
-
+  static def assetSpecs = [asset.pipeline.JsAssetFile,asset.pipeline.CssAssetFile]
   static def fileForUri(uri, contentType=null,ext=null) {
     def grailsApplication = grails.util.Holders.getGrailsApplication()
 
     if(contentType) {
-      def possibleFileSpecs = grailsApplication.assetFileClasses.findAll { it.getPropertyValue('contentType') == contentType }
+      def possibleFileSpecs = AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
       if(possibleFileSpecs) {
         for(fileSpec in possibleFileSpecs) {
-          for(extension in fileSpec.getPropertyValue('extensions')) {
+          for(extension in fileSpec.extensions) {
             // println "Checking Extension : ${extension}"
             def fullName = uri
             if(!fullName.endsWith("." + extension)) {
@@ -18,7 +18,7 @@ class AssetHelper {
             }
             def file = AssetHelper.fileForFullName(fullName)
             if(file) {
-              return fileSpec.clazz.newInstance(file)
+              return fileSpec.newInstance(file)
             }
           }
 
@@ -47,18 +47,24 @@ class AssetHelper {
     return null;
   }
 
+  static def assetFileClasses() {
+    return AssetHelper.assetSpecs
+    def grailsApplication = grails.util.Holders.getGrailsApplication()
+    return grailsApplication.assetFileClasses
+  }
+
   static def artefactForFile(file,contentType=null) {
     if(contentType == null || file == null) {
       return file;
     }
 
     def grailsApplication = grails.util.Holders.getGrailsApplication()
-    def possibleFileSpecs = grailsApplication.assetFileClasses.findAll { it.getPropertyValue('contentType') == contentType }
+    def possibleFileSpecs = AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
     for(fileSpec in possibleFileSpecs) {
-      for(extension in fileSpec.getPropertyValue('extensions')) {
+      for(extension in fileSpec.extensions) {
         def fileName = file.getAbsolutePath()
         if(fileName.endsWith("." + extension)) {
-          return fileSpec.clazz.newInstance(file)
+          return fileSpec.newInstance(file)
         }
       }
     }
@@ -73,14 +79,14 @@ class AssetHelper {
 
     def possibleFileSpec = AssetHelper.artefactForExtension(extension)
     if(possibleFileSpec) {
-      return possibleFileSpec.clazz.newInstance(file)
+      return possibleFileSpec.newInstance(file)
     }
     return file
   }
 
   static def artefactForExtension(extension) {
     def grailsApplication = grails.util.Holders.getGrailsApplication()
-    return grailsApplication.assetFileClasses.find{ it.getPropertyValue('extensions').contains(extension) }
+    return AssetHelper.assetFileClasses().find{ it.extensions.contains(extension) }
   }
 
   static def fileForFullName(uri) {
@@ -141,7 +147,7 @@ class AssetHelper {
     def extension = AssetHelper.extensionFromURI(uri);
     def fileSpec = artefactForExtension(extension);
     if(fileSpec) {
-      return fileSpec.getPropertyValue('contentType')
+      return fileSpec.contentType
     }
     return null
   }

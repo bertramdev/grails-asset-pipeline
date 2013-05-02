@@ -20,12 +20,14 @@ class AssetsTagLib {
 	}
 
 	private def assetPath(src) {
+		def assetUrl = grailsApplication.config.grails.assets.url ?: "/assets/"
+
 		if(grailsApplication.config.grails.assets.precompiled) {
 			def realPath = grailsApplication.config.grails.assets.manifest.getProperty(src)
 			if(realPath) {
-				return "/assets/${realPath}"
+				return "${assetUrl}${realPath}"
 			}
 		}
-		return "/assets/${src}"
+		return "${assetUrl}${src}"
 	}
 }

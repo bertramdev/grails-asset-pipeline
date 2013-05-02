@@ -9,13 +9,13 @@ import java.util.Properties;
 includeTargets << grailsScript("_GrailsBootstrap")
 
 target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
-    depends(configureProxy,compile, packageApp, bootstrap)
+    depends(configureProxy,compile, packageApp)
     // def manifestMap = [:]
     Properties manifestProperties = new Properties()
     def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
     def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
     def uglifyJsProcessor 		= classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
-	def grailsApplication       = ApplicationHolder.getApplication()
+    def grailsApplication       = ApplicationHolder.getApplication()
     event("StatusUpdate",["Precompiling Assets!"]);
 
     // Clear compiled assets folder
@@ -26,20 +26,23 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 
 	//Find all files we want to process
+	def excludes = ["**/.*","**/.DS_Store"]
+	if(grailsApplication.config.grails.assets.excludes) {
+		excludes += grailsApplication.config.grails.assets.excludes
+	}
 	DirectoryScanner scanner = new DirectoryScanner()
-	scanner.setExcludes(["**/.*","**/.DS_Store"] as String[])
-	scanner.setIncludes(["**/*"] as String[])
+	scanner.setExcludes(excludes as String[])
+	// scanner.setIncludes(["**/*"] as String[])
 
 	def assetPaths = assetHelper.getAssetPaths()
 	def filesToProcess = []
 	for(path in assetPaths) {
-	    event("StatusUpdate",["Scanning ${path}"]);
 	    scanner.setBasedir(path)
 	    scanner.setCaseSensitive(false)
 	    scanner.scan()
 	    filesToProcess += scanner.getIncludedFiles().flatten()
 	}
-	filesToProcess.unique()
+	filesToProcess.unique() //Make sure we have a unique set
 
 	for(counter = 0 ; counter < filesToProcess.size(); counter++) {
 		def fileName = filesToProcess[counter]
@@ -52,17 +55,17 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		if(assetFile) {
 			def fileData = null
 
-			if(assetFile.class.name == 'java.io.File') {
-				// println "Non Asset File"
-			}
-			else {
+			if(assetFile.class.name != 'java.io.File') {
 				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType)
 				fileData = directiveProcessor.compile(assetFile)
 				if(assetFile.contentType == 'application/javascript') {
 					def newFileData = fileData
 					try {
 						event("StatusUpdate",["Uglifying File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
-						newFileData = uglifyJsProcessor.process(fileData)
+						if(fileName.indexOf(".min") == -1) {
+							newFileData = uglifyJsProcessor.process(fileData)
+						}
+
 					} catch(e) {
 						println "Uglify JS Exception ${e}"
 						newFileData = fileData
@@ -71,8 +74,11 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 				}
 			}
 
-
-			def outputFile = new File("web-app/assets/${fileName}.${extension}");
+			def outputFileName = fileName
+			if(extension) {
+				outputFileName = "${fileName}.${extension}"
+			}
+			def outputFile = new File("web-app/assets/${outputFileName}");
 
 			def parentTree = new File(outputFile.parent)
 			parentTree.mkdirs()
@@ -87,17 +93,18 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 				}
 			}
 
-			// Generate Checksum
+
 			if(extension) {
 				try {
+					// Generate Checksum
 					MessageDigest md = MessageDigest.getInstance("MD5");
 					md.update(outputFile.bytes)
 					def checksum = md.digest()
-					def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}.${extension}");
+					def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}");
 					digestedFile.createNewFile()
 					digestedFile.bytes = outputFile.bytes
-					manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${checksum.encodeHex()}.${extension}")
-					// println "Generated digest ${checksum.encodeHex().toString()}"
+					manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}")
+
 					// Zip it Good!
 					def targetStream = new java.io.ByteArrayOutputStream()
 					def zipStream = new java.util.zip.GZIPOutputStream(targetStream)

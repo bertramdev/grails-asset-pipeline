@@ -27,10 +27,10 @@ The Grails asset-pipeline is a port from the rails asset-pipeline into the grail
     // Extra (optional) plugin metadata
 
     // License: one of 'APACHE', 'GPL2', 'GPL3'
-//    def license = "APACHE"
+   def license = "APACHE"
 
     // Details of company behind the plugin (if there is one)
-//    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
+   def organization = [ name: "Bertram Capital", url: "http://www.bertramcapital.com/" ]
 
     // Any additional developers beyond the author specified above.
 //    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
@@ -39,13 +39,15 @@ The Grails asset-pipeline is a port from the rails asset-pipeline into the grail
 //    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
 
     // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
+   def scm = [ url: "http://github.com/bertramdev/asset-pipeline" ]
 
     def doWithWebDescriptor = { xml ->
+
         // TODO Implement additions to web.xml (optional), this event occurs before
     }
 
     def doWithSpring = {
+        println "Who needs spring"
         // TODO Implement runtime spring config (optional)
         def pluginManager = PluginManagerHolder.pluginManager
         def plugins = pluginManager.getAllPlugins()

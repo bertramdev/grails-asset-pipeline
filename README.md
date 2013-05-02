@@ -1,6 +1,13 @@
 Grails Asset Pipeline
 =====================
-The Grails asset-pipeline is a port from the rails asset-pipeline into the grails world. It allows similar require directives within the grails-app/assets folder.
+The Grails `asset-pipeline` is a plugin used for managing/processing static assets. These include processing, and minification of both css, and javascript files. It is also capable of being extended to compile custom static assets, such as coffeescript.
+
+Asset Pipeline is intended to replace the defacto grails equivalent (`resources-plugin`) with a more efficient, developer friendly architecture. The asset-pipeline levereges the latest in minification (UglifyJS) to reduce your asset sizes as much as possible. A few differences between the resources plugin and asset-pipeline include:
+
+* On the fly processing - No more waiting for your assets to reload after making a change
+* Compiled assets on war creation - No more hanging up application boot times while processing files.
+* Reduced Dependence - The plugin has compression, minification, and cache-digests built in.
+* Simpler manifests and taglibs - Read on for more information.
 
 
 Usage
@@ -22,6 +29,12 @@ console.log("This is my javascript manifest");
 ```
 
 The above is an example of some of the require directives that can be used. Custom directives can be created and overridden into the `DirectiveProcessor` class.
+
+Optionally, assets can be excluded from processing if included by your require tree. This can dramatically reduce compile time for your assets. To do so simply leverage the excludes configuration option:
+
+```groovy
+	grails.assets.excludes = ["tiny_mce/src/*.js"]
+```
 
 Including Assets in your Views
 ------------------------------
@@ -49,6 +62,16 @@ Asset Pipeline can be configured to copy your assets files out into an external 
 environments {
 	production {
 		grails.assets.storagePath = "/full/path/to/storage"
+	}
+}
+```
+
+It is also possible to configure a custom CDN asset url for serving this assets:
+
+```groovy
+environments {
+	production {
+		grails.assets.url = "http://s3.amazonaws.com/asset-pipe/assets"
 	}
 }
 ```
