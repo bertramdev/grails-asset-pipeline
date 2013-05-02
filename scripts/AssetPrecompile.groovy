@@ -1,12 +1,13 @@
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.apache.tools.ant.DirectoryScanner
+import java.security.MessageDigest
 // import asset.pipeline.*;
 
 includeTargets << grailsScript("_GrailsBootstrap")
 
 target(assetPrecompile: "Precompiles assets in the application as specified by the precompile glob!") {
     depends(configureProxy,compile, packageApp, bootstrap)
-
+    def manifestMap = [:]
     def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
     def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
     def uglifyJsProcessor 		= classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
@@ -67,6 +68,7 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 
 
 			def outputFile = new File("web-app/assets/${fileName}.${extension}");
+
 			def parentTree = new File(outputFile.parent)
 			parentTree.mkdirs()
 			outputFile.createNewFile();
@@ -79,15 +81,29 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 					outputFile.bytes = assetFile.file.bytes
 				}
 			}
-			def targetStream = new java.io.ByteArrayOutputStream()
 
+			// Generate Checksum
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(outputFile.bytes)
+			def checksum = md.digest()
+			def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}.${extension}");
+			digestedFile.createNewFile()
+			digestedFile.bytes = outputFile.bytes
+			manifestMap["${fileName}.${extension}"] = "${fileName}-${checksum.encodeHex()}.${extension}"
+			// println "Generated digest ${checksum.encodeHex().toString()}"
+			// Zip it Good!
+			def targetStream = new java.io.ByteArrayOutputStream()
 			def zipStream = new java.util.zip.GZIPOutputStream(targetStream)
 			event("StatusUpdate",["Compressing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
 			zipStream.write(outputFile.bytes)
 			def zipFile = new File("${outputFile.getAbsolutePath()}.gz")
+			def zipFileDigest = new File("${digestedFile.getAbsolutePath()}.gz")
 			zipFile.createNewFile()
+			zipFileDigest.createNewFile()
 			zipStream.finish()
+
 			zipFile.bytes = targetStream.toByteArray()
+			zipFileDigest.bytes = targetStream.toByteArray()
 			targetStream.close()
 
 
@@ -97,8 +113,13 @@ target(assetPrecompile: "Precompiles assets in the application as specified by t
 		}
 	}
 
-	// Save File Digest
+
 	// Update Manifest
+	def manifestConfig = new ConfigObject()
+	manifestConfig.manifest = manifestMap
+	new File( 'web-app/assets/manifest.groovy' ).withWriter{ writer ->
+		  manifestConfig.writeTo( writer )
+	}
 }
 
 setDefaultTarget(assetPrecompile)
