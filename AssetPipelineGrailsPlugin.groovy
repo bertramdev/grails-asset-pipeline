@@ -52,8 +52,8 @@ The Grails asset-pipeline is a port from the rails asset-pipeline into the grail
         def pluginManager = PluginManagerHolder.pluginManager
         def plugins = pluginManager.getAllPlugins()
         def manifestProps = new Properties()
+        def manifestFile = application.getParentContext().getResource("assets/manifest.properties").getFile()
 
-        def manifestFile = new File("web-app/assets/manifest.properties")
         if(manifestFile.exists()) {
             try {
                 manifestProps.load(manifestFile.newDataInputStream())
