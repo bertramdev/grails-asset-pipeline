@@ -52,7 +52,7 @@ These helpers will automatically adjust to point to the cache-digested versions 
 
 Precompiling For Production
 ---------------------------
-Assets are automatically compiled when a war is created into the web-app/assets folder. They can also manually be recompiled by calling `grails asset-precompile`.
+Assets should be compiled before building a war file. This can be done by running `grails asset-precompile`
 
 Serving Assets from External Storage Directory
 ----------------------------------------------
