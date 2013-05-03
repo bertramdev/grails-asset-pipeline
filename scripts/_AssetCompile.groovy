@@ -89,6 +89,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 				def outputStream = outputFile.newOutputStream()
 				outputStream.write(fileData, 0 , fileData.length)
 				outputStream.flush()
+				outputStream.close()
 			} else {
 				if(assetFile.class.name == 'java.io.File') {
 					assetHelper.copyFile(assetFile, outputFile)

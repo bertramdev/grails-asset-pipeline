@@ -42,15 +42,15 @@ class DirectiveProcessor {
     return buffer;
   }
 
-	def getDependencyTree(file) {
+  def getDependencyTree(file) {
     this.files << file
-		def tree = [file:file,tree:[]]
+    def tree = [file:file,tree:[]]
     if(file.class.name != 'java.io.File') {
       this.findDirectives(file,tree)
     }
 
     return tree
-	}
+  }
 
   def fileContents(file) {
 
@@ -62,30 +62,31 @@ class DirectiveProcessor {
 
   }
 
-	def findDirectives(fileSpec, tree) {
-		// try {
-			fileSpec.file.eachLine { line ->
+  def findDirectives(fileSpec, tree) {
+    // try {
+      fileSpec.file.eachLine { line ->
         if(!line) {
           return false;
           throw "End of Directive Set"
         }
         def directive = fileSpec.directiveForLine(line)
-				if(directive) {
-					directive = directive.trim().toLowerCase()
+        if(directive) {
+          directive = directive.trim()
           def directiveArguments = directive.split(" ")
+          directiveArguments[0] = directiveArguments[0].toLowerCase()
           def processor = DIRECTIVES[directiveArguments[0]]
 
           if(processor) {
             this."${processor}"(directiveArguments, fileSpec,tree)
           }
-				}
+        }
         return true
-			}
-		// } catch(except) {
+      }
+    // } catch(except) {
   //     //TODO: Narrow exception scope here please!
   //     log.info "Done Processing Directive for File"
-		// }
-	}
+    // }
+  }
 
   def requireSelfDirective(command, file, tree) {
     tree.tree << "self"
@@ -144,6 +145,7 @@ class DirectiveProcessor {
       newFile = AssetHelper.fileForUri(fileName, this.contentType)
     } else {
       def relativeFileName = [relativePath(file.file),fileName].join(File.separator)
+      // println "Including Relative File: ${relativeFileName} - ${fileName}"
       newFile = AssetHelper.fileForUri(relativeFileName, this.contentType)
     }
 
