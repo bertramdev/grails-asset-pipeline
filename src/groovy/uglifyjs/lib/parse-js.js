@@ -57,7 +57,6 @@
 
  ***********************************************************************/
 // var uglify = uglify || {};
-java.lang.System.out.println(uglify)
 uglify.parser = function() {
     var exports = this;
 /* -----[ Tokenizer (constants) ]----- */
