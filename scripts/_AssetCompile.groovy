@@ -72,6 +72,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					}
 					fileData = newFileData
 				}
+				fileData = fileData.getBytes('utf-8')
 			}
 
 			def outputFileName = fileName
@@ -83,15 +84,20 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			def parentTree = new File(outputFile.parent)
 			parentTree.mkdirs()
 			outputFile.createNewFile();
+
 			if(fileData) {
-				outputFile.text = fileData
+				def outputStream = outputFile.newOutputStream()
+				outputStream.write(fileData, 0 , fileData.length)
+				outputStream.flush()
 			} else {
 				if(assetFile.class.name == 'java.io.File') {
-					outputFile.bytes = assetFile.bytes
+					assetHelper.copyFile(assetFile, outputFile)
 				} else {
-					outputFile.bytes = assetFile.file.bytes
+					assetHelper.copyFile(assetFile.file, outputFile)
+
 				}
 			}
+
 
 
 			if(extension) {
@@ -102,7 +108,8 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					def checksum = md.digest()
 					def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}");
 					digestedFile.createNewFile()
-					digestedFile.bytes = outputFile.bytes
+					assetHelper.copyFile(outputFile, digestedFile)
+					// digestedFile.sync()
 					manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}")
 
 					// Zip it Good!
@@ -117,7 +124,9 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					zipStream.finish()
 
 					zipFile.bytes = targetStream.toByteArray()
-					zipFileDigest.bytes = targetStream.toByteArray()
+					assetHelper.copyFile(zipFile, zipFileDigest)
+					// zipFile.sync()
+					// zipFileDigest.sync()
 					targetStream.close()
 				} catch(ex) {
 					println("Error Compiling File ${fileName}.${extension}")
@@ -133,7 +142,8 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 
 	// Update Manifest
-	manifestProperties.store(new File( 'web-app/assets/manifest.properties' ).newWriter(),"")
+	def manifestFile = new File( 'web-app/assets/manifest.properties' )
+	manifestProperties.store(manifestFile.newWriter(),"")
 
 
 }
