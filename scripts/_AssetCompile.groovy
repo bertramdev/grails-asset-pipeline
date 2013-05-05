@@ -16,6 +16,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
     def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
     def uglifyJsProcessor 		= classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
     def grailsApplication       = ApplicationHolder.getApplication()
+    def minifyJs				= grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : true
     event("StatusUpdate",["Precompiling Assets!"]);
 
     // Clear compiled assets folder
@@ -58,14 +59,10 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			if(assetFile.class.name != 'java.io.File') {
 				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType)
 				fileData = directiveProcessor.compile(assetFile)
-				if(assetFile.contentType == 'application/javascript') {
+				if(assetFile.contentType == 'application/javascript' && minifyJs && fileName.indexOf(".min") == -1) {
 					def newFileData = fileData
 					try {
 						event("StatusUpdate",["Uglifying File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
-						if(fileName.indexOf(".min") == -1) {
-							newFileData = uglifyJsProcessor.process(fileData)
-						}
-
 					} catch(e) {
 						println "Uglify JS Exception ${e}"
 						newFileData = fileData

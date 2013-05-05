@@ -23,7 +23,7 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-        runtime 'org.mozilla:rhino:1.7R4'
+        compile 'org.mozilla:rhino:1.7R4'
         // runtime 'mysql:mysql-connector-java:5.1.21'
     }
 
