@@ -3,7 +3,7 @@ import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 import grails.util.GrailsUtil
 class AssetPipelineGrailsPlugin {
     // the plugin version
-    def version = "0.1.0"
+    def version = "0.1"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.2 > *"
     // resources that are excluded from plugin packaging
@@ -52,9 +52,14 @@ The Grails asset-pipeline is a port from the rails asset-pipeline into the grail
         def pluginManager = PluginManagerHolder.pluginManager
         def plugins = pluginManager.getAllPlugins()
         def manifestProps = new Properties()
-        def manifestFile = application.getParentContext().getResource("assets/manifest.properties").getFile()
+        def manifestFile = null
+        try {
+            application.getParentContext().getResource("assets/manifest.properties").getFile()
+        } catch(e) {
+            //Silent fail
+        }
 
-        if(manifestFile.exists()) {
+        if(manifestFile?.exists()) {
             try {
                 manifestProps.load(manifestFile.newDataInputStream())
                 application.config.grails.assets.manifest = manifestProps
