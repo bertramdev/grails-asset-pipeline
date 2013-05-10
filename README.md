@@ -88,4 +88,4 @@ Things to be Done
 
 Additional Resources
 --------------------
-[Rails Asset Pipeline Guide])http://guides.rubyonrails.org/asset_pipeline.html)
+[Rails Asset Pipeline Guide](http://guides.rubyonrails.org/asset_pipeline.html)
