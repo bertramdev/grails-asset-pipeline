@@ -135,5 +135,6 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	}
 
 	// Update Manifest
-	new File('web-app/assets/manifest.properties').store(manifestFile.newWriter(),"")
+	def manifestFile = new File('web-app/assets/manifest.properties')
+	manifestProperties.store(manifestFile.newWriter(),"")
 }
