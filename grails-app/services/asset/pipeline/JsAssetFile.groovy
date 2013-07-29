@@ -1,17 +1,15 @@
 package asset.pipeline
-import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 
 class JsAssetFile {
-	static contentType = 'application/javascript'
+	static final String contentType = 'application/javascript'
 	static extensions = ['js']
 	static processors = []
 
-	public File file
+	File file
 
-	def JsAssetFile(file) {
+	JsAssetFile(file) {
 		this.file = file
 	}
-
 
 	def processedStream() {
 		def fileText = file?.text
@@ -23,8 +21,6 @@ class JsAssetFile {
 		return fileText
 		// Return File Stream
 	}
-
-
 
 	def directiveForLine(line) {
 		line.find(/\/\/=(.*)/) { fullMatch, directive -> return directive }

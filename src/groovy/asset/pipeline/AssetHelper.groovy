@@ -1,12 +1,18 @@
 package asset.pipeline
-import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
+
+import grails.util.Holders
+
 import java.nio.channels.FileChannel
 
-class AssetHelper {
-  static def assetSpecs = [asset.pipeline.JsAssetFile,asset.pipeline.CssAssetFile]
-  static def fileForUri(uri, contentType=null,ext=null) {
+import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 
-    def grailsApplication = grails.util.Holders.getGrailsApplication()
+class AssetHelper {
+
+  static assetSpecs = [JsAssetFile, CssAssetFile]
+
+  static fileForUri(uri, contentType=null,ext=null) {
+
+    def grailsApplication = Holders.getGrailsApplication()
 
     if(contentType) {
       def possibleFileSpecs = AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
@@ -46,22 +52,21 @@ class AssetHelper {
       }
     }
 
-
-    return null;
+    return null
   }
 
-  static def assetFileClasses() {
+  static assetFileClasses() {
     return AssetHelper.assetSpecs
-    def grailsApplication = grails.util.Holders.getGrailsApplication()
+    def grailsApplication = Holders.getGrailsApplication()
     return grailsApplication.assetFileClasses
   }
 
-  static def artefactForFile(file,contentType=null) {
+  static artefactForFile(file,contentType=null) {
     if(contentType == null || file == null) {
-      return file;
+      return file
     }
 
-    def grailsApplication = grails.util.Holders.getGrailsApplication()
+    def grailsApplication = Holders.getGrailsApplication()
     def possibleFileSpecs = AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
     for(fileSpec in possibleFileSpecs) {
       for(extension in fileSpec.extensions) {
@@ -75,9 +80,9 @@ class AssetHelper {
     return file
   }
 
-  static def artefactForFileWithExtension(file, extension) {
+  static artefactForFileWithExtension(file, extension) {
     if(extension == null || file == null) {
-      return file;
+      return file
     }
 
     def possibleFileSpec = AssetHelper.artefactForExtension(extension)
@@ -87,13 +92,13 @@ class AssetHelper {
     return file
   }
 
-  static def artefactForExtension(extension) {
-    def grailsApplication = grails.util.Holders.getGrailsApplication()
+  static artefactForExtension(extension) {
+    def grailsApplication = Holders.getGrailsApplication()
     return AssetHelper.assetFileClasses().find{ it.extensions.contains(extension) }
   }
 
-  static def fileForFullName(uri) {
-    def assetPaths = AssetHelper.getAssetPaths();
+  static fileForFullName(uri) {
+    def assetPaths = AssetHelper.getAssetPaths()
     for(assetPath in assetPaths) {
       def path = [assetPath, uri].join(File.separator)
       def fileDescriptor = new File(path)
@@ -102,10 +107,10 @@ class AssetHelper {
         return fileDescriptor
       }
     }
-    return null;
+    return null
   }
 
-  static def getAssetPaths() {
+  static getAssetPaths() {
     def assetPaths = AssetHelper.scopedDirectoryPaths(new File("grails-app/assets").getAbsolutePath())
 
     for(plugin in GrailsPluginUtils.pluginInfos) {
@@ -115,7 +120,7 @@ class AssetHelper {
     return assetPaths.unique()
   }
 
-  static def scopedDirectoryPaths(assetPath) {
+  static scopedDirectoryPaths(assetPath) {
     def assetPaths = []
     def assetFile = new File(assetPath)
     if(assetFile.exists()) {
@@ -130,54 +135,47 @@ class AssetHelper {
     return assetPaths
   }
 
-  static def extensionFromURI(uri) {
+  static extensionFromURI(uri) {
 
-    def extension = null
+    def extension
     if(uri.lastIndexOf(".") >= 0) {
       extension = uri.substring(uri.lastIndexOf(".") + 1)
     }
-    return extension;
+    return extension
   }
 
-  static def nameWithoutExtension(uri) {
+  static nameWithoutExtension(uri) {
     if(uri.lastIndexOf(".") >= 0) {
       return uri.substring(0,uri.lastIndexOf("."))
     }
     return uri
   }
 
-  static def assetMimeTypeForURI(uri) {
-    def extension = AssetHelper.extensionFromURI(uri);
-    def fileSpec = artefactForExtension(extension);
+  static assetMimeTypeForURI(uri) {
+    def extension = AssetHelper.extensionFromURI(uri)
+    def fileSpec = artefactForExtension(extension)
     if(fileSpec) {
       return fileSpec.contentType
     }
     return null
   }
 
-
-  public static void copyFile(File sourceFile, File destFile) throws IOException {
+  static void copyFile(File sourceFile, File destFile) throws IOException {
    if(!destFile.exists()) {
-    destFile.createNewFile();
+    destFile.createNewFile()
    }
 
-   FileChannel source = null;
-   FileChannel destination = null;
+   FileChannel source
+   FileChannel destination
    try {
-    source = new FileInputStream(sourceFile).getChannel();
-    destination = new FileOutputStream(destFile).getChannel();
-    destination.transferFrom(source, 0, source.size());
+    source = new FileInputStream(sourceFile).getChannel()
+    destination = new FileOutputStream(destFile).getChannel()
+    destination.transferFrom(source, 0, source.size())
     destination.force(true)
    }
    finally {
-      if(source != null) {
-       source.close();
-      }
-      if(destination != null) {
-       destination.close();
-      }
+      source?.close()
+      destination?.close()
     }
   }
-
-
 }
