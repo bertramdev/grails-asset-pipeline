@@ -10,9 +10,8 @@ class AssetPipelineGrailsPlugin {
     def title = "Asset Pipeline Plugin"
     def author = "David Estes"
     def authorEmail = "destes@bcap.com"
-    def description = 'The asset-pipeline plugin is a port from the rails asset-pipeline into the Grails world. It allows similar require directives within the grails-app/assets folder.'
-
-    def documentation = "http://grails.org/plugin/asset-pipeline"
+    def description = 'The Grails `asset-pipeline` is a plugin used for managing/processing static assets. These include processing, and minification of both css, and javascript files. It is also capable of being extended to compile custom static assets, such as coffeescript.'
+    def documentation = "http://github.com/bertramdev/asset-pipeline"
 
     def artefacts = [AssetFileArtefactHandler]
 
