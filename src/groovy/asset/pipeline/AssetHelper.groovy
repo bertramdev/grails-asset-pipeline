@@ -5,6 +5,7 @@ import java.nio.channels.FileChannel
 class AssetHelper {
   static def assetSpecs = [asset.pipeline.JsAssetFile,asset.pipeline.CssAssetFile]
   static def fileForUri(uri, contentType=null,ext=null) {
+
     def grailsApplication = grails.util.Holders.getGrailsApplication()
 
     if(contentType) {
@@ -17,6 +18,7 @@ class AssetHelper {
             if(!fullName.endsWith("." + extension)) {
               fullName += "." + extension
             }
+
             def file = AssetHelper.fileForFullName(fullName)
             if(file) {
               return fileSpec.newInstance(file)

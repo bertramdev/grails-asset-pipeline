@@ -25,6 +25,34 @@ class DirectiveProcessor {
     return buffer
   }
 
+  def getFlattenedRequireList(file) {
+    if(file.class.name == 'java.io.File') {
+      return relativePath(file)
+    }
+    def flattenedList = []
+    def tree = getDependencyTree(file)
+
+    flattenedList = loadRequiresForTree(tree, flattenedList)
+    return flattenedList
+  }
+
+  def loadRequiresForTree(treeSet, flattenedList) {
+    def selfLoaded = false
+    for(childTree in treeSet.tree) {
+      if(childTree == "self") {
+        flattenedList << relativePath(treeSet.file.file, true)
+        selfLoaded = true
+      } else {
+        flattenedList = loadRequiresForTree(childTree, flattenedList)
+      }
+    }
+
+    if(!selfLoaded) {
+      flattenedList << relativePath(treeSet.file.file, true)
+    }
+    return flattenedList
+  }
+
   def loadContentsForTree(treeSet,buffer) {
     def selfLoaded = false
     for(childTree in treeSet.tree) {
@@ -42,15 +70,15 @@ class DirectiveProcessor {
     return buffer;
   }
 
-  def getDependencyTree(file) {
+	def getDependencyTree(file) {
     this.files << file
-    def tree = [file:file,tree:[]]
+		def tree = [file:file,tree:[]]
     if(file.class.name != 'java.io.File') {
       this.findDirectives(file,tree)
     }
 
     return tree
-  }
+	}
 
   def fileContents(file) {
 
@@ -62,16 +90,16 @@ class DirectiveProcessor {
 
   }
 
-  def findDirectives(fileSpec, tree) {
-    // try {
-      fileSpec.file.eachLine { line ->
+	def findDirectives(fileSpec, tree) {
+		// try {
+			fileSpec.file.eachLine { line ->
         if(!line) {
           return false;
           throw "End of Directive Set"
         }
         def directive = fileSpec.directiveForLine(line)
-        if(directive) {
-          directive = directive.trim()
+				if(directive) {
+					directive = directive.trim()
           def directiveArguments = directive.split(" ")
           directiveArguments[0] = directiveArguments[0].toLowerCase()
           def processor = DIRECTIVES[directiveArguments[0]]
@@ -79,14 +107,14 @@ class DirectiveProcessor {
           if(processor) {
             this."${processor}"(directiveArguments, fileSpec,tree)
           }
-        }
+				}
         return true
-      }
-    // } catch(except) {
+			}
+		// } catch(except) {
   //     //TODO: Narrow exception scope here please!
   //     log.info "Done Processing Directive for File"
-    // }
-  }
+		// }
+	}
 
   def requireSelfDirective(command, file, tree) {
     tree.tree << "self"
@@ -162,12 +190,19 @@ class DirectiveProcessor {
 
   }
 
-  def relativePath(file) {
-    def path = file.getParent().split(File.separator)
+  def relativePath(file, includeFileName=false) {
+    def path = null
+    if(includeFileName) {
+      path = file.class.name == 'java.io.File' ? file.absolutePath.split(File.separator) : file.file.absolutePath.split(File.separator)
+    } else {
+      path = file.getParent().split(File.separator)
+    }
+
     def startPosition = path.findIndexOf{ it == "grails-app" }
     if(startPosition+3 >= path.length) {
       return ""
     }
+
     path = path[(startPosition+3)..-1]
     return path.join(file.separator)
   }

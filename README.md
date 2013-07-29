@@ -2,7 +2,7 @@ Grails Asset Pipeline
 =====================
 The Grails `asset-pipeline` is a plugin used for managing/processing static assets. These include processing, and minification of both css, and javascript files. It is also capable of being extended to compile custom static assets, such as coffeescript.
 
-Asset Pipeline is intended to replace the defacto grails equivalent (`resources-plugin`) with a more efficient, developer friendly architecture (similar to rails asset-pipeline). The asset-pipeline levereges the latest in minification (UglifyJS) to reduce your asset sizes as much as possible. A few differences between the resources plugin and asset-pipeline include:
+Asset Pipeline is intended to replace the defacto grails equivalent (`resources-plugin`) with a more efficient, developer friendly architecture. The asset-pipeline levereges the latest in minification (UglifyJS) to reduce your asset sizes as much as possible. A few differences between the resources plugin and asset-pipeline include:
 
 * On the fly processing - No more waiting for your assets to reload after making a change
 * Compiled assets on war creation - No more hanging up application boot times while processing files.
@@ -52,7 +52,7 @@ These helpers will automatically adjust to point to the cache-digested versions 
 
 Precompiling For Production
 ---------------------------
-Assets should be compiled before building a war file. This can be done by running `grails asset-precompile`
+Assets are automatically compiled when a war is created into the web-app/assets folder. They can also manually be recompiled by calling `grails asset-precompile`.
 
 Serving Assets from External Storage Directory
 ----------------------------------------------
@@ -85,7 +85,3 @@ Things to be Done
 -----------------
 * Add more configuration options.
 * Tests would be good.
-
-Additional Resources
---------------------
-* [Rails Asset Pipeline Guide](http://guides.rubyonrails.org/asset_pipeline.html)

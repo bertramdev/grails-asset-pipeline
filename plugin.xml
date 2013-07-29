@@ -18,21 +18,37 @@
   <repositories>
     <repository name='grailsCentral' url='http://grails.org/plugins' />
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+    <repository name='Spireon' url='http://nexus.spireon.com/nexus/content/repositories/spireon-snapshot/' />
+    <repository name='SpireonRelease' url='http://nexus.spireon.com/nexus/content/repositories/spireon-release/' />
   </repositories>
   <dependencies>
+    <test>
+      <dependency group='org.spockframework' name='spock-grails-support' version='0.7-groovy-2.0' />
+    </test>
     <runtime>
       <dependency group='org.mozilla' name='rhino' version='1.7R4' />
       <dependency group='mysql' name='mysql-connector-java' version='5.1.13' />
     </runtime>
   </dependencies>
   <plugins>
+    <test>
+      <plugin group='org.grails.plugins' name='spock' version='0.7' />
+    </test>
     <compile>
-      <plugin group='org.grails.plugins' name='cache' version='1.0.1' />
+      <plugin group='org.grails.plugins' name='export' version='1.1' />
+      <plugin group='org.grails.plugins' name='atmosphere' version='0.4.2.1' />
+      <plugin group='com.spireon' name='procon-reports' version='0.2.0' />
+      <plugin group='com.spireon' name='procon-notes' version='0.1-SNAPSHOT' />
+      <plugin group='org.grails.plugins' name='quartz' version='1.0-RC6' />
+      <plugin group='com.spireon' name='platform-seven-user-preferences' version='0.1.0' />
+      <plugin group='org.grails.plugins' name='mail' version='1.0' />
+      <plugin group='com.spireon' name='procon-cms' version='0.1.0' />
+      <plugin group='com.spireon' name='procon-core' version='0.5-SNAPSHOT' />
+      <plugin group='com.spireon' name='procon-ui' version='0.1-SNAPSHOT' />
     </compile>
     <runtime>
-      <plugin group='org.grails.plugins' name='jquery' version='1.8.3' />
-      <plugin group='org.grails.plugins' name='database-migration' version='1.2.1' />
       <plugin group='org.grails.plugins' name='hibernate' version='2.2.1' />
+      <plugin group='org.grails.plugins' name='jquery' version='1.7.1' />
     </runtime>
     <build>
       <plugin group='org.grails.plugins' name='tomcat' version='2.2.1' />
