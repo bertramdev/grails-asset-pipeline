@@ -1,8 +1,9 @@
 package asset.pipeline
-import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 
 class AssetsController {
+
 	def assetProcessorService
+
     def index() {
             // println "REQUEST: "
         def uri = params.id
@@ -19,13 +20,12 @@ class AssetsController {
         if(extension) {
             format = servletContext.getMimeType(request.forwardURI)
         }
-        def assetFile = null
+        def assetFile
         if(params.containsKey('compile') && params.boolean('compile') == false) {
             assetFile = assetProcessorService.serveUncompiledAsset(uri,format, extension)
         } else {
             assetFile = assetProcessorService.serveAsset(uri,format, extension)
         }
-
 
 		if(assetFile) {
             response.setContentType(format)
@@ -34,7 +34,5 @@ class AssetsController {
         else {
             render status: 404
         }
-
     }
-
 }

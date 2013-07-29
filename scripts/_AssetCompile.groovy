@@ -1,10 +1,9 @@
-
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.apache.tools.ant.DirectoryScanner
 import java.security.MessageDigest
-import java.util.Properties;
 
-// import asset.pipeline.*;
+import org.apache.tools.ant.DirectoryScanner
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
+// import asset.pipeline.*
 
 includeTargets << grailsScript("_GrailsBootstrap")
 
@@ -17,7 +16,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
     def uglifyJsProcessor 		= classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
     def grailsApplication       = ApplicationHolder.getApplication()
     def minifyJs				= grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : true
-    event("StatusUpdate",["Precompiling Assets!"]);
+    event("StatusUpdate",["Precompiling Assets!"])
 
     // Clear compiled assets folder
     def assetDir = new File("web-app/assets")
@@ -47,14 +46,13 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	for(counter = 0 ; counter < filesToProcess.size(); counter++) {
 		def fileName = filesToProcess[counter]
-		event("StatusUpdate",["Processing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
+		event("StatusUpdate",["Processing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
 		def extension = assetHelper.extensionFromURI(fileName)
 		fileName  = assetHelper.nameWithoutExtension(fileName)
 
-
 		def assetFile = assetHelper.artefactForFileWithExtension(assetHelper.fileForUri(fileName,null,extension), extension)
 		if(assetFile) {
-			def fileData = null
+			def fileData
 
 			if(assetFile.class.name != 'java.io.File') {
 				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType)
@@ -62,10 +60,9 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 				if(fileName.indexOf(".min") == -1 && assetFile.contentType == 'application/javascript' && minifyJs) {
 					def newFileData = fileData
 					try {
-						event("StatusUpdate",["Uglifying File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
+						event("StatusUpdate",["Uglifying File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
 
 						newFileData = uglifyJsProcessor.process(fileData)
-
 
 					} catch(e) {
 						println "Uglify JS Exception ${e}"
@@ -80,11 +77,11 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			if(extension) {
 				outputFileName = "${fileName}.${extension}"
 			}
-			def outputFile = new File("web-app/assets/${outputFileName}");
+			def outputFile = new File("web-app/assets/${outputFileName}")
 
 			def parentTree = new File(outputFile.parent)
 			parentTree.mkdirs()
-			outputFile.createNewFile();
+			outputFile.createNewFile()
 
 			if(fileData) {
 				def outputStream = outputFile.newOutputStream()
@@ -96,19 +93,16 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					assetHelper.copyFile(assetFile, outputFile)
 				} else {
 					assetHelper.copyFile(assetFile.file, outputFile)
-
 				}
 			}
-
-
 
 			if(extension) {
 				try {
 					// Generate Checksum
-					MessageDigest md = MessageDigest.getInstance("MD5");
+					MessageDigest md = MessageDigest.getInstance("MD5")
 					md.update(outputFile.bytes)
 					def checksum = md.digest()
-					def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}");
+					def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}")
 					digestedFile.createNewFile()
 					assetHelper.copyFile(outputFile, digestedFile)
 					// digestedFile.sync()
@@ -117,7 +111,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					// Zip it Good!
 					def targetStream = new java.io.ByteArrayOutputStream()
 					def zipStream = new java.util.zip.GZIPOutputStream(targetStream)
-					event("StatusUpdate",["Compressing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"]);
+					event("StatusUpdate",["Compressing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
 					zipStream.write(outputFile.bytes)
 					def zipFile = new File("${outputFile.getAbsolutePath()}.gz")
 					def zipFileDigest = new File("${digestedFile.getAbsolutePath()}.gz")
@@ -134,18 +128,12 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					println("Error Compiling File ${fileName}.${extension}")
 				}
 			}
-
-
 		}
 		else {
 			println("Asset File not found! ${fileName}")
 		}
 	}
 
-
 	// Update Manifest
-	def manifestFile = new File( 'web-app/assets/manifest.properties' )
-	manifestProperties.store(manifestFile.newWriter(),"")
-
-
+	new File('web-app/assets/manifest.properties').store(manifestFile.newWriter(),"")
 }

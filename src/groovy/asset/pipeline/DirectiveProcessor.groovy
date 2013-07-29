@@ -1,15 +1,16 @@
 package asset.pipeline
-import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
+
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
 
 class DirectiveProcessor {
 
-  static def DIRECTIVES = [require_self: "requireSelfDirective" ,require_tree: "requireTreeDirective", require: "requireFileDirective"]
-  def contentType = null
+  static DIRECTIVES = [require_self: "requireSelfDirective" ,require_tree: "requireTreeDirective", require: "requireFileDirective"]
+
+  def contentType
   def files = []
-  def servletContext = org.codehaus.groovy.grails.web.context.ServletContextHolder.getServletContext()
+  def servletContext = ServletContextHolder.getServletContext()
 
-
-  def DirectiveProcessor(contentType) {
+  DirectiveProcessor(contentType) {
     this.contentType = contentType
   }
 
@@ -67,7 +68,7 @@ class DirectiveProcessor {
     if(!selfLoaded) {
       buffer += fileContents(treeSet.file) + "\n"
     }
-    return buffer;
+    return buffer
   }
 
 	def getDependencyTree(file) {
@@ -87,14 +88,13 @@ class DirectiveProcessor {
       return file.text
     }
     return file.processedStream()
-
   }
 
 	def findDirectives(fileSpec, tree) {
 		// try {
 			fileSpec.file.eachLine { line ->
         if(!line) {
-          return false;
+          return false
           throw "End of Directive Set"
         }
         def directive = fileSpec.directiveForLine(line)
@@ -121,15 +121,13 @@ class DirectiveProcessor {
   }
 
   def requireTreeDirective(command, fileSpec, tree) {
-    def parentFile = null
+    def parentFile
     if(!command[1] || command[1] == '.') {
       parentFile = new File(fileSpec.file.getParent())
       // println "Requiring Tree for File: ${parentFile}"
     } else {
       parentFile = new File([fileSpec.file.getParent(),command[1]].join(File.separator))
-
     }
-
 
     recursiveTreeAppend(parentFile,tree)
   }
@@ -140,7 +138,7 @@ class DirectiveProcessor {
     for(file in files) {
       // println("Finding FIle with Type: ${AssetHelper.assetMimeTypeForURI(file.getAbsolutePath())} against ${contentType}")
       if(file.isDirectory()) {
-        recursiveTreeAppend(file,tree);
+        recursiveTreeAppend(file,tree)
       }
       else if(AssetHelper.assetMimeTypeForURI(file.getAbsolutePath()) == contentType) {
         if(!isFileInTree(file,tree)) {
@@ -168,7 +166,7 @@ class DirectiveProcessor {
 
   def requireFileDirective(command, file, tree) {
     def fileName = command[1]
-    def newFile = null
+    def newFile
     if(fileName.startsWith(File.separator)) {
       newFile = AssetHelper.fileForUri(fileName, this.contentType)
     } else {
@@ -185,13 +183,12 @@ class DirectiveProcessor {
 
     } else if(!fileName.startsWith(File.separator)) {
       command[1] = File.separator + command[1]
-      requireFileDirective(command,file,tree);
+      requireFileDirective(command,file,tree)
     }
-
   }
 
   def relativePath(file, includeFileName=false) {
-    def path = null
+    def path
     if(includeFileName) {
       path = file.class.name == 'java.io.File' ? file.absolutePath.split(File.separator) : file.file.absolutePath.split(File.separator)
     } else {
@@ -206,6 +203,4 @@ class DirectiveProcessor {
     path = path[(startPosition+3)..-1]
     return path.join(file.separator)
   }
-
-
 }
