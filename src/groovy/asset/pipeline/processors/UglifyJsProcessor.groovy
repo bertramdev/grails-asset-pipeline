@@ -1,7 +1,8 @@
 package asset.pipeline.processors
-import org.mozilla.javascript.Scriptable
-import org.mozilla.javascript.Function
+
 import org.mozilla.javascript.Context
+import org.mozilla.javascript.Function
+import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.tools.shell.Global
 
 class UglifyJsProcessor {
@@ -25,8 +26,8 @@ class UglifyJsProcessor {
     cx.evaluateString scope, processLib.text, processLib.file, 1, null
     cx.evaluateString scope, consolidatorLib.text, consolidatorLib.file, 1, null
     cx.evaluateString scope, squeezeLib.text, squeezeLib.file, 1, null
-    uglify = scope.get("uglify", scope);
-    Context.exit();
+    uglify = scope.get("uglify", scope)
+    Context.exit()
   }
 
   def process(inputText) {

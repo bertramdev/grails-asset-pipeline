@@ -1,14 +1,13 @@
 package asset.pipeline
-import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 
 class CssAssetFile {
-	static contentType = 'text/css'
+	static final String contentType = 'text/css'
 	static extensions = ['css']
 	static processors = []
 
-	public File file
+	File file
 
-	def CssAssetFile(file) {
+	CssAssetFile(file) {
 		this.file = file
 	}
 
@@ -25,6 +24,5 @@ class CssAssetFile {
 	def directiveForLine(line) {
 		line.find(/\*=(.*)/) { fullMatch, directive -> return directive }
 		// line.find(/\/\/=(.*)/) { fullMatch, directive -> return directive }
-
 	}
 }

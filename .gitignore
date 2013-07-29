@@ -1,2 +1,6 @@
 .DS_Store
-target/*
+/target
+plugin.xml
+*.log
+*.zip
+/web-app

@@ -1,20 +1,24 @@
 package asset.pipeline
+
 import grails.util.GrailsUtil
 
 class AssetsTagLib {
+
 	static namespace = "asset"
+
 	def grailsApplication
 	def assetProcessorService
 
 	def javascript = { attrs ->
 		def src       = attrs['src']
-		def uri       = null
-		def extension = null
+		def uri
+		def extension
 
-		if((!grailsApplication.config.grails.assets.containsKey('bundle') && GrailsUtil.environment != 'development') || grailsApplication.config.grails.assets.bundle == true) {
+		def conf = grailsApplication.config.grails.assets
+
+		if((!conf.containsKey('bundle') && GrailsUtil.environment != 'development') || conf.bundle == true) {
 			out << "<script src=\"${assetPath(src)}\" type=\"application/javascript\"></script>"
 		} else {
-
 
 			if(src.lastIndexOf(".") >= 0) {
         uri = src.substring(0,src.lastIndexOf("."))
@@ -40,11 +44,14 @@ class AssetsTagLib {
 
 	}
 
-	private def assetPath(src) {
-		def assetUrl = grailsApplication.config.grails.assets.url ?: "/assets/"
+	private assetPath(src) {
 
-		if(grailsApplication.config.grails.assets.precompiled) {
-			def realPath = grailsApplication.config.grails.assets.manifest.getProperty(src)
+		def conf = grailsApplication.config.grails.assets
+
+		def assetUrl = conf.url ?: "/assets/"
+
+		if(conf.precompiled) {
+			def realPath = conf.manifest.getProperty(src)
 			if(realPath) {
 				return "${assetUrl}${realPath}"
 			}
