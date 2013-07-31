@@ -21,17 +21,15 @@ class AssetPipelineGrailsPlugin {
     def scm = [ url: "http://github.com/bertramdev/asset-pipeline" ]
 
     def doWithSpring = {
-
         def pluginManager = PluginManagerHolder.pluginManager
         def plugins = pluginManager.getAllPlugins()
         def manifestProps = new Properties()
         def manifestFile
         try {
-            application.getParentContext().getResource("assets/manifest.properties").getFile()
+            manifestFile = application.getParentContext().getResource("assets/manifest.properties").getFile()
         } catch(e) {
             //Silent fail
         }
-
         if(manifestFile?.exists()) {
             try {
                 manifestProps.load(manifestFile.newDataInputStream())

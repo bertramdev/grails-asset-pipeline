@@ -41,7 +41,10 @@ class AssetsTagLib {
 	}
 
 	def image = { attrs ->
+		def src = attrs.remove('src')
+		def htmlAttributes = attrs.collect {key, value -> "${key}='${value.replace('\'','\\\'')}'"}
 
+		out << "<img src=\"${assetPath(src)}\" ${htmlAttributes?.join(" ")}/>"
 	}
 
 	private assetPath(src) {
@@ -51,8 +54,10 @@ class AssetsTagLib {
 		def assetUrl = conf.url ?: "/assets/"
 
 		if(conf.precompiled) {
+			println "Looking for Asset Path ${src}"
 			def realPath = conf.manifest.getProperty(src)
 			if(realPath) {
+				println "Found the file"
 				return "${assetUrl}${realPath}"
 			}
 		}
