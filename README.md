@@ -13,7 +13,7 @@ Asset Pipeline is intended to replace the defacto Grails equivalent (`resources-
 
 Usage
 -----
-Create a new directory in your poject: `grails-app\assets\javascript , grails-app\assets\images, grails-app\assets\stylesheets`
+Asset-Pipeline automatically creates a series of folders within your grails-app directory: `grails-app\assets\javascript , grails-app\assets\images, grails-app\assets\stylesheets`
 
 Place your static assets in those directories and simply include them into your layouts. Asset pipeline supports setting up manifests using these files.
 
