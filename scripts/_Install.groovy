@@ -1,21 +1,9 @@
-def assetsFile = new File(basedir, 'grails-app/assets')
-if (!new assetsFile.exists()) {
-	assetsFile.mkdirs()
-}
+ant.mkdir dir:"${basedir}/grails-app/assets"
 
-def javascriptsFile = new File(basedir, 'grails-app/assets/javascripts')
-if (!javascriptsFile.exists()) {
-	javascriptsFile.mkdirs()
-}
+ant.mkdir dir:"${basedir}/grails-app/assets/javascripts"
 
-def stylesheetsFile = new File(basedir, 'grails-app/assets/stylesheets')
-if (!stylesheetsFile.exists()) {
-	stylesheetsFile.mkdirs()
-}
+ant.mkdir dir: 	"${basedir}/grails-app/assets/stylesheets"
 
-def imagesFile = new File(basedir, 'grails-app/assets/images')
-if (!imagesFile.exists()) {
-	imagesFile.mkdirs()
-}
+ant.mkdir dir: "${basedir}/grails-app/assets/images"
 
 // TODO: Create Templated stylesheet and javascript file
