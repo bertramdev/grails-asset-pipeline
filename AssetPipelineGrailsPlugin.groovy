@@ -5,7 +5,7 @@ import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 import asset.pipeline.AssetFileArtefactHandler
 
 class AssetPipelineGrailsPlugin {
-    def version = "0.1.0"
+    def version = "0.1.1"
     def grailsVersion = "2.0 > *"
     def title = "Asset Pipeline Plugin"
     def author = "David Estes"
