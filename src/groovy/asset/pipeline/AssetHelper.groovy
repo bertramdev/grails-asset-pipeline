@@ -24,7 +24,6 @@ class AssetHelper {
             if(!fullName.endsWith("." + extension)) {
               fullName += "." + extension
             }
-
             def file = AssetHelper.fileForFullName(fullName)
             if(file) {
               return fileSpec.newInstance(file)
@@ -61,7 +60,7 @@ class AssetHelper {
     return grailsApplication.assetFileClasses
   }
 
-  static artefactForFile(file,contentType=null) {
+  static artefactForFile(file,contentType) {
     if(contentType == null || file == null) {
       return file
     }
@@ -80,21 +79,23 @@ class AssetHelper {
     return file
   }
 
-  static artefactForFileWithExtension(file, extension) {
-    if(extension == null || file == null) {
+  static artefactForFile(file) {
+    if(file == null) {
       return file
     }
 
-    def possibleFileSpec = AssetHelper.artefactForExtension(extension)
+    def possibleFileSpec = AssetHelper.artefactForFileName(file.getName())
     if(possibleFileSpec) {
       return possibleFileSpec.newInstance(file)
     }
     return file
   }
 
-  static artefactForExtension(extension) {
+  static artefactForFileName(filename) {
     def grailsApplication = Holders.getGrailsApplication()
-    return AssetHelper.assetFileClasses().find{ it.extensions.contains(extension) }
+    return AssetHelper.assetFileClasses().find{ fileClass ->
+      fileClass.extensions.find { filename.endsWith(".${it}") }
+    }
   }
 
   static fileForFullName(uri) {
@@ -151,9 +152,26 @@ class AssetHelper {
     return uri
   }
 
+  static fileNameWithoutExtensionFromArtefact(assetFile) {
+    if(assetFile == null) {
+      return null
+    }
+    def filename = assetFile.file.getName()
+    def rootName = filename
+    assetFile.extensions.each { extension ->
+
+      if(filename.endsWith(".${extension}")) {
+        def potentialName = filename.substring(0,filename.lastIndexOf(".${extension}"))
+        if(potentialName.length() < rootName.length()) {
+          rootName = potentialName
+        }
+      }
+    }
+    return rootName
+  }
+
   static assetMimeTypeForURI(uri) {
-    def extension = AssetHelper.extensionFromURI(uri)
-    def fileSpec = artefactForExtension(extension)
+    def fileSpec = artefactForFileName(uri)
     if(fileSpec) {
       return fileSpec.contentType
     }

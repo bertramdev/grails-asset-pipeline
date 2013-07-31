@@ -1,8 +1,9 @@
 package asset.pipeline
 
-class JsAssetFile {
+class JsAssetFile{
 	static final String contentType = 'application/javascript'
 	static extensions = ['js']
+	static compiledExtension = 'js'
 	static processors = []
 
 	File file

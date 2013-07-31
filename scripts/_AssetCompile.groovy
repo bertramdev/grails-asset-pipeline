@@ -9,6 +9,9 @@ includeTargets << grailsScript("_GrailsBootstrap")
 
 target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
     depends(configureProxy,compile, packageApp)
+    event("AssetPrecompileStart", [])
+
+
     // def manifestMap = [:]
     Properties manifestProperties = new Properties()
     def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
@@ -50,11 +53,15 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		def extension = assetHelper.extensionFromURI(fileName)
 		fileName  = assetHelper.nameWithoutExtension(fileName)
 
-		def assetFile = assetHelper.artefactForFileWithExtension(assetHelper.fileForUri(fileName,null,extension), extension)
+		def assetFile = assetHelper.artefactForFile(assetHelper.fileForUri(filesToProcess[counter],null,null))
 		if(assetFile) {
 			def fileData
 
 			if(assetFile.class.name != 'java.io.File') {
+				if(assetFile.compiledExtension) {
+					extension = assetFile.compiledExtension
+					fileName = assetHelper.fileNameWithoutExtensionFromArtefact(assetFile)
+				}
 				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType)
 				fileData = directiveProcessor.compile(assetFile)
 				if(fileName.indexOf(".min") == -1 && assetFile.contentType == 'application/javascript' && minifyJs) {

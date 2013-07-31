@@ -1,8 +1,9 @@
 package asset.pipeline
 
-class CssAssetFile {
+class CssAssetFile{
 	static final String contentType = 'text/css'
 	static extensions = ['css']
+	static compiledExtension = 'css'
 	static processors = []
 
 	File file
