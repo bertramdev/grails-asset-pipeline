@@ -91,4 +91,6 @@ Things to be Done
 
 Additional Resources
 --------------------
+* [Coffeescript Asset-Pipeline Plugin](http://github.com/bertramdev/coffee-grails-asset-pipeline)
+* [LESS Css Asset-Pipeline Plugin](http://github.com/bertramdev/less-grails-asset-pipeline)
 * [Rails Asset Pipeline Guide](http://guides.rubyonrails.org/asset_pipeline.html)

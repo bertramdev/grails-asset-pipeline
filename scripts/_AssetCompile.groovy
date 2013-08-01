@@ -29,7 +29,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 
 	//Find all files we want to process
-	def excludes = ["**/.*","**/.DS_Store"]
+	def excludes = ["**/.*","**/.DS_Store", 'WEB-INF/**/*', '**/META-INF/*']
 	if(grailsApplication.config.grails.assets.excludes) {
 		excludes += grailsApplication.config.grails.assets.excludes
 	}

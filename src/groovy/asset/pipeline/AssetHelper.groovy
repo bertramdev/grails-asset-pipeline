@@ -121,7 +121,11 @@ class AssetHelper {
 
     for(plugin in GrailsPluginUtils.pluginInfos) {
       def assetPath = [plugin.pluginDir.getPath(),"grails-app/assets"].join(File.separator)
+      def fallbackPath = new File([plugin.pluginDir.getPath(),"web-app"].join(File.separator))
       assetPaths += AssetHelper.scopedDirectoryPaths(assetPath)
+      if(fallbackPath.exists()) {
+        assetPaths << fallbackPath.getAbsolutePath()
+      }
     }
     return assetPaths.unique()
   }
