@@ -108,7 +108,7 @@ class AssetHelper {
     for(assetPath in assetPaths) {
       def path = [assetPath, uri].join(File.separator)
       def fileDescriptor = new File(path)
-      // println "Checking ${path}"
+
       if(fileDescriptor.exists()) {
         return fileDescriptor
       }
@@ -124,7 +124,8 @@ class AssetHelper {
       def fallbackPath = new File([plugin.pluginDir.getPath(),"web-app"].join(File.separator))
       assetPaths += AssetHelper.scopedDirectoryPaths(assetPath)
       if(fallbackPath.exists()) {
-        assetPaths << fallbackPath.getAbsolutePath()
+        //DISCUSSION: Should we do this?
+        // assetPaths << fallbackPath.getAbsolutePath()
       }
     }
     return assetPaths.unique()

@@ -53,6 +53,16 @@ These helpers will automatically adjust to point to the cache-digested versions 
 
 **NOTE:** In development mode your stylesheets and javascripts will be included as individual script tags. This is intended to make it easier for debugging. Bundling is enabled in all other environments and can be forced in development mode by adding `grails.assets.bundle=true` to your `Config.groovy`.
 
+Plugin Resources
+----------------
+Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The `grails-app/assets` folders from all plugins are considered include paths. Essentially, when a file is requested (i.e. `jquery.js`) The asset pipeline first will check the local applications assets folder. If it is not found it will scan through all the install plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of the js file in your local project.
+
+**NOTE:** A discussion has been started as to possibly also including the plugins web-app folder in the include path so as to make it easier to use existant resources-plugin based assets.
+
+Stylesheets
+-----------
+**NEW**: Asset Pipeline now automatically tries to convert relative urls specified in your css file to absolute paths. This makes it easier to use third party libraries within the asset-pipeline stack.
+
 Precompiling For Production
 ---------------------------
 Assets should be compiled before building a war file. This can be done by running `grails asset-precompile`
@@ -81,7 +91,25 @@ environments {
 
 Custom Files
 ------------
-Asset Pipeline has defined a new Grails artefact type called `AssetFile`. By default, this plugin comes with a `JsAssetFile`, and `CssAssetFile`. These define the match pattern syntax for understanding requires directives, known extensions, processors, and content-type. The application bases its file look-up on content-type of the request rather than extension. This allows the user to maybe define a `CoffeeAssetFile` with the javascript content type and a request to `localhost/assets/app.js` would be able to find `assets/app.coffee`.
+Asset Pipeline uses classes of type `AssetFile`. By default, this plugin comes with a `JsAssetFile`, and `CssAssetFile`. These define the match pattern syntax for understanding requires directives, known extensions, processors, and content-type. The application bases its file look-up on content-type of the request rather than extension. This allows the user to maybe define a `CoffeeAssetFile` with the javascript content type and a request to `localhost/assets/app.js` would be able to find `assets/app.coffee`. To add custom file definitions you must add the definition in 2 locations:
+
+1. Add the reference to your AssetHelper.assetSpecs static property in your plugins startup or Bootstrap:
+
+```groovy
+def doWithDynamicMethods = { ctx ->
+	AssetHelper.assetSpecs << HandlebarsAssetFile
+}
+```
+
+2. Add an `_Events.groovy` file and register an event listener for `eventAssetPrecompileStart`:
+
+```groovy
+eventAssetPrecompileStart = {
+	asset.pipeline.AssetHelper.assetSpecs << asset.pipeline.handlebars.HandlebarsAssetFile
+}
+```
+
+We do this instead of Artefacts so that we do not have to load up the full application stack during precompile. This saves > 30% of memory usage right off the bat and reduces compile time significantly.
 
 
 Things to be Done

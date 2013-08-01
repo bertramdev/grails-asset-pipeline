@@ -13,7 +13,7 @@ class AssetPipelineGrailsPlugin {
     def description = 'The Grails `asset-pipeline` is a plugin used for managing/processing static assets. These include processing, and minification of both css, and javascript files. It is also capable of being extended to compile custom static assets, such as coffeescript.'
     def documentation = "http://github.com/bertramdev/asset-pipeline"
 
-    def artefacts = [AssetFileArtefactHandler]
+    // def artefacts = [AssetFileArtefactHandler]
 
     def license = "APACHE"
     def organization = [ name: "Bertram Capital", url: "http://www.bertramcapital.com/" ]
