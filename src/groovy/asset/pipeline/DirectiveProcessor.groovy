@@ -100,7 +100,7 @@ class DirectiveProcessor {
         def directive = fileSpec.directiveForLine(line)
 				if(directive) {
 					directive = directive.trim()
-          def directiveArguments = directive.split(" ")
+          def directiveArguments = new groovy.text.GStringTemplateEngine().createTemplate(directive).make().toString().split(" ")
           directiveArguments[0] = directiveArguments[0].toLowerCase()
           def processor = DIRECTIVES[directiveArguments[0]]
 
