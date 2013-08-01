@@ -84,7 +84,7 @@ It is also possible to configure a custom CDN asset url for serving this assets:
 ```groovy
 environments {
 	production {
-		grails.assets.url = "http://s3.amazonaws.com/asset-pipe/assets"
+		grails.assets.url = "http://s3.amazonaws.com/asset-pipe/assets/"
 	}
 }
 ```
