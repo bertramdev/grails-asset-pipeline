@@ -17,13 +17,18 @@ class AssetHelper {
     if(contentType) {
       def possibleFileSpecs = AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
       if(possibleFileSpecs) {
+
         for(fileSpec in possibleFileSpecs) {
           for(extension in fileSpec.extensions) {
-            // println "Checking Extension : ${extension}"
+
             def fullName = uri
+            if(fullName.endsWith(".${fileSpec.compiledExtension}")) {
+              fullName = fullName.substring(0,fullName.lastIndexOf(".${fileSpec.compiledExtension}"))
+            }
             if(!fullName.endsWith("." + extension)) {
               fullName += "." + extension
             }
+
             def file = AssetHelper.fileForFullName(fullName)
             if(file) {
               return fileSpec.newInstance(file)
@@ -33,14 +38,14 @@ class AssetHelper {
         }
       }
       else {
-        // println "Looking for file: ${uri + "." + ext}"
+
         def assetFile = AssetHelper.fileForFullName(uri + "." + ext)
         if(assetFile) {
           return assetFile
         }
       }
     } else {
-      // println "Looking for file: ${uri  + "." + ext}"
+
       def fullName = uri
       if(ext) {
         fullName = uri + "." + ext
@@ -152,11 +157,11 @@ class AssetHelper {
     return uri
   }
 
-  static fileNameWithoutExtensionFromArtefact(assetFile) {
+  static fileNameWithoutExtensionFromArtefact(filename,assetFile) {
     if(assetFile == null) {
       return null
     }
-    def filename = assetFile.file.getName()
+
     def rootName = filename
     assetFile.extensions.each { extension ->
 

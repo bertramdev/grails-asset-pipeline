@@ -60,7 +60,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			if(assetFile.class.name != 'java.io.File') {
 				if(assetFile.compiledExtension) {
 					extension = assetFile.compiledExtension
-					fileName = assetHelper.fileNameWithoutExtensionFromArtefact(assetFile)
+					fileName = assetHelper.fileNameWithoutExtensionFromArtefact(fileName,assetFile)
 				}
 				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType)
 				fileData = directiveProcessor.compile(assetFile)
