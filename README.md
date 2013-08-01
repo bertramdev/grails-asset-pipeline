@@ -115,6 +115,10 @@ Things to be Done
 * Add more configuration options.
 * Tests would be good.
 
+Contributions
+-------------
+Thanks to several people for suggestions throughout development. Notably: Rick Jensen (@cdeszaq), and more to follow I'm sure...
+
 Additional Resources
 --------------------
 * [Coffeescript Asset-Pipeline Plugin](http://github.com/bertramdev/coffee-grails-asset-pipeline)
