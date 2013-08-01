@@ -61,8 +61,6 @@ class AssetHelper {
 
   static assetFileClasses() {
     return AssetHelper.assetSpecs
-    def grailsApplication = Holders.getGrailsApplication()
-    return grailsApplication.assetFileClasses
   }
 
   static artefactForFile(file,contentType) {
