@@ -55,9 +55,7 @@ These helpers will automatically adjust to point to the cache-digested versions 
 
 Plugin Resources
 ----------------
-Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The `grails-app/assets` folders from all plugins are considered include paths. Essentially, when a file is requested (i.e. `jquery.js`) The asset pipeline first will check the local applications assets folder. If it is not found it will scan through all the install plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of the js file in your local project.
-
-**NOTE:** A discussion has been started as to possibly also including the plugins web-app folder in the include path so as to make it easier to use existant resources-plugin based assets.
+Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The `grails-app/assets`, and 'web-app' (for legacy plugin support) folders from all plugins are considered include paths. Essentially, when a file is requested (i.e. `jquery.js`) The asset pipeline first will check the local applications assets folder. If it is not found it will scan through all the install plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of the js file in your local project.
 
 Stylesheets
 -----------

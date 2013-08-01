@@ -119,12 +119,11 @@ class AssetHelper {
 
     for(plugin in GrailsPluginUtils.pluginInfos) {
       def assetPath = [plugin.pluginDir.getPath(),"grails-app/assets"].join(File.separator)
-      def fallbackPath = new File([plugin.pluginDir.getPath(),"web-app"].join(File.separator))
+      def fallbackPath = [plugin.pluginDir.getPath(),"web-app"].join(File.separator)
       assetPaths += AssetHelper.scopedDirectoryPaths(assetPath)
-      if(fallbackPath.exists()) {
-        //DISCUSSION: Should we do this?
-        // assetPaths << fallbackPath.getAbsolutePath()
-      }
+
+      assetPaths += AssetHelper.scopedDirectoryPaths(fallbackPath)
+
     }
     return assetPaths.unique()
   }
@@ -135,7 +134,7 @@ class AssetHelper {
     if(assetFile.exists()) {
       def scopedDirectories = assetFile.listFiles()
       for(scopedDirectory in scopedDirectories) {
-        if(scopedDirectory.isDirectory()) {
+        if(scopedDirectory.isDirectory() && scopedDirectory.getName() != "WEB-INF" && scopedDirectory.getName() != 'META-INF') {
           assetPaths << scopedDirectory.getAbsolutePath()
         }
 

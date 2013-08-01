@@ -44,13 +44,23 @@ class CssProcessor {
       path = file.getParent().split(File.separator)
     }
 
-    def startPosition = path.findIndexOf{ it == "grails-app" }
-    if(startPosition+3 >= path.length) {
-      return ""
+    def startPosition = path.findLastIndexOf{ it == "grails-app" }
+    if(startPosition == -1) {
+      startPosition = path.findLastIndexOf{ it == 'web-app' }
+      if(startPosition+2 >= path.length) {
+        return ""
+      }
+      path = path[(startPosition+2)..-1]
+    }
+    else {
+      if(startPosition+3 >= path.length) {
+        return ""
+      }
+      path = path[(startPosition+3)..-1]
     }
 
-    path = path[(startPosition+3)..-1]
     return path.join(file.separator)
   }
+
 
 }
