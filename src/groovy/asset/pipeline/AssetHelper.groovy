@@ -17,25 +17,7 @@ class AssetHelper {
     if(contentType) {
       def possibleFileSpecs = AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
       if(possibleFileSpecs) {
-
-        for(fileSpec in possibleFileSpecs) {
-          for(extension in fileSpec.extensions) {
-
-            def fullName = uri
-            if(fullName.endsWith(".${fileSpec.compiledExtension}")) {
-              fullName = fullName.substring(0,fullName.lastIndexOf(".${fileSpec.compiledExtension}"))
-            }
-            if(!fullName.endsWith("." + extension)) {
-              fullName += "." + extension
-            }
-
-            def file = AssetHelper.fileForFullName(fullName)
-            if(file) {
-              return fileSpec.newInstance(file)
-            }
-          }
-
-        }
+          return AssetHelper.fileForUriIfHasAnyAssetType(uri, possibleFileSpecs)
       }
       else {
 
@@ -202,5 +184,26 @@ class AssetHelper {
       source?.close()
       destination?.close()
     }
+  }
+
+  static fileForUriIfHasAnyAssetType(uri, possibleFileSpecs) {
+      for(fileSpec in possibleFileSpecs) {
+          for(extension in fileSpec.extensions) {
+
+              def fullName = uri
+              if(fullName.endsWith(".${fileSpec.compiledExtension}")) {
+                  fullName = fullName.substring(0,fullName.lastIndexOf(".${fileSpec.compiledExtension}"))
+              }
+              if(!fullName.endsWith("." + extension)) {
+                  fullName += "." + extension
+              }
+
+              def file = AssetHelper.fileForFullName(fullName)
+              if(file) {
+                  return fileSpec.newInstance(file)
+              }
+          }
+
+      }
   }
 }
