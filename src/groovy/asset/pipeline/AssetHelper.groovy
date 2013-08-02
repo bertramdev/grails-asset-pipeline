@@ -20,45 +20,19 @@ class AssetHelper {
     def grailsApplication = Holders.getGrailsApplication()
 
     if(contentType) {
-      def possibleFileSpecs = AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
+      def possibleFileSpecs = AssetHelper.getPossibleFileSpecs(contentType)
       if(possibleFileSpecs) {
-
-        for(fileSpec in possibleFileSpecs) {
-          for(extension in fileSpec.extensions) {
-
-            def fullName = uri
-            if(fullName.endsWith(".${fileSpec.compiledExtension}")) {
-              fullName = fullName.substring(0,fullName.lastIndexOf(".${fileSpec.compiledExtension}"))
-            }
-            if(!fullName.endsWith("." + extension)) {
-              fullName += "." + extension
-            }
-
-            def file = AssetHelper.fileForFullName(fullName)
-            if(file) {
-              return fileSpec.newInstance(file)
-            }
-          }
-
-        }
+          def file =  AssetHelper.fileForUriIfHasAnyAssetType(uri, possibleFileSpecs)
+          if(file) return file
       }
       else {
-
         def assetFile = AssetHelper.fileForFullName(uri + "." + ext)
         if(assetFile) {
           return assetFile
         }
       }
     } else {
-
-      def fullName = uri
-      if(ext) {
-        fullName = uri + "." + ext
-      }
-      def assetFile = AssetHelper.fileForFullName(fullName)
-      if(assetFile) {
-        return assetFile
-      }
+        return AssetHelper.getAssetFileWithExtension(uri, ext)
     }
 
     return null
@@ -74,7 +48,7 @@ class AssetHelper {
     }
 
     def grailsApplication = Holders.getGrailsApplication()
-    def possibleFileSpecs = AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
+    def possibleFileSpecs = AssetHelper.getPossibleFileSpecs(contentType)
     for(fileSpec in possibleFileSpecs) {
       for(extension in fileSpec.extensions) {
         def fileName = file.getAbsolutePath()
@@ -205,5 +179,53 @@ class AssetHelper {
       source?.close()
       destination?.close()
     }
+  }
+
+    /**
+     *
+     * @param uri the string of the asset uri.
+     * @param possibleFileSpecs is a list of possible file specs that the file for the uri can belong to.
+     * @return an AssetFile for the corresponding uri.
+     */
+  static fileForUriIfHasAnyAssetType(String uri, possibleFileSpecs) {
+      for(fileSpec in possibleFileSpecs) {
+          for(extension in fileSpec.extensions) {
+
+              def fullName = uri
+              if(fullName.endsWith(".${fileSpec.compiledExtension}")) {
+                  fullName = fullName.substring(0,fullName.lastIndexOf(".${fileSpec.compiledExtension}"))
+              }
+              if(!fullName.endsWith("." + extension)) {
+                  fullName += "." + extension
+              }
+
+              def file = AssetHelper.fileForFullName(fullName)
+              if(file) {
+                  return fileSpec.newInstance(file)
+              }
+          }
+
+      }
+  }
+
+    /**
+     *
+     * @param uri string representation of the asset file.
+     * @param ext the extension of the file
+     * @return An instance of the file that the uri belongs to.
+     */
+  static getAssetFileWithExtension(String uri, String ext) {
+      def fullName = uri
+      if(ext) {
+          fullName = uri + "." + ext
+      }
+      def assetFile = AssetHelper.fileForFullName(fullName)
+      if(assetFile) {
+          return assetFile
+      }
+  }
+
+  static getPossibleFileSpecs(String contentType){
+      AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
   }
 }
