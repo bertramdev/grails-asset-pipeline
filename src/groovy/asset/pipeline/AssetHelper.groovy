@@ -6,9 +6,14 @@ import java.nio.channels.FileChannel
 
 import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 
+import java.util.regex.Pattern
+
 class AssetHelper {
 
   static assetSpecs = [JsAssetFile, CssAssetFile]
+
+  static QUOTED_FILE_SEPARATOR = Pattern.quote(File.separator)
+  static DIRECTIVE_FILE_SEPARATOR = '/'
 
   static fileForUri(uri, contentType=null,ext=null) {
 
@@ -118,12 +123,10 @@ class AssetHelper {
     def assetPaths = AssetHelper.scopedDirectoryPaths(new File("grails-app/assets").getAbsolutePath())
 
     for(plugin in GrailsPluginUtils.pluginInfos) {
-      def assetPath = [plugin.pluginDir.getPath(),"grails-app/assets"].join(File.separator)
-      def fallbackPath = [plugin.pluginDir.getPath(),"web-app"].join(File.separator)
+      def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
+      def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
       assetPaths += AssetHelper.scopedDirectoryPaths(assetPath)
-
       assetPaths += AssetHelper.scopedDirectoryPaths(fallbackPath)
-
     }
     return assetPaths.unique()
   }
