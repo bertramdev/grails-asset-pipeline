@@ -41,7 +41,9 @@ class DirectiveProcessor {
     def selfLoaded = false
     for(childTree in treeSet.tree) {
       if(childTree == "self") {
-        flattenedList << relativePath(treeSet.file.file, true)
+        def extension = treeSet.file.compiledExtension
+        def fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(relativePath(treeSet.file.file, true),treeSet.file)
+        flattenedList << "${fileName}.${extension}"
         selfLoaded = true
       } else {
         flattenedList = loadRequiresForTree(childTree, flattenedList)
@@ -49,7 +51,9 @@ class DirectiveProcessor {
     }
 
     if(!selfLoaded) {
-      flattenedList << relativePath(treeSet.file.file, true)
+      def extension = treeSet.file.compiledExtension
+      def fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(relativePath(treeSet.file.file, true),treeSet.file)
+      flattenedList << "${fileName}.${extension}"
     }
     return flattenedList
   }
