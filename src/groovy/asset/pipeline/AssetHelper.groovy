@@ -1,7 +1,6 @@
 package asset.pipeline
 
 import grails.util.Holders
-import org.apache.commons.io.FileUtils
 
 import java.nio.channels.FileChannel
 
@@ -161,11 +160,21 @@ class AssetHelper {
   }
 
   static void copyFile(File sourceFile, File destFile) throws IOException {
-    if(sourceFile) {
-        if(!destFile.exists()) {
-            destFile.createNewFile()
-        }
-        FileUtils.copyFile(sourceFile, destFile)
+   if(!destFile.exists()) {
+    destFile.createNewFile()
+   }
+
+   FileChannel source
+   FileChannel destination
+   try {
+    source = new FileInputStream(sourceFile).getChannel()
+    destination = new FileOutputStream(destFile).getChannel()
+    destination.transferFrom(source, 0, source.size())
+    destination.force(true)
+   }
+   finally {
+      source?.close()
+      destination?.close()
     }
   }
 
