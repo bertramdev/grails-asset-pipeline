@@ -1,5 +1,7 @@
 Grails Asset Pipeline
 =====================
+[![Build Status](https://travis-ci.org/bertramdev/asset-pipeline.png?branch=master)](https://travis-ci.org/bertramdev/asset-pipeline)
+
 The Grails `asset-pipeline` is a plugin used for managing/processing static assets. These include processing, and minification of both css, and javascript files. It is also capable of being extended to compile custom static assets, such as coffeescript.
 
 Asset Pipeline is intended to replace the defacto Grails equivalent (`resources-plugin`) with a more efficient, developer friendly architecture (similar to rails asset-pipeline). The asset-pipeline levereges the latest in minification (UglifyJS) to reduce your asset sizes as much as possible. A few differences between the resources plugin and asset-pipeline include:
