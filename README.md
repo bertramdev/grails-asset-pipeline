@@ -123,4 +123,5 @@ Additional Resources
 --------------------
 * [Coffeescript Asset-Pipeline Plugin](http://github.com/bertramdev/coffee-grails-asset-pipeline)
 * [LESS Css Asset-Pipeline Plugin](http://github.com/bertramdev/less-grails-asset-pipeline)
+* [Handlebars Asset-Pipeline Plugin](http://github.com/bertramdev/handlebars-grails-asset-pipeline)
 * [Rails Asset Pipeline Guide](http://guides.rubyonrails.org/asset_pipeline.html)
