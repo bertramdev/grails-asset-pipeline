@@ -9,7 +9,7 @@ class HelperGetsJavascriptAssetSpec extends IntegrationSpec{
             def uri = "test.js"
 
         when:
-            def file = AssetHelper.fileForUri(uri)//, "application/javascript", 'js')
+            def file = AssetHelper.fileForUri(uri)
 
         then:
             file instanceof File
@@ -39,5 +39,16 @@ class HelperGetsJavascriptAssetSpec extends IntegrationSpec{
 
         then:
             file instanceof JsAssetFile
+    }
+
+    def "returns null if javascript file doesn't exist"() {
+        given: "A uri for a non-existent javascript file"
+            def uri = "invalid.js"
+
+        when:
+            def file = AssetHelper.fileForUri(uri)
+
+        then:
+            !file
     }
 }
