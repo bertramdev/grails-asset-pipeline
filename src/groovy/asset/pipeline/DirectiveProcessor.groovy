@@ -140,7 +140,7 @@ class DirectiveProcessor {
 
   def recursiveTreeAppend(directory,tree) {
     def files = directory.listFiles()
-    files = files.sort { a, b -> a.name.compareTo b.name }
+    files = files?.sort { a, b -> a.name.compareTo b.name }
     for(file in files) {
       // println("Finding FIle with Type: ${AssetHelper.assetMimeTypeForURI(file.getAbsolutePath())} against ${contentType}")
       if(file.isDirectory()) {
