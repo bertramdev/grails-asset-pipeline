@@ -173,10 +173,10 @@ class DirectiveProcessor {
   def requireFileDirective(command, file, tree) {
     def fileName = command[1]
     def newFile
-    if(fileName.startsWith(File.separator)) {
+    if(fileName.startsWith(AssetHelper.DIRECTIVE_FILE_SEPARATOR)) {
       newFile = AssetHelper.fileForUri(fileName, this.contentType)
     } else {
-      def relativeFileName = [relativePath(file.file),fileName].join(File.separator)
+      def relativeFileName = [relativePath(file.file),fileName].join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
       // println "Including Relative File: ${relativeFileName} - ${fileName}"
       newFile = AssetHelper.fileForUri(relativeFileName, this.contentType)
     }
@@ -187,8 +187,8 @@ class DirectiveProcessor {
         tree.tree << getDependencyTree(newFile)
       }
 
-    } else if(!fileName.startsWith(File.separator)) {
-      command[1] = File.separator + command[1]
+    } else if(!fileName.startsWith(AssetHelper.DIRECTIVE_FILE_SEPARATOR)) {
+      command[1] = AssetHelper.DIRECTIVE_FILE_SEPARATOR + command[1]
       requireFileDirective(command,file,tree)
     }
   }
@@ -196,9 +196,9 @@ class DirectiveProcessor {
   def relativePath(file, includeFileName=false) {
     def path
     if(includeFileName) {
-      path = file.class.name == 'java.io.File' ? file.getCanonicalPath().split(File.separator) : file.file.getCanonicalPath().split(File.separator)
+      path = file.class.name == 'java.io.File' ? file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR) : file.file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR)
     } else {
-      path = file.getParent().split(File.separator)
+      path = file.getParent().split(AssetHelper.QUOTED_FILE_SEPARATOR)
     }
 
     def startPosition = path.findLastIndexOf{ it == "grails-app" }
@@ -216,6 +216,6 @@ class DirectiveProcessor {
       path = path[(startPosition+3)..-1]
     }
 
-    return path.join(file.separator)
+    return path.join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
   }
 }
