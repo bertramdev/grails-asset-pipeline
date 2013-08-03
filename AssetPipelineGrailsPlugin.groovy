@@ -1,8 +1,5 @@
 import grails.util.Environment
 
-import org.codehaus.groovy.grails.plugins.PluginManagerHolder
-
-
 class AssetPipelineGrailsPlugin {
     def version = "0.2.1"
     def grailsVersion = "2.0 > *"
@@ -11,16 +8,15 @@ class AssetPipelineGrailsPlugin {
     def authorEmail = "destes@bcap.com"
     def description = 'The Grails `asset-pipeline` is a plugin used for managing/processing static assets. These include processing, and minification of both css, and javascript files. It is also capable of being extended to compile custom static assets, such as coffeescript.'
     def documentation = "http://github.com/bertramdev/asset-pipeline"
-
-
     def license = "APACHE"
     def organization = [ name: "Bertram Capital", url: "http://www.bertramcapital.com/" ]
     def issueManagement = [ system: "GITHUB", url: "http://github.com/bertramdev/asset-pipeline/issues" ]
     def scm = [ url: "http://github.com/bertramdev/asset-pipeline" ]
+    def pluginExcludes = [
+            "grails-app/assets/**"
+    ]
 
     def doWithSpring = {
-        def pluginManager = PluginManagerHolder.pluginManager
-        def plugins = pluginManager.getAllPlugins()
         def manifestProps = new Properties()
         def manifestFile
         try {
@@ -41,9 +37,5 @@ class AssetPipelineGrailsPlugin {
         if(!application.config.grails.assets.containsKey("precompiled")) {
             application.config.grails.assets.precompiled = !Environment.isDevelopmentMode()
         }
-
-        // grails.config.assetPipeline.preProcessors
-
-        // println getAssetPaths()
     }
 }
