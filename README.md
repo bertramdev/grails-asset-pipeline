@@ -55,6 +55,20 @@ These helpers will automatically adjust to point to the cache-digested versions 
 
 **NOTE:** In development mode your stylesheets and javascripts will be included as individual script tags. This is intended to make it easier for debugging. Bundling is enabled in all other environments and can be forced in development mode by adding `grails.assets.bundle=true` to your `Config.groovy`.
 
+### Why this instead of the grails resouces plugin?
+There are several advantages to using the asset-pipeline instead of the standard grails resources plugin.
+
+* File dependencies are in the top of your assets. (No Resources.groovy)
+* Assets in plugins become level with your app.
+* On the fly processing in Development mode (No more waiting for reloads)
+* Coffeescript, LESS, and others become first class citizens ( debuggable )
+* Require entire folder trees with one line
+* Better minification (UglifyJs) , and compiling before the WAR is built
+* Faster application startup time
+* Easy extensibility
+
+[Read More Here](https://github.com/bertramdev/asset-pipeline/wiki/Why-asset-pipeline-over-grails-resources-plugin)
+
 Plugin Resources
 ----------------
 Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The `grails-app/assets`, and 'web-app' (for legacy plugin support) folders from all plugins are considered include paths. Essentially, when a file is requested (i.e. `jquery.js`) The asset pipeline first will check the local applications assets folder. If it is not found it will scan through all the install plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of the js file in your local project.
@@ -119,6 +133,7 @@ Things to be Done
 
 Contributions
 -------------
+All contributions are of course welcome as this is an ACTIVE project. Any help with regards to reviewing platform compatibility, adding more tests, and general cleanup is most welcome.
 Thanks to several people for suggestions throughout development. Notably: Rick Jensen (@cdeszaq), and more to follow I'm sure...
 
 Additional Resources
@@ -126,4 +141,5 @@ Additional Resources
 * [Coffeescript Asset-Pipeline Plugin](http://github.com/bertramdev/coffee-grails-asset-pipeline)
 * [LESS Css Asset-Pipeline Plugin](http://github.com/bertramdev/less-grails-asset-pipeline)
 * [Handlebars Asset-Pipeline Plugin](http://github.com/bertramdev/handlebars-grails-asset-pipeline)
+* [Ember Asset-Pipeline Plugin](http://github.com/bertramdev/ember-grails-asset-pipeline)
 * [Rails Asset Pipeline Guide](http://guides.rubyonrails.org/asset_pipeline.html)
