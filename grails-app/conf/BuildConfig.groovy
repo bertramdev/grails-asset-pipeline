@@ -14,7 +14,9 @@ grails.project.dependency.resolution = {
     dependencies {
         runtime 'org.mozilla:rhino:1.7R4'
 
-        test 'org.spockframework:spock-grails-support:0.7-groovy-2.0'
+        test 'org.spockframework:spock-grails-support:0.7-groovy-2.0', {
+            export = false
+        }
     }
 
     plugins {
@@ -22,8 +24,9 @@ grails.project.dependency.resolution = {
             export = false
         }
 
-        test(':spock:0.7') {
+        test ':spock:0.7', {
             excludes 'spock-grails-support', 'hibernate', 'grails-hibernate'
+            export = false
         }
     }
 }
