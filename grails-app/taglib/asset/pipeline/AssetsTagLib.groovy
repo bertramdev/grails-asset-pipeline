@@ -1,6 +1,6 @@
 package asset.pipeline
 
-import grails.util.GrailsUtil
+import grails.util.Environment
 
 class AssetsTagLib {
 
@@ -16,7 +16,7 @@ class AssetsTagLib {
 
 		def conf = grailsApplication.config.grails.assets
 
-		if((!conf.containsKey('bundle') && GrailsUtil.environment != 'development') || conf.bundle == true) {
+		if((!conf.containsKey('bundle') && Environment.current != Environment.DEVELOPMENT) || conf.bundle == true) {
 			out << "<script src=\"${assetPath(src)}\" type=\"application/javascript\"></script>"
 		} else {
 
@@ -50,8 +50,8 @@ class AssetsTagLib {
 	private assetPath(src) {
 
 		def conf = grailsApplication.config.grails.assets
-
-		def assetUrl = conf.url ?: "/assets/"
+        def assetPath = assetProcessorService.assetPath
+		def assetUrl = conf.url ?: "$assetPath/"
 
 		if(conf.precompiled) {
 			def realPath = conf.manifest.getProperty(src)
