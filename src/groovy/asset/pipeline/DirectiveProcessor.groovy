@@ -8,6 +8,7 @@ class DirectiveProcessor {
 
   def contentType
   def files = []
+  def baseFile
   def servletContext = ServletContextHolder.getServletContext()
 
   DirectiveProcessor(contentType) {
@@ -18,6 +19,7 @@ class DirectiveProcessor {
     if(file.class.name == 'java.io.File') {
       return file.getBytes()
     }
+    this.baseFile = file
     this.files = []
     def tree = getDependencyTree(file)
     def buffer = ""
@@ -149,7 +151,7 @@ class DirectiveProcessor {
       else if(AssetHelper.assetMimeTypeForURI(file.getAbsolutePath()) == contentType) {
         if(!isFileInTree(file,tree)) {
           // println "Appending to Tree, ${file}"
-          tree.tree << getDependencyTree(AssetHelper.artefactForFile(file,contentType))
+          tree.tree << getDependencyTree(AssetHelper.artefactForFile(file,contentType, this.baseFile))
         }
       }
     }
@@ -174,11 +176,11 @@ class DirectiveProcessor {
     def fileName = command[1]
     def newFile
     if(fileName.startsWith(AssetHelper.DIRECTIVE_FILE_SEPARATOR)) {
-      newFile = AssetHelper.fileForUri(fileName, this.contentType)
+      newFile = AssetHelper.fileForUri(fileName, this.contentType, null, this.baseFile)
     } else {
       def relativeFileName = [relativePath(file.file),fileName].join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
       // println "Including Relative File: ${relativeFileName} - ${fileName}"
-      newFile = AssetHelper.fileForUri(relativeFileName, this.contentType)
+      newFile = AssetHelper.fileForUri(relativeFileName, this.contentType, null, this.baseFile)
     }
 
     if(newFile) {

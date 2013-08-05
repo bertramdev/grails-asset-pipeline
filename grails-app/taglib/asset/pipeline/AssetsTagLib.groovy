@@ -51,7 +51,7 @@ class AssetsTagLib {
 
 		def conf = grailsApplication.config.grails.assets
 
-    def assetRootPath = AssetHelper.getAssetUriRootPath(grailsApplication)
+    def assetRootPath = assetUriRootPath(grailsApplication, request)
 		def assetUrl = conf.url ?: "$assetRootPath/"
 
 		if(conf.precompiled) {
@@ -61,5 +61,24 @@ class AssetsTagLib {
 			}
 		}
 		return "${assetUrl}${src}"
+	}
+
+
+
+	private assetUriRootPath(grailsApplication, request) {
+		def context = grailsApplication.mainContext
+		def conf    = grailsApplication.config.grails.assets
+
+		def mapping = context.assetProcessorService.assetMapping
+
+		def path = conf.url ?: (request.contextPath + "/$mapping" )
+
+
+		// if (path.contains("/")) {
+		// 		String message = "the property [grails.assets.mapping] can only be one level deep.  For example, 'foo' and 'bar' would be acceptable values, but 'foo/bar' is not"
+		// 	throw new IllegalArgumentException(message)
+		// }
+
+		return path
 	}
 }

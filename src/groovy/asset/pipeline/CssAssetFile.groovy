@@ -7,9 +7,11 @@ class CssAssetFile{
 	static processors = [CssProcessor]
 
 	File file
+	def baseFile
 
-	CssAssetFile(file) {
+	CssAssetFile(file,baseFile=null) {
 		this.file = file
+		this.baseFile = baseFile
 	}
 
 	def processedStream() {

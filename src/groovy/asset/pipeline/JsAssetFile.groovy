@@ -7,9 +7,11 @@ class JsAssetFile{
 	static processors = []
 
 	File file
+	def baseFile
 
-	JsAssetFile(file) {
+	JsAssetFile(file, baseFile=null) {
 		this.file = file
+		this.baseFile = baseFile
 	}
 
 	def processedStream() {

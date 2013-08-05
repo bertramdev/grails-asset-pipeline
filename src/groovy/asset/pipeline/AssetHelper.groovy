@@ -15,14 +15,14 @@ class AssetHelper {
 	static QUOTED_FILE_SEPARATOR = Pattern.quote(File.separator)
 	static DIRECTIVE_FILE_SEPARATOR = '/'
 
-	static fileForUri(uri, contentType=null,ext=null) {
+	static fileForUri(uri, contentType=null,ext=null, baseFile=null) {
 
 		def grailsApplication = Holders.getGrailsApplication()
 
 		if(contentType) {
 			def possibleFileSpecs = AssetHelper.getPossibleFileSpecs(contentType)
 			if(possibleFileSpecs) {
-					def file =  AssetHelper.fileForUriIfHasAnyAssetType(uri, possibleFileSpecs)
+					def file =  AssetHelper.fileForUriIfHasAnyAssetType(uri, possibleFileSpecs, baseFile)
 					if(file) return file
 			}
 			else {
@@ -42,7 +42,7 @@ class AssetHelper {
 		return AssetHelper.assetSpecs
 	}
 
-	static artefactForFile(file,contentType) {
+	static artefactForFile(file,contentType, baseFile=null) {
 		if(contentType == null || file == null) {
 			return file
 		}
@@ -53,7 +53,7 @@ class AssetHelper {
 			for(extension in fileSpec.extensions) {
 				def fileName = file.getAbsolutePath()
 				if(fileName.endsWith("." + extension)) {
-					return fileSpec.newInstance(file)
+					return fileSpec.newInstance(file, baseFile)
 				}
 			}
 		}
@@ -194,7 +194,7 @@ class AssetHelper {
 	 * @param possibleFileSpecs is a list of possible file specs that the file for the uri can belong to.
 	 * @return an AssetFile for the corresponding uri.
 	 */
-	static fileForUriIfHasAnyAssetType(String uri, possibleFileSpecs) {
+	static fileForUriIfHasAnyAssetType(String uri, possibleFileSpecs, baseFile=null) {
 			for(fileSpec in possibleFileSpecs) {
 					for(extension in fileSpec.extensions) {
 
@@ -208,7 +208,7 @@ class AssetHelper {
 
 							def file = AssetHelper.fileForFullName(fullName)
 							if(file) {
-									return fileSpec.newInstance(file)
+									return fileSpec.newInstance(file, baseFile)
 							}
 					}
 
@@ -236,23 +236,5 @@ class AssetHelper {
 			AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
 	}
 
-	/**
-	 * Retrieves the asset path from the property [grails.assets.mapping] which is used by the url mapping and the
-	 * taglib.  The property cannot contain <code>/</code>, and must be one level deep
-	 *
-	 * @return the path
-	 * @throws IllegalArgumentException if the path contains <code>/</code>
-	 */
-	static getAssetUriRootPath(grailsApplication) {
-		def context = grailsApplication.config?.grails?.app?.context
-		def path = grailsApplication.config?.grails?.assets?.mapping ?: "${grailsApplication.config.grails.app.contextPath}assets"
 
-
-		// if (path.contains("/")) {
-		// 		String message = "the property [grails.assets.mapping] can only be one level deep.  For example, 'foo' and 'bar' would be acceptable values, but 'foo/bar' is not"
-		// 	throw new IllegalArgumentException(message)
-		// }
-
-		return path
-	}
 }

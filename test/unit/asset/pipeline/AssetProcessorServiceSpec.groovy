@@ -18,7 +18,7 @@ class AssetProcessorServiceSpec extends Specification {
             badConfig.grails.assets.mapping = "foo/bar"
 
         when: "retrieving mapping with no configuration"
-            path = service.assetPath
+            path = service.assetMapping
 
         then:
             "assets" == path
@@ -26,7 +26,7 @@ class AssetProcessorServiceSpec extends Specification {
 
         when: "mapping set to 'foo'"
             service.grailsApplication.config = goodConfig
-            path = service.assetPath
+            path = service.assetMapping
 
         then:
             "foo" == path
@@ -34,7 +34,7 @@ class AssetProcessorServiceSpec extends Specification {
 
         when: "mapping set to 'foo/bar'"
             service.grailsApplication.config = badConfig
-            service.assetPath
+            service.assetMapping
 
         then: "error is thrown since only one level is supported"
             thrown(IllegalArgumentException)
