@@ -50,8 +50,9 @@ class AssetsTagLib {
 	private assetPath(src) {
 
 		def conf = grailsApplication.config.grails.assets
-        def assetPath = assetProcessorService.assetPath
-		def assetUrl = conf.url ?: "$assetPath/"
+
+    def assetRootPath = AssetHelper.getAssetUriRootPath(grailsApplication)
+		def assetUrl = conf.url ?: "$assetRootPath/"
 
 		if(conf.precompiled) {
 			def realPath = conf.manifest.getProperty(src)

@@ -235,4 +235,24 @@ class AssetHelper {
 	static getPossibleFileSpecs(String contentType){
 			AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
 	}
+
+	/**
+	 * Retrieves the asset path from the property [grails.assets.mapping] which is used by the url mapping and the
+	 * taglib.  The property cannot contain <code>/</code>, and must be one level deep
+	 *
+	 * @return the path
+	 * @throws IllegalArgumentException if the path contains <code>/</code>
+	 */
+	static getAssetUriRootPath(grailsApplication) {
+		def context = grailsApplication.config?.grails?.app?.context
+		def path = grailsApplication.config?.grails?.assets?.mapping ?: "${grailsApplication.config.grails.app.contextPath}assets"
+
+
+		// if (path.contains("/")) {
+		// 		String message = "the property [grails.assets.mapping] can only be one level deep.  For example, 'foo' and 'bar' would be acceptable values, but 'foo/bar' is not"
+		// 	throw new IllegalArgumentException(message)
+		// }
+
+		return path
+	}
 }
