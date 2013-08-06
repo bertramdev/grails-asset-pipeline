@@ -6,5 +6,6 @@ plugin.xml
 *.zip.sha1
 /web-app/META-INF
 /web-app/WEB-INF
+test/dummy/web-app/assets
 *.idea/**
 *.iml
