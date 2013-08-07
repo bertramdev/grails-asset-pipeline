@@ -31,8 +31,8 @@ class CssProcessor {
 	}
 
 	private relativePathToBaseFile(file, baseFile) {
-		def baseRelativePath = relativePath(baseFile).split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).reverse()
-		def currentRelativePath = relativePath(file, true).split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).reverse()
+		def baseRelativePath = relativePath(baseFile).split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll{it}.reverse()
+		def currentRelativePath = relativePath(file, false).split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll({it}).reverse()
 
 		def filePathIndex=currentRelativePath.size()- 1
 		def baseFileIndex=baseRelativePath.size() - 1
@@ -52,6 +52,8 @@ class CssProcessor {
 		for(;filePathIndex>=0;filePathIndex--) {
 			calculatedPath << currentRelativePath[filePathIndex]
 		}
+
+		calculatedPath << file.getName()
 
 
 		return calculatedPath.join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
