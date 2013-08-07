@@ -62,7 +62,7 @@ class CssProcessor {
 		if(includeFileName) {
 			path = file.class.name == 'java.io.File' ? file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR) : file.file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR)
 		} else {
-			path = file.getParent().split(AssetHelper.QUOTED_FILE_SEPARATOR)
+			path = file.class.name == 'java.io.File' ? file.getParent().split(AssetHelper.QUOTED_FILE_SEPARATOR) : file.file.getParent().split(AssetHelper.QUOTED_FILE_SEPARATOR)
 		}
 
 		def startPosition = path.findLastIndexOf{ it == "grails-app" }
