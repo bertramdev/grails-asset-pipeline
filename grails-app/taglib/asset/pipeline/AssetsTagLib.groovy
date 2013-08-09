@@ -17,7 +17,7 @@ class AssetsTagLib {
 		def conf = grailsApplication.config.grails.assets
 
 		if((!conf.containsKey('bundle') && Environment.current != Environment.DEVELOPMENT) || conf.bundle == true) {
-			out << "<script src=\"${assetPath(src)}\" type=\"application/javascript\"></script>"
+			out << "<script src=\"${assetPath(src)}\" type=\"text/javascript\"></script>"
 		} else {
 
 			if(src.lastIndexOf(".") >= 0) {
@@ -30,7 +30,7 @@ class AssetsTagLib {
 			def list = assetProcessorService.getDependencyList(uri, 'application/javascript', extension)
 			list.each { dep ->
 				def depAssetPath = assetPath("${dep}")
-				out << "<script src=\"${depAssetPath}?compile=false\" type=\"application/javascript\"></script>"
+				out << "<script src=\"${depAssetPath}?compile=false\" type=\"text/javascript\"></script>"
 			}
 		}
 	}
