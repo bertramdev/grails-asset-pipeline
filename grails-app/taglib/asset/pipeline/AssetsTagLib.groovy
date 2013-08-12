@@ -10,7 +10,7 @@ class AssetsTagLib {
 	def assetProcessorService
 
 	def javascript = { attrs ->
-		def src       = attrs['src']
+		def src = attrs['src']
 		def uri
 		def extension
 
@@ -19,14 +19,13 @@ class AssetsTagLib {
 		if((!conf.containsKey('bundle') && Environment.current != Environment.DEVELOPMENT) || conf.bundle == true) {
 			out << "<script src=\"${assetPath(src)}\" type=\"text/javascript\"></script>"
 		} else {
-
-			if(src.lastIndexOf(".") >= 0) {
-        uri = src.substring(0,src.lastIndexOf("."))
-        extension = src.substring(src.lastIndexOf(".") + 1)
-      } else {
-      	uri = src
-      	extension = 'js'
-      }
+			if (src.lastIndexOf(".") >= 0) {
+				uri = src.substring(0, src.lastIndexOf("."))
+				extension = src.substring(src.lastIndexOf(".") + 1)
+			} else {
+				uri = src
+				extension = 'js'
+			}
 			def list = assetProcessorService.getDependencyList(uri, 'application/javascript', extension)
 			list.each { dep ->
 				def depAssetPath = assetPath("${dep}")
@@ -42,16 +41,28 @@ class AssetsTagLib {
 
 	def image = { attrs ->
 		def src = attrs.remove('src')
-		def htmlAttributes = attrs.collect {key, value -> "${key}='${value.replace('\'','\\\'')}'"}
+		out << "<img src=\"${assetPath(src)}\" ${paramsToHtmlAttr(attrs)}/>"
+	}
 
-		out << "<img src=\"${assetPath(src)}\" ${htmlAttributes?.join(" ")}/>"
+	/**
+	 * @attr href REQUIRED
+	 * @attr rel REQUIRED
+	 * @attr type OPTIONAL
+	 */
+	def link = { attrs ->
+		def href = attrs.remove('href')
+		out << "<link ${paramsToHtmlAttr(attrs)} href=\"${assetPath(href)}\"/>"
+	}
+
+	private paramsToHtmlAttr(attrs) {
+		attrs.collect { key, value -> "${key}=\"${value.replace('\'', '\\\'')}\"" }?.join(" ")
 	}
 
 	private assetPath(src) {
 
 		def conf = grailsApplication.config.grails.assets
 
-    def assetRootPath = assetUriRootPath(grailsApplication, request)
+		def assetRootPath = assetUriRootPath(grailsApplication, request)
 		def assetUrl = conf.url ?: "$assetRootPath/"
 
 		if(conf.precompiled) {
