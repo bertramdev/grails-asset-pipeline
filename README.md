@@ -46,8 +46,9 @@ Asset pipeline provides several new tag libs for including javascript and css in
 Example:
 ```gsp
 <head>
-	<asset:javascript src="application.js"/>
 	<asset:stylesheet src="application.css"/>
+	<asset:javascript src="application.js"/>
+	<asset:link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 </head>
 ```
 
