@@ -129,8 +129,7 @@ We do this instead of Artefacts so that we do not have to load up the full appli
 
 Things to be Done
 -----------------
-* Add more configuration options.
-* Tests would be good.
+* Increase Test Coverage.
 
 Contributions
 -------------
