@@ -21,7 +21,7 @@ class AssetsTagLib {
 		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
     def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && conf.bundle != true)
 
-		if((!debugMode) {
+		if(!debugMode) {
 			out << "<script src=\"${assetPath(src)}\" type=\"text/javascript\"></script>"
 		} else {
 			if (src.lastIndexOf(".") >= 0) {
@@ -51,7 +51,7 @@ class AssetsTagLib {
 		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
     def debugMode      = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && conf.bundle != true)
 
-		if((!debugMode) {
+		if(!debugMode) {
 			out << "<link rel=\"stylesheet\" href=\"${assetPath(src)}\"/>"
 		} else {
 			if (src.lastIndexOf(".") >= 0) {
