@@ -19,7 +19,7 @@ Asset-Pipeline automatically creates a series of folders within your grails-app 
 
 Place your static assets in those directories and simply include them into your layouts. Asset pipeline supports setting up manifests using these files.
 
-Example `grails-app/javascripts/application.js` :
+Example `grails-app/assets/javascripts/application.js` :
 
 ```javascript
 //This is a javascript file with its top level require directives
