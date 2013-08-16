@@ -18,6 +18,7 @@ class CssProcessor {
 				def cssFile = AssetHelper.fileForFullName(relativeFileName)
 				if(cssFile) {
 					replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile.file)
+					println "Replacing ${assetPath} with ${replacementPath}"
 					cachedPaths[assetPath] = replacementPath
 				}
 			}
@@ -36,6 +37,9 @@ class CssProcessor {
 
 		def filePathIndex=currentRelativePath.size()- 1
 		def baseFileIndex=baseRelativePath.size() - 1
+
+		println "Base ${baseRelativePath}"
+		println "file ${currentRelativePath}"
 
 		while(filePathIndex > 0 && baseFileIndex > 0 && baseRelativePath[baseFileIndex] == currentRelativePath[filePathIndex]) {
 			filePathIndex--
@@ -64,7 +68,7 @@ class CssProcessor {
 		if(includeFileName) {
 			path = file.class.name == 'java.io.File' ? file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR) : file.file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR)
 		} else {
-			path = file.class.name == 'java.io.File' ? file.getParent().split(AssetHelper.QUOTED_FILE_SEPARATOR) : file.file.getParent().split(AssetHelper.QUOTED_FILE_SEPARATOR)
+			path = file.class.name == 'java.io.File' ? new File(file.getParent()).getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR) : new File(file.file.getParent()).getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR)
 		}
 
 		def startPosition = path.findLastIndexOf{ it == "grails-app" }
