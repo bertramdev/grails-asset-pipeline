@@ -7,13 +7,22 @@ class AssetsFilters {
     def filters = {
         all(controller:'assets', action:'*') {
             before = {
-                def config = grailsApplication.config.grails.assets
+                def context = grailsApplication.mainContext
+                def mapping = context.assetProcessorService.assetMapping
+                def config  = grailsApplication.config.grails.assets
                 def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
                 if(config.allowDebugParam && debugParameter) {
                     return
                 }
+
                 // Prefer whats in web-app/assets instead of the other
-                def file = grailsApplication.parentContext.getResource(request.forwardURI).getFile()
+                def fileUri = request.forwardURI
+                def baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
+                if(fileUri.startsWith(baseAssetUrl)) {
+                    fileUri = fileUri.substring(baseAssetUrl.length())
+                }
+
+                def file = grailsApplication.parentContext.getResource("assets${fileUri}").getFile()
                 if (!file.exists()) {
                     return
                 }
