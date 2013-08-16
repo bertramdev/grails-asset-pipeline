@@ -18,7 +18,6 @@ class CssProcessor {
 				def cssFile = AssetHelper.fileForFullName(relativeFileName)
 				if(cssFile) {
 					replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile.file)
-					println "Replacing ${assetPath} with ${replacementPath}"
 					cachedPaths[assetPath] = replacementPath
 				}
 			}
@@ -37,9 +36,6 @@ class CssProcessor {
 
 		def filePathIndex=currentRelativePath.size()- 1
 		def baseFileIndex=baseRelativePath.size() - 1
-
-		println "Base ${baseRelativePath}"
-		println "file ${currentRelativePath}"
 
 		while(filePathIndex > 0 && baseFileIndex > 0 && baseRelativePath[baseFileIndex] == currentRelativePath[filePathIndex]) {
 			filePathIndex--

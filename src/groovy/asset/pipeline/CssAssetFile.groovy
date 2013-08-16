@@ -17,7 +17,7 @@ class CssAssetFile{
 	def processedStream() {
 
 		def fileText = file?.text
-		println "Processing CSS"
+
 		for(processor in processors) {
 			def processInstance = processor.newInstance()
 			fileText = processInstance.process(fileText, this)
