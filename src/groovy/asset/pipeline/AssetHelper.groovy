@@ -86,7 +86,7 @@ class AssetHelper {
 			def path = [assetPath, uri].join(File.separator)
 			def fileDescriptor = new File(path)
 
-			if(fileDescriptor.exists()) {
+			if(fileDescriptor.exists() && fileDescriptor.file) {
 				return fileDescriptor
 			}
 		}
