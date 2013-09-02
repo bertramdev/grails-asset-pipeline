@@ -23,7 +23,7 @@ class AssetsFilters {
                 }
 
                 def file = grailsApplication.parentContext.getResource("assets${fileUri}").getFile()
-                if (!file.exists()) {
+                if (!file.exists() || file.directory) {
                     return
                 }
 
