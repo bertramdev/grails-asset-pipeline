@@ -29,6 +29,7 @@ class AssetsFilters {
 
                 def format = servletContext.getMimeType(request.forwardURI)
                 response.setContentType(format)
+                response.setHeader('Cache-Control','public, max-age=31536000')
                 response.outputStream << file.getBytes()
                 return false
             }
