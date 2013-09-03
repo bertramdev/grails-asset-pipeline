@@ -5,7 +5,6 @@ class AssetsController {
 	def assetProcessorService
 
     def index() {
-            // println "REQUEST: "
         def uri = params.id
         def extension = AssetHelper.extensionFromURI(request.forwardURI)
         def format = servletContext.getMimeType(request.forwardURI)
