@@ -1,28 +1,32 @@
 import java.security.MessageDigest
-
 import org.apache.tools.ant.DirectoryScanner
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 // import asset.pipeline.*
-
+includeTargets << grailsScript("Init")
 includeTargets << grailsScript("_GrailsBootstrap")
 
 target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
-    depends(configureProxy,compile, packageApp)
-    event("AssetPrecompileStart", [])
+    depends(configureProxy,compile)
+    def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
+    def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
+    def assetSpecs = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
+    event("AssetPrecompileStart", [assetSpecs])
 
 
     // def manifestMap = [:]
     Properties manifestProperties = new Properties()
-    def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
-    def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
-    def uglifyJsProcessor 		= classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
-    def grailsApplication       = ApplicationHolder.getApplication()
-    def minifyJs				= grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : true
+
+    def grailsApplication = ApplicationHolder.getApplication()
+    def uglifyJsProcessor =  classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
+    def minifyJs			  	= grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : true
     event("StatusUpdate",["Precompiling Assets!"])
 
+    // Load in additional assetspecs
+    assetHelper.assetSpecs += assetSpecs.specs
+
     // Clear compiled assets folder
-    def assetDir = new File("web-app/assets")
+    def assetDir = new File("target/assets")
     if(assetDir.exists()) {
     	assetDir.deleteDir()
     }
@@ -46,7 +50,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	    filesToProcess += scanner.getIncludedFiles().flatten()
 	}
 	filesToProcess.unique() //Make sure we have a unique set
-
+	// println "Here is the spec 2: ${asset.pipeline.AssetHelper.assetSpecs}"
 	for(counter = 0 ; counter < filesToProcess.size(); counter++) {
 		def fileName = filesToProcess[counter]
 		event("StatusUpdate",["Processing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
@@ -84,7 +88,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			if(extension) {
 				outputFileName = "${fileName}.${extension}"
 			}
-			def outputFile = new File("web-app/assets/${outputFileName}")
+			def outputFile = new File("target/assets/${outputFileName}")
 
 			def parentTree = new File(outputFile.parent)
 			parentTree.mkdirs()
@@ -109,7 +113,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					MessageDigest md = MessageDigest.getInstance("MD5")
 					md.update(outputFile.bytes)
 					def checksum = md.digest()
-					def digestedFile = new File("web-app/assets/${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}")
+					def digestedFile = new File("target/assets/${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}")
 					digestedFile.createNewFile()
 					assetHelper.copyFile(outputFile, digestedFile)
 					// digestedFile.sync()
@@ -142,6 +146,6 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	}
 
 	// Update Manifest
-	def manifestFile = new File('web-app/assets/manifest.properties')
+	def manifestFile = new File('target/assets/manifest.properties')
 	manifestProperties.store(manifestFile.newWriter(),"")
 }

@@ -1,7 +1,7 @@
 import grails.util.Environment
 
 class AssetPipelineGrailsPlugin {
-	def version         = "0.6.0"
+	def version         = "0.7.0"
 	def grailsVersion   = "2.0 > *"
 	def title           = "Asset Pipeline Plugin"
 	def author          = "David Estes"
