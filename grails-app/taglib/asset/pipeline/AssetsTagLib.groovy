@@ -111,6 +111,6 @@ class AssetsTagLib {
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = context.assetProcessorService.assetMapping
 
-		return conf.url ?: (request.contextPath + "/$mapping" )
+		return conf.url ?: (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping" )
 	}
 }
