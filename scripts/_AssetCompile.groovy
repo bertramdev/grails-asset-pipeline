@@ -3,7 +3,6 @@ import org.apache.tools.ant.DirectoryScanner
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 // import asset.pipeline.*
-includeTargets << grailsScript("Init")
 includeTargets << grailsScript("_GrailsBootstrap")
 
 target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
