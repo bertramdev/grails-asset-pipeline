@@ -14,12 +14,12 @@ class CssAssetFile{
 		this.baseFile = baseFile
 	}
 
-	def processedStream() {
+	def processedStream(precompiler=false) {
 
 		def fileText = file?.text
 
 		for(processor in processors) {
-			def processInstance = processor.newInstance()
+			def processInstance = processor.newInstance(precompiler)
 			fileText = processInstance.process(fileText, this)
 		}
 		return fileText
@@ -27,6 +27,6 @@ class CssAssetFile{
 	}
 
 	def directiveForLine(line) {
-		line.find(/\*=(.*)/) { fullMatch, directive -> return directive }
+		line.find(/^\*=(.*)/) { fullMatch, directive -> return directive }
 	}
 }

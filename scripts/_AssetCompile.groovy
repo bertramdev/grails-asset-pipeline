@@ -66,14 +66,14 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					extension = assetFile.compiledExtension
 					fileName = assetHelper.fileNameWithoutExtensionFromArtefact(fileName,assetFile)
 				}
-				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType)
+				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType, true)
 				fileData   = directiveProcessor.compile(assetFile)
 				digestName = assetHelper.getByteDigest(fileData.bytes)
 				def existingDigestFile = manifestProperties.getProperty("${fileName}.${extension}")
 				if(existingDigestFile && existingDigestFile == "${fileName}-${digestName}.${extension}") {
 					isUnchanged=true
 				}
-				if(assetFile.contentType == 'application/javascript' && minifyJs && !isUnchanged) {
+				if(fileName.indexOf(".min") == -1 && assetFile.contentType == 'application/javascript' && minifyJs && !isUnchanged) {
 					def newFileData = fileData
 					try {
 						event("StatusUpdate",["Uglifying File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])

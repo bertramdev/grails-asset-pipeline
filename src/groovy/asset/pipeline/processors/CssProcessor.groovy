@@ -2,8 +2,10 @@ package asset.pipeline.processors
 import asset.pipeline.*
 
 class CssProcessor {
+	def precompilerMode
 
-	CssProcessor() {
+	CssProcessor(precompiler=false) {
+		this.precompilerMode = precompiler
 	}
 
 	def process(inputText, assetFile) {
@@ -14,10 +16,10 @@ class CssProcessor {
 				replacementPath = cachedPaths[assetPath]
 			} else if(isRelativePath(assetPath)) {
 				def relativeFileName = [relativePath(assetFile.file),assetPath].join(File.separator)
-				// println "Found Relative Path ${assetPath} - Relative: ${relativeFileName}"
+
 				def cssFile = AssetHelper.fileForFullName(relativeFileName)
 				if(cssFile) {
-					replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile.file)
+					replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile.file, this.precompilerMode)
 					cachedPaths[assetPath] = replacementPath
 				}
 			}
@@ -30,7 +32,7 @@ class CssProcessor {
 		return !assetPath.startsWith("/") && !assetPath.startsWith("http")
 	}
 
-	private relativePathToBaseFile(file, baseFile) {
+	private relativePathToBaseFile(file, baseFile, useDigest=false) {
 		def baseRelativePath = relativePath(baseFile).split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll{it}.reverse()
 		def currentRelativePath = relativePath(file, false).split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll({it}).reverse()
 
@@ -52,8 +54,15 @@ class CssProcessor {
 		for(;filePathIndex>=0;filePathIndex--) {
 			calculatedPath << currentRelativePath[filePathIndex]
 		}
+		if(useDigest) {
+			def extension = AssetHelper.extensionFromURI(file.getName())
+			def fileName  = AssetHelper.nameWithoutExtension(file.getName())
+			def digestName = AssetHelper.getByteDigest(file.bytes)
+			calculatedPath << "${fileName}-${digestName}.${extension}"
+		} else {
+			calculatedPath << file.getName()
+		}
 
-		calculatedPath << file.getName()
 
 
 		return calculatedPath.join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
