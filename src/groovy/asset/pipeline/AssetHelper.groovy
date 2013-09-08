@@ -7,7 +7,7 @@ import java.security.MessageDigest
 
 class AssetHelper {
 
-	static assetSpecs = [JsAssetFile, CssAssetFile]
+	static assetSpecs = [JsAssetFile, CssAssetFile, ManifestAssetFile]
 
 	static QUOTED_FILE_SEPARATOR = Pattern.quote(File.separator)
 	static DIRECTIVE_FILE_SEPARATOR = '/'
@@ -238,6 +238,6 @@ class AssetHelper {
 		MessageDigest md = MessageDigest.getInstance("MD5")
 		md.update(fileBytes)
 		def checksum = md.digest()
-		return checksum.encodeHex()
+		return checksum.encodeHex().toString()
 	}
 }

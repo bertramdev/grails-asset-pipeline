@@ -16,9 +16,14 @@ class AssetsController {
             uri = params.id.substring(0,uri.lastIndexOf("."))
             extension = params.id.substring(params.id.lastIndexOf(".") + 1)
         }
+
         if(extension) {
             format = servletContext.getMimeType(request.forwardURI)
         }
+        if(!format) {
+            format = AssetHelper.assetMimeTypeForURI(request.forwardURI)
+        }
+
         def assetFile
         if(params.containsKey('compile') && params.boolean('compile') == false) {
             assetFile = assetProcessorService.serveUncompiledAsset(uri,format, extension)
