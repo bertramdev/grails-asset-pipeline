@@ -32,6 +32,7 @@ console.log("This is my javascript manifest");
 ```
 
 The above is an example of some of the require directives that can be used. Custom directives can be created and overridden into the `DirectiveProcessor` class.
+**NOTE**: Make sure an empty line does not exist between the top of the file and your require directives, these requires will be ignored!
 
 Optionally, assets can be excluded from processing if included by your require tree. This can dramatically reduce compile time for your assets. To do so simply leverage the excludes configuration option:
 
