@@ -80,7 +80,7 @@ Stylesheets
 
 Precompiling For Production
 ---------------------------
-Assets are now automatically precompiled into `target/assets` when you create a war file. This should further simplify the deployment process.
+Assets are now automatically precompiled into `target/assets` when you create a war file. This should further simplify the deployment process. During a war create, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run `grails asset-clean`
 
 Serving Assets from External Storage Directory
 ----------------------------------------------
@@ -119,8 +119,8 @@ def doWithDynamicMethods = { ctx ->
 2. Add an `_Events.groovy` file and register an event listener for `eventAssetPrecompileStart`:
 
 ```groovy
-eventAssetPrecompileStart = {
-	asset.pipeline.AssetHelper.assetSpecs << asset.pipeline.handlebars.HandlebarsAssetFile
+eventAssetPrecompileStart = { assetConfig ->
+	assetConfig.specs << 'asset.pipeline.handlebars.HandlebarsAssetFile'
 }
 ```
 

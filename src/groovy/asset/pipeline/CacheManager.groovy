@@ -3,11 +3,10 @@ package asset.pipeline
 class CacheManager {
 	static cache = [:]
 
-	static def findCache(fileName, fileText) {
+	static def findCache(fileName, md5) {
 		def cacheRecord = CacheManager.cache[fileName]
-		def newMd5 = AssetHelper.getByteDigest(fileText.bytes)
-		println cacheRecord
-		if(cacheRecord && cacheRecord.md5 == newMd5) {
+
+		if(cacheRecord && cacheRecord.md5 == md5) {
 			def cacheFiles = cacheRecord.dependencies.keySet()
 			def expiredCacheFound = cacheFiles.find { cacheFileName ->
 				def cacheFile = new File(cacheFileName)
