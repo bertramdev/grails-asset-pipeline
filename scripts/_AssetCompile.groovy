@@ -46,6 +46,12 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	def filesToProcess = getAllAssets(grailsApplication, assetHelper)
 
+	def excludeGzip = ['png', 'jpg', 'jpeg', 'gif']
+
+	if(grailsApplication.config.grails.assets.excludesGzip) {
+		excludeGzip += grailsApplication.config.grails.assets.excludesGzip
+	}
+
 	removeDeletedFiles(manifestProperties,filesToProcess, assetHelper)
 
 
@@ -130,7 +136,10 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 						// Zip it Good!
 						event("StatusUpdate",["Compressing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
-						createCompressedFiles(assetHelper, outputFile, digestedFile)
+						if(!excludeGzip.find{ it.toLowerCase() == extension.toLowerCase()}) {
+							createCompressedFiles(assetHelper, outputFile, digestedFile)
+						}
+
 
 					} catch(ex) {
 						println("Error Compiling File ${fileName}.${extension}")
