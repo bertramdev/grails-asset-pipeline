@@ -1,15 +1,15 @@
 package asset.pipeline
 
-class JsAssetFile{
-	static final String contentType = 'application/javascript'
-	static extensions = ['js']
-	static compiledExtension = 'js'
+class ManifestAssetFile{
+	static final String contentType = 'text/cache-manifest'
+	static extensions = ['manifest']
+	static compiledExtension = 'manifest'
 	static processors = []
 
 	File file
 	def baseFile
 
-	JsAssetFile(file, baseFile=null) {
+	ManifestAssetFile(file, baseFile=null) {
 		this.file = file
 		this.baseFile = baseFile
 	}
@@ -25,6 +25,6 @@ class JsAssetFile{
 	}
 
 	def directiveForLine(line) {
-		line.find(/\/\/=(.*)/) { fullMatch, directive -> return directive }
+		return null
 	}
 }

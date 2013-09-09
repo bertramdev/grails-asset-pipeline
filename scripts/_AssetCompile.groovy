@@ -1,62 +1,63 @@
-import java.security.MessageDigest
 import org.apache.tools.ant.DirectoryScanner
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 // import asset.pipeline.*
 includeTargets << grailsScript("_GrailsBootstrap")
 
+target(assetClean: "Cleans Compiled Assets Directory") {
+	// Clear compiled assets folder
+  def assetDir = new File("target/assets")
+  if(assetDir.exists()) {
+  	assetDir.deleteDir()
+  }
+}
+
 target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
-    depends(configureProxy,compile)
-    def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
-    def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
-    def assetSpecs = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
-    event("AssetPrecompileStart", [assetSpecs])
+  depends(configureProxy,compile)
+  def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
+  def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
+  def assetConfig = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
+  event("AssetPrecompileStart", [assetConfig])
 
 
-    // def manifestMap = [:]
-    Properties manifestProperties = new Properties()
+  // def manifestMap = [:]
+  Properties manifestProperties = new Properties()
 
-    def grailsApplication = ApplicationHolder.getApplication()
-    def uglifyJsProcessor =  classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
-    def minifyJs			  	= grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : true
-    event("StatusUpdate",["Precompiling Assets!"])
+  def grailsApplication = ApplicationHolder.getApplication()
+  def uglifyJsProcessor =  classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
+  def minifyJs			  	= grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : true
+  event("StatusUpdate",["Precompiling Assets!"])
 
-    // Load in additional assetspecs
-    assetHelper.assetSpecs += assetSpecs.specs
+  // Load in additional assetSpecs
+  assetConfig.specs.each { spec ->
+  	def specClass = classLoader.loadClass(spec)
+  	if(specClass) {
+    	assetHelper.assetSpecs += specClass
+  	}
+  }
 
-    // Clear compiled assets folder
-    def assetDir = new File("target/assets")
-    if(assetDir.exists()) {
-    	assetDir.deleteDir()
-    }
+  // Check for existing Compiled Assets
+  def assetDir = new File("target/assets")
+  if(assetDir.exists()) {
+  	def manifestFile = new File("target/assets/manifest.properties")
+  	if(manifestFile.exists())
+	  	manifestProperties.load(manifestFile.newDataInputStream())
+  }
+
+	def filesToProcess = getAllAssets(grailsApplication, assetHelper)
+
+	removeDeletedFiles(manifestProperties,filesToProcess, assetHelper)
 
 
-	//Find all files we want to process
-	def excludes = ["**/.*","**/.DS_Store", 'WEB-INF/**/*', '**/META-INF/*']
-	if(grailsApplication.config.grails.assets.excludes) {
-		excludes += grailsApplication.config.grails.assets.excludes
-	}
-	DirectoryScanner scanner = new DirectoryScanner()
-	scanner.setExcludes(excludes as String[])
-	// scanner.setIncludes(["**/*"] as String[])
-
-	def assetPaths = assetHelper.getAssetPaths()
-	def filesToProcess = []
-	for(path in assetPaths) {
-	    scanner.setBasedir(path)
-	    scanner.setCaseSensitive(false)
-	    scanner.scan()
-	    filesToProcess += scanner.getIncludedFiles().flatten()
-	}
-	filesToProcess.unique() //Make sure we have a unique set
-	// println "Here is the spec 2: ${asset.pipeline.AssetHelper.assetSpecs}"
 	for(counter = 0 ; counter < filesToProcess.size(); counter++) {
-		def fileName = filesToProcess[counter]
+		def isUnchanged = false
+		def fileName    = filesToProcess[counter]
 		event("StatusUpdate",["Processing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
-		def extension = assetHelper.extensionFromURI(fileName)
-		fileName  = assetHelper.nameWithoutExtension(fileName)
+		def extension   = assetHelper.extensionFromURI(fileName)
+		fileName        = assetHelper.nameWithoutExtension(fileName)
+		def assetFile   = assetHelper.artefactForFile(assetHelper.fileForUri(filesToProcess[counter],null,null))
+		def digestName
 
-		def assetFile = assetHelper.artefactForFile(assetHelper.fileForUri(filesToProcess[counter],null,null))
 		if(assetFile) {
 			def fileData
 
@@ -65,9 +66,14 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					extension = assetFile.compiledExtension
 					fileName = assetHelper.fileNameWithoutExtensionFromArtefact(fileName,assetFile)
 				}
-				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType)
-				fileData = directiveProcessor.compile(assetFile)
-				if(fileName.indexOf(".min") == -1 && assetFile.contentType == 'application/javascript' && minifyJs) {
+				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType, true)
+				fileData   = directiveProcessor.compile(assetFile)
+				digestName = assetHelper.getByteDigest(fileData.bytes)
+				def existingDigestFile = manifestProperties.getProperty("${fileName}.${extension}")
+				if(existingDigestFile && existingDigestFile == "${fileName}-${digestName}.${extension}") {
+					isUnchanged=true
+				}
+				if(fileName.indexOf(".min") == -1 && assetFile.contentType == 'application/javascript' && minifyJs && !isUnchanged) {
 					def newFileData = fileData
 					try {
 						event("StatusUpdate",["Uglifying File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
@@ -81,63 +87,59 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					fileData = newFileData
 				}
 				fileData = fileData.getBytes('utf-8')
-			}
-
-			def outputFileName = fileName
-			if(extension) {
-				outputFileName = "${fileName}.${extension}"
-			}
-			def outputFile = new File("target/assets/${outputFileName}")
-
-			def parentTree = new File(outputFile.parent)
-			parentTree.mkdirs()
-			outputFile.createNewFile()
-
-			if(fileData) {
-				def outputStream = outputFile.newOutputStream()
-				outputStream.write(fileData, 0 , fileData.length)
-				outputStream.flush()
-				outputStream.close()
 			} else {
-				if(assetFile.class.name == 'java.io.File') {
-					assetHelper.copyFile(assetFile, outputFile)
+				digestName = assetHelper.getByteDigest(assetFile.bytes)
+				def existingDigestFile = manifestProperties.getProperty("${fileName}.${extension}")
+				if(existingDigestFile && existingDigestFile == "${fileName}-${digestName}.${extension}") {
+					isUnchanged=true
+				}
+			}
+
+			if(!isUnchanged) {
+				def outputFileName = fileName
+				if(extension) {
+					outputFileName = "${fileName}.${extension}"
+				}
+				def outputFile = new File("target/assets/${outputFileName}")
+
+				def parentTree = new File(outputFile.parent)
+				parentTree.mkdirs()
+				outputFile.createNewFile()
+
+				if(fileData) {
+					def outputStream = outputFile.newOutputStream()
+					outputStream.write(fileData, 0 , fileData.length)
+					outputStream.flush()
+					outputStream.close()
 				} else {
-					assetHelper.copyFile(assetFile.file, outputFile)
+					if(assetFile.class.name == 'java.io.File') {
+						assetHelper.copyFile(assetFile, outputFile)
+					} else {
+						assetHelper.copyFile(assetFile.file, outputFile)
+						digestName = assetHelper.getByteDigest(assetFile.file.bytes)
+					}
+				}
+				if(extension) {
+					try {
+
+						def digestedFile = new File("target/assets/${fileName}-${digestName}${extension ? ('.' + extension) : ''}")
+						digestedFile.createNewFile()
+						assetHelper.copyFile(outputFile, digestedFile)
+						// digestedFile.sync()
+						manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${digestName}${extension ? ('.' + extension) : ''}")
+
+						// Zip it Good!
+						event("StatusUpdate",["Compressing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
+						createCompressedFiles(assetHelper, outputFile, digestedFile)
+
+					} catch(ex) {
+						println("Error Compiling File ${fileName}.${extension}")
+					}
 				}
 			}
 
-			if(extension) {
-				try {
-					// Generate Checksum
-					MessageDigest md = MessageDigest.getInstance("MD5")
-					md.update(outputFile.bytes)
-					def checksum = md.digest()
-					def digestedFile = new File("target/assets/${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}")
-					digestedFile.createNewFile()
-					assetHelper.copyFile(outputFile, digestedFile)
-					// digestedFile.sync()
-					manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${checksum.encodeHex()}${extension ? ('.' + extension) : ''}")
 
-					// Zip it Good!
-					def targetStream = new java.io.ByteArrayOutputStream()
-					def zipStream = new java.util.zip.GZIPOutputStream(targetStream)
-					event("StatusUpdate",["Compressing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
-					zipStream.write(outputFile.bytes)
-					def zipFile = new File("${outputFile.getAbsolutePath()}.gz")
-					def zipFileDigest = new File("${digestedFile.getAbsolutePath()}.gz")
-					zipFile.createNewFile()
-					zipFileDigest.createNewFile()
-					zipStream.finish()
 
-					zipFile.bytes = targetStream.toByteArray()
-					assetHelper.copyFile(zipFile, zipFileDigest)
-					// zipFile.sync()
-					// zipFileDigest.sync()
-					targetStream.close()
-				} catch(ex) {
-					println("Error Compiling File ${fileName}.${extension}")
-				}
-			}
 		}
 		else {
 			println("Asset File not found! ${fileName}")
@@ -147,4 +149,86 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	// Update Manifest
 	def manifestFile = new File('target/assets/manifest.properties')
 	manifestProperties.store(manifestFile.newWriter(),"")
+}
+
+getAllAssets = { grailsApplication, assetHelper ->
+	DirectoryScanner scanner = new DirectoryScanner()
+	def excludes             = ["**/.*","**/.DS_Store", 'WEB-INF/**/*', '**/META-INF/*']
+	def assetPaths           = assetHelper.getAssetPaths()
+	def filesToProcess       = []
+
+	if(grailsApplication.config.grails.assets.excludes) {
+		excludes += grailsApplication.config.grails.assets.excludes
+	}
+
+	scanner.setExcludes(excludes as String[])
+
+	for(path in assetPaths) {
+    scanner.setBasedir(path)
+    scanner.setCaseSensitive(false)
+    scanner.scan()
+    filesToProcess += scanner.getIncludedFiles().flatten()
+	}
+	filesToProcess.unique()
+
+	return filesToProcess //Make sure we have a unique set
+}
+
+createCompressedFiles = { assetHelper, outputFile, digestedFile ->
+	def targetStream  = new java.io.ByteArrayOutputStream()
+	def zipStream     = new java.util.zip.GZIPOutputStream(targetStream)
+	def zipFile       = new File("${outputFile.getAbsolutePath()}.gz")
+	def zipFileDigest = new File("${digestedFile.getAbsolutePath()}.gz")
+
+	zipStream.write(outputFile.bytes)
+	zipFile.createNewFile()
+	zipFileDigest.createNewFile()
+	zipStream.finish()
+
+	zipFile.bytes = targetStream.toByteArray()
+	assetHelper.copyFile(zipFile, zipFileDigest)
+	targetStream.close()
+}
+
+removeDeletedFiles = { manifestProperties, filesToProcess, assetHelper ->
+		def compiledFileNames = filesToProcess.collect { fileToProcess ->
+			def fileName    = fileToProcess
+			def extension   = assetHelper.extensionFromURI(fileName)
+			fileName        = assetHelper.nameWithoutExtension(fileName)
+			def assetFile   = assetHelper.artefactForFile(assetHelper.fileForUri(fileToProcess,null,null))
+			if(assetFile && assetFile.class.name != 'java.io.File' && assetFile.compiledExtension) {
+				extension = assetFile.compiledExtension
+				fileName = assetHelper.fileNameWithoutExtensionFromArtefact(fileName,assetFile)
+			}
+			return "${fileName}.${extension}"
+		}
+
+		def propertiesToRemove = []
+		manifestProperties.keySet().each { compiledName ->
+			def fileFound = compiledFileNames.find{ it == compiledName.toString()}
+			if(!fileFound) {
+				def digestedName = manifestProperties.getProperty(compiledName)
+				def compiledFile = new File("target/assets", compiledName)
+				def digestedFile = new File("target/assets", digestedName)
+				def zippedFile = new File("target/assets", "${compiledName}.gz")
+				def zippedDigestFile = new File("target/assets", "${digestedName}.gz")
+				if(compiledFile.exists()) {
+					compiledFile.delete()
+				}
+				if(digestedFile.exists()) {
+					digestedFile.delete()
+				}
+				if(zippedFile.exists()) {
+					zippedFile.delete()
+				}
+				if(zippedDigestFile.exists()) {
+					zippedDigestFile.delete()
+				}
+				propertiesToRemove << compiledName
+			}
+		}
+
+		propertiesToRemove.each {
+			manifestProperties.remove(it)
+		}
 }

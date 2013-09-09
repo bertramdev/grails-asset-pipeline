@@ -14,7 +14,7 @@ class CssAssetFile{
 		this.baseFile = baseFile
 	}
 
-	def processedStream() {
+	def processedStream(precompiler=false) {
 
 		def fileText = file?.text
 

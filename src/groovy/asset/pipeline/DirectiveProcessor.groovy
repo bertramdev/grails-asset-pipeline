@@ -7,12 +7,14 @@ class DirectiveProcessor {
   static DIRECTIVES = [require_self: "requireSelfDirective" ,require_tree: "requireTreeDirective", require: "requireFileDirective"]
 
   def contentType
+  def precompiler
   def files = []
   def baseFile
   def servletContext = ServletContextHolder.getServletContext()
 
-  DirectiveProcessor(contentType) {
+  DirectiveProcessor(contentType, precompiler=false) {
     this.contentType = contentType
+    this.precompiler = precompiler
   }
 
   def compile(file) {
@@ -93,16 +95,18 @@ class DirectiveProcessor {
 
       return file.text
     }
-    return file.processedStream()
+    return file.processedStream(this.precompiler)
   }
 
 	def findDirectives(fileSpec, tree) {
 		// try {
-			fileSpec.file.eachLine { line ->
+      def lines = fileSpec.file.readLines()
+      def counter = 0
+			lines.find { line ->
         if(!line) {
-          return false
-          throw "End of Directive Set"
+          return true
         }
+        counter++
         def directive = fileSpec.directiveForLine(line)
 				if(directive) {
 					directive = directive.trim()
@@ -116,7 +120,7 @@ class DirectiveProcessor {
             this."${processor}"(directiveArguments, fileSpec,tree)
           }
 				}
-        return true
+        return false
 			}
 		// } catch(except) {
   //     //TODO: Narrow exception scope here please!

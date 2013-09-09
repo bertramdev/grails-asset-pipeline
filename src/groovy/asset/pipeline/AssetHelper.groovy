@@ -1,16 +1,13 @@
 package asset.pipeline
-
 import grails.util.Holders
-
 import java.nio.channels.FileChannel
-
 import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
-
 import java.util.regex.Pattern
+import java.security.MessageDigest
 
 class AssetHelper {
 
-	static assetSpecs = [JsAssetFile, CssAssetFile]
+	static assetSpecs = [JsAssetFile, CssAssetFile, ManifestAssetFile]
 
 	static QUOTED_FILE_SEPARATOR = Pattern.quote(File.separator)
 	static DIRECTIVE_FILE_SEPARATOR = '/'
@@ -236,5 +233,11 @@ class AssetHelper {
 			AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
 	}
 
-
+	static getByteDigest(fileBytes) {
+		// Generate Checksum
+		MessageDigest md = MessageDigest.getInstance("MD5")
+		md.update(fileBytes)
+		def checksum = md.digest()
+		return checksum.encodeHex().toString()
+	}
 }
