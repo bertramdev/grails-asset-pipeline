@@ -11,18 +11,26 @@ class AssetsTagLib {
 
 	/**
 	 * @attr src REQUIRED
+	 * @attr defer OPTIONAL add to request and output with deferred tag if needed
 	 */
 	def javascript = { attrs ->
 		def src = attrs['src']
 		def uri
 		def extension
+		def defer = attrs['defer'] ?: false
 
 		def conf = grailsApplication.config.grails.assets
 		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
-    def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && conf.bundle != true)
+   		def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && conf.bundle != true)
 
 		if(!debugMode) {
-			out << "<script src=\"${assetPath(src)}\" type=\"text/javascript\"></script>"
+			def output = "<script src=\"${assetPath(src)}\" type=\"text/javascript\"></script>"
+			if( defer ) {
+				addToDeferred( request, output )
+			}
+			else {
+				out << output
+			}
 		} else {
 			if (src.lastIndexOf(".") >= 0) {
 				uri = src.substring(0, src.lastIndexOf("."))
@@ -34,7 +42,13 @@ class AssetsTagLib {
 			def list = assetProcessorService.getDependencyList(uri, 'application/javascript', extension)
 			list.each { dep ->
 				def depAssetPath = assetPath("${dep}", true)
-				out << "<script src=\"${depAssetPath}?compile=false\" type=\"text/javascript\"></script>"
+				def output = "<script src=\"${depAssetPath}?compile=false\" type=\"text/javascript\"></script>"
+				if( defer ) {
+					addToDeferred( request, output )
+				}
+				else {
+					out << output
+				}
 			}
 		}
 	}
@@ -49,7 +63,7 @@ class AssetsTagLib {
 		def uri
 		def extension
 		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
-    def debugMode      = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && conf.bundle != true)
+		def debugMode      = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && conf.bundle != true)
 
 		if(!debugMode) {
 			out << "<link rel=\"stylesheet\" href=\"${assetPath(src)}\"/>"
@@ -82,6 +96,19 @@ class AssetsTagLib {
 	def link = { attrs ->
 		def href = attrs.remove('href')
 		out << "<link ${paramsToHtmlAttr(attrs)} href=\"${assetPath(href)}\"/>"
+	}
+
+	def deferred = { attrs ->
+		request.getAttribute( 'DEFERRED_ASSETS' )?.each {
+			out << it
+		}
+	}
+
+	private addToDeferred( request, resource ) {
+		( request.getAttribute( 'DEFERRED_ASSETS' ) ?: [] ).with { list ->
+			list << resource
+			request.setAttribute( 'DEFERRED_ASSETS' )
+		}
 	}
 
 	private paramsToHtmlAttr(attrs) {
