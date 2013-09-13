@@ -91,15 +91,25 @@ class AssetHelper {
 	}
 
 	static getAssetPaths() {
-		def assetPaths = AssetHelper.scopedDirectoryPaths(new File("grails-app/assets").getAbsolutePath())
+		def assetPaths = AssetHelper.getAssetPathsByPlugin().values().toList().flatten().unique()
+		return assetPaths
+	}
 
+	static getAssetPathsByPlugin(includeWebApp=true) {
+		def assetPaths = [:]
+		assetPaths.application = AssetHelper.scopedDirectoryPaths(new File("grails-app/assets").getAbsolutePath())
 		for(plugin in GrailsPluginUtils.pluginInfos) {
 			def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
-			def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
-			assetPaths += AssetHelper.scopedDirectoryPaths(assetPath)
-			assetPaths += AssetHelper.scopedDirectoryPaths(fallbackPath)
+			def pluginAssetPaths = AssetHelper.scopedDirectoryPaths(assetPath)
+			if(includeWebApp) {
+				def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
+				pluginAssetPaths += AssetHelper.scopedDirectoryPaths(fallbackPath)
+			}
+			pluginAssetPaths.unique()
+
+			assetPaths[plugin.name] = pluginAssetPaths
 		}
-		return assetPaths.unique()
+		return assetPaths
 	}
 
 	static scopedDirectoryPaths(assetPath) {
