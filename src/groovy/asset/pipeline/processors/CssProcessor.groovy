@@ -1,6 +1,6 @@
 package asset.pipeline.processors
 import asset.pipeline.*
-
+import java.net.URL
 class CssProcessor {
 	def precompilerMode
 
@@ -10,16 +10,23 @@ class CssProcessor {
 
 	def process(inputText, assetFile) {
 		def cachedPaths = [:]
-		return inputText.replaceAll(/url\([\'\"]?([a-zA-Z0-9\-\_\.\/\@]+)[\'\"]?\)/) { fullMatch, assetPath ->
+		return inputText.replaceAll(/url\([\'\"]?([a-zA-Z0-9\-\_\.\/\@\#\?]+)[\'\"]?\)/) { fullMatch, assetPath ->
 			def replacementPath = assetPath
 			if(cachedPaths[assetPath]) {
 				replacementPath = cachedPaths[assetPath]
 			} else if(isRelativePath(assetPath)) {
-				def relativeFileName = [relativePath(assetFile.file),assetPath].join(File.separator)
+				def urlRep = new URL("http://hostname/${assetPath}") //Split out subcomponents
+				def relativeFileName = [relativePath(assetFile.file),urlRep.path].join(File.separator)
 
 				def cssFile = AssetHelper.fileForFullName(relativeFileName)
 				if(cssFile) {
 					replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile.file, this.precompilerMode)
+					if(urlRep.query != null) {
+						replacementPath += "?${urlRep.query}"
+					}
+					if(urlRep.ref) {
+						replacementPath += "#${urlRep.ref}"
+					}
 					cachedPaths[assetPath] = replacementPath
 				}
 			}

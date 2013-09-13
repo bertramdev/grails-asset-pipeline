@@ -42,6 +42,8 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
   	def manifestFile = new File("target/assets/manifest.properties")
   	if(manifestFile.exists())
 	  	manifestProperties.load(manifestFile.newDataInputStream())
+  } else {
+  	assetDir.mkdirs()
   }
 
 	def filesToProcess = getAllAssets(grailsApplication, assetHelper)
@@ -162,25 +164,59 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 getAllAssets = { grailsApplication, assetHelper ->
 	DirectoryScanner scanner = new DirectoryScanner()
-	def excludes             = ["**/.*","**/.DS_Store", 'WEB-INF/**/*', '**/META-INF/*']
-	def assetPaths           = assetHelper.getAssetPaths()
+	def assetPaths           = assetHelper.getAssetPathsByPlugin()
 	def filesToProcess       = []
 
-	if(grailsApplication.config.grails.assets.excludes) {
-		excludes += grailsApplication.config.grails.assets.excludes
+	assetPaths.each { key, value ->
+		scanner.setExcludes(excludesForPlugin(grailsApplication, key) as String[])
+		scanner.setIncludes(["**/*"] as String[])
+		for(path in value) {
+	    scanner.setBasedir(path)
+	    scanner.setCaseSensitive(false)
+	    scanner.scan()
+	    filesToProcess += scanner.getIncludedFiles().flatten()
+		}
+
+		scanner.setExcludes([] as String[])
+		def includes = includesForPlugin(grailsApplication, key)
+		if(includes.size() > 0) {
+			scanner.setIncludes(includes as String[])
+			for(path in value) {
+		    scanner.setBasedir(path)
+		    scanner.setCaseSensitive(false)
+		    scanner.scan()
+		    filesToProcess += scanner.getIncludedFiles().flatten()
+			}
+		}
+
 	}
 
-	scanner.setExcludes(excludes as String[])
 
-	for(path in assetPaths) {
-    scanner.setBasedir(path)
-    scanner.setCaseSensitive(false)
-    scanner.scan()
-    filesToProcess += scanner.getIncludedFiles().flatten()
-	}
 	filesToProcess.unique()
 
 	return filesToProcess //Make sure we have a unique set
+}
+
+excludesForPlugin = { grailsApplication, pluginName ->
+	def excludes = ["**/.*","**/.DS_Store", 'WEB-INF/**/*', '**/META-INF/*', '**/_*.*']
+	if(grailsApplication.config.grails.assets.excludes) {
+		excludes += grailsApplication.config.grails.assets.excludes
+	}
+	if(grailsApplication.config.grails.assets.plugin."${pluginName}".excludes) {
+		excludes += grailsApplication.config.grails.assets.plugin."${pluginName}".excludes
+	}
+	return excludes.unique()
+}
+
+includesForPlugin = { grailsApplication, pluginName ->
+	def includes = []
+	if(grailsApplication.config.grails.assets.includes) {
+		includes += grailsApplication.config.grails.assets.includes
+	}
+	if(grailsApplication.config.grails.assets.plugin."${pluginName}".includes) {
+		includes += grailsApplication.config.grails.assets.plugin."${pluginName}".includes
+	}
+	return includes.unique()
 }
 
 createCompressedFiles = { assetHelper, outputFile, digestedFile ->
