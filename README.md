@@ -40,6 +40,15 @@ Optionally, assets can be excluded from processing if included by your require t
 	grails.assets.excludes = ["tiny_mce/src/*.js"]
 ```
 
+Or Exclude at the plugin level:
+
+```groovy
+  grails.assets.plugin."twitter-bootstrap".excludes = ["**/*.less"]
+  grails.assets.plugin."twitter-bootstrap".includes = ["bootstrap.less"]
+```
+
+The above will tell asset pipeline not to precompile less files individually within the twitter-bootstrap plugin, but will compile bootstrap.less
+
 Including Assets in your Views
 ------------------------------
 Asset pipeline provides several new tag libs for including javascript and css into your gsp files.
