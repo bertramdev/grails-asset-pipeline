@@ -10,8 +10,8 @@ class CssProcessor {
 
 	def process(inputText, assetFile) {
 		def cachedPaths = [:]
-		return inputText.replaceAll(/url\([\'\"]?([a-zA-Z0-9\-\_\.\/\@\#\?]+)[\'\"]?\)/) { fullMatch, assetPath ->
-			def replacementPath = assetPath
+		return inputText.replaceAll(/url\([\'\"]?([a-zA-Z0-9\-\_\.\/\@\#\?\ \&\+\%\=]+)[\'\"]?\)/) { fullMatch, assetPath ->
+			def replacementPath = assetPath.trim()
 			if(cachedPaths[assetPath]) {
 				replacementPath = cachedPaths[assetPath]
 			} else if(isRelativePath(assetPath)) {

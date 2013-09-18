@@ -102,8 +102,9 @@ class DirectiveProcessor {
 		// try {
       def lines = fileSpec.file.readLines()
       def counter = 0
+      def directiveFound = false
 			lines.find { line ->
-        if(!line) {
+        if(!line && directiveFound == true) {
           return true
         }
         counter++
@@ -115,6 +116,7 @@ class DirectiveProcessor {
           def processor = DIRECTIVES[unprocessedArgs[0].toLowerCase()]
 
           if(processor) {
+            directiveFound = true
             def directiveArguments = new groovy.text.GStringTemplateEngine().createTemplate(directive).make().toString().split(" ")
             directiveArguments[0] = directiveArguments[0].toLowerCase()
             this."${processor}"(directiveArguments, fileSpec,tree)
