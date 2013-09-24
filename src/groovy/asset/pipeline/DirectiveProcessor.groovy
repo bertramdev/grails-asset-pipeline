@@ -99,15 +99,12 @@ class DirectiveProcessor {
   }
 
 	def findDirectives(fileSpec, tree) {
-		// try {
       def lines = fileSpec.file.readLines()
-      def counter = 0
-      def directiveFound = false
+      // def directiveFound = false
 			lines.find { line ->
-        if(!line && directiveFound == true) {
-          return true
-        }
-        counter++
+        // if(!line && directiveFound == true) {
+        //   return true
+        // }
         def directive = fileSpec.directiveForLine(line)
 				if(directive) {
 					directive = directive.trim()
@@ -116,7 +113,6 @@ class DirectiveProcessor {
           def processor = DIRECTIVES[unprocessedArgs[0].toLowerCase()]
 
           if(processor) {
-            directiveFound = true
             def directiveArguments = new groovy.text.GStringTemplateEngine().createTemplate(directive).make().toString().split(" ")
             directiveArguments[0] = directiveArguments[0].toLowerCase()
             this."${processor}"(directiveArguments, fileSpec,tree)
@@ -124,10 +120,6 @@ class DirectiveProcessor {
 				}
         return false
 			}
-		// } catch(except) {
-  //     //TODO: Narrow exception scope here please!
-  //     log.info "Done Processing Directive for File"
-		// }
 	}
 
   def requireSelfDirective(command, file, tree) {
@@ -138,7 +130,6 @@ class DirectiveProcessor {
     def parentFile
     if(!command[1] || command[1] == '.') {
       parentFile = new File(fileSpec.file.getParent())
-      // println "Requiring Tree for File: ${parentFile}"
     } else {
       parentFile = new File([fileSpec.file.getParent(),command[1]].join(File.separator))
     }
@@ -150,13 +141,11 @@ class DirectiveProcessor {
     def files = directory.listFiles()
     files = files?.sort { a, b -> a.name.compareTo b.name }
     for(file in files) {
-      // println("Finding FIle with Type: ${AssetHelper.assetMimeTypeForURI(file.getAbsolutePath())} against ${contentType}")
       if(file.isDirectory()) {
         recursiveTreeAppend(file,tree)
       }
       else if(AssetHelper.assetMimeTypeForURI(file.getAbsolutePath()) == contentType) {
         if(!isFileInTree(file,tree)) {
-          // println "Appending to Tree, ${file}"
           tree.tree << getDependencyTree(AssetHelper.artefactForFile(file,contentType, this.baseFile))
         }
       }

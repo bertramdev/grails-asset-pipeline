@@ -92,6 +92,12 @@ Precompiling For Production
 ---------------------------
 Assets are now automatically precompiled into `target/assets` when you create a war file. This should further simplify the deployment process. During a war create, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run `grails asset-clean`
 
+During war build your assets are also minified using UglifierJs. To disable this feature you can add the following option to your config:
+
+```groovy
+  grails.assets.minifyJs = false
+```
+
 Serving Assets from External Storage Directory
 ----------------------------------------------
 Asset Pipeline can be configured to copy your assets files out into an external storage path. This can be useful for setting up your web server (i.e. Nginx) to directly server your static assets. To do so, simply define a config variable in your `Config.groovy` environment block
