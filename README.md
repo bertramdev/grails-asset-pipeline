@@ -120,6 +120,8 @@ environments {
 }
 ```
 
+**NOTE**: For a full list of configuration options checkout the [Configuration](https://github.com/bertramdev/asset-pipeline/wiki/Configuration) Wiki article.
+
 Custom Files
 ------------
 Asset Pipeline uses classes of type `AssetFile`. By default, this plugin comes with a `JsAssetFile`, and `CssAssetFile`. These define the match pattern syntax for understanding requires directives, known extensions, processors, and content-type. The application bases its file look-up on content-type of the request rather than extension. This allows the user to maybe define a `CoffeeAssetFile` with the javascript content type and a request to `localhost/assets/app.js` would be able to find `assets/app.coffee`. To add custom file definitions you must add the definition in 2 locations:

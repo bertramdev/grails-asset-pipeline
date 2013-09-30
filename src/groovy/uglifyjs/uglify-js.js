@@ -3,7 +3,7 @@ function uglify(orig_code, options){
   options || (options = {});
   var jsp = uglify.parser;
   var pro = uglify.uglify;
-
+  // java.lang.System.out.println("Options being passed: " + options.mangle_options);
   var ast = jsp.parse(orig_code, options.strict_semicolons); // parse code and get the initial AST
   ast = pro.ast_mangle(ast, options.mangle_options); // get a new AST with mangled names
   // Turning this on takes 2x longer in rhino for < 10% file size savings (even lower when gzipped)

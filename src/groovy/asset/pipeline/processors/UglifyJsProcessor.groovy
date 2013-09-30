@@ -4,6 +4,7 @@ import org.mozilla.javascript.Context
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.tools.shell.Global
+import org.mozilla.javascript.NativeObject
 
 class UglifyJsProcessor {
   private Scriptable scope
@@ -30,8 +31,31 @@ class UglifyJsProcessor {
     Context.exit()
   }
 
-  def process(inputText) {
-    call uglify, inputText
+  def parseOptions(options) {
+
+    def jsOptions = new NativeObject()
+
+    options.each{ it ->
+      if(it.key == 'strictSemicolons') {
+        // jsOptions.put('strict_semicolons', scope, it.value)
+        jsOptions.defineProperty("strict_semicolons",it.value, NativeObject.READONLY)
+      } else if(it.key == 'mangleOptions' || it.key == 'genOptions') {
+        def nestedMap = new NativeObject()
+        def key = (it.key == 'mangleOptions' ? 'mangle_options' : 'gen_options')
+        it.value.each { nested ->
+          nestedMap.defineProperty(nested.key, nested.value, NativeObject.READONLY)
+          // nestedMap.put(nested.key, scope,nested.value)
+        }
+        jsOptions.defineProperty(key,nestedMap, NativeObject.READONLY)
+
+      }
+    }
+    return jsOptions
+
+  }
+
+  def process(inputText, options = [:]) {
+    call uglify, inputText, parseOptions(options)
   }
 
   private synchronized String call(Function fn, Object[] args) {

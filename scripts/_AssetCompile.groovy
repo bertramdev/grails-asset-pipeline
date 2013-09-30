@@ -86,7 +86,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					try {
 						event("StatusUpdate",["Uglifying File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
 
-						newFileData = uglifyJsProcessor.process(fileData)
+						newFileData = uglifyJsProcessor.process(fileData, grailsApplication.config.grails.assets.minifyOptions ?: [:])
 
 					} catch(e) {
 						println "Uglify JS Exception ${e}"
@@ -195,6 +195,12 @@ getAllAssets = { grailsApplication, assetHelper ->
 	filesToProcess.unique()
 
 	return filesToProcess //Make sure we have a unique set
+}
+
+uniqueFilesByCompiledType = { filesToProcess, assetHelper ->
+	for(def counter=0; counter < filesToProcess.size() ; counter++) {
+
+	}
 }
 
 excludesForPlugin = { grailsApplication, pluginName ->
