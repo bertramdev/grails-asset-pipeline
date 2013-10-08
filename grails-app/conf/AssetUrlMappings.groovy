@@ -8,6 +8,7 @@ class AssetUrlMappings {
 
 		"/$path/$id**" (
 			controller: 'assets',
+			plugin: 'assetPipeline',
 			action: 'index'
 		)
 	}
