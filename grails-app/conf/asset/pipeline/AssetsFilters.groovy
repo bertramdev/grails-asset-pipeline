@@ -22,15 +22,15 @@ class AssetsFilters {
                     fileUri = fileUri.substring(baseAssetUrl.length())
                 }
 
-                def file = grailsApplication.parentContext.getResource("assets${fileUri}").getFile()
-                if (!file.exists() || file.directory) {
+                def file = grailsApplication.parentContext.getResource("assets${fileUri}")
+                if (!file.exists()) {
                     return
                 }
 
                 def format = servletContext.getMimeType(request.forwardURI)
                 response.setContentType(format)
                 response.setHeader('Cache-Control','public, max-age=31536000')
-                response.outputStream << file.getBytes()
+                response.outputStream << file.inputStream.getBytes()
                 return false
             }
         }
