@@ -19,7 +19,7 @@ class CssAssetFile{
 		def fileText = file?.text
 
 		for(processor in processors) {
-			def processInstance = processor.newInstance()
+			def processInstance = processor.newInstance(precompiler)
 			fileText = processInstance.process(fileText, this)
 		}
 		return fileText

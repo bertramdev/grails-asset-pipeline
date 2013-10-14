@@ -67,14 +67,13 @@ class CssProcessor {
 			def assetFile = AssetHelper.artefactForFile(file)
 			def digestName
 			if(assetFile != file) {
-				def directiveProcessor = DirectiveProcessor.newInstance(assetFile.contentType, true)
-				fileData   = directiveProcessor.compile(assetFile)
+				def directiveProcessor = new DirectiveProcessor(assetFile.contentType, true)
+				def fileData   = directiveProcessor.compile(assetFile)
 				digestName = AssetHelper.getByteDigest(fileData.bytes)
 			}
 			else {
 				digestName = AssetHelper.getByteDigest(file.bytes)
 			}
-
 			calculatedPath << "${fileName}-${digestName}.${extension}"
 		} else {
 			calculatedPath << file.getName()
