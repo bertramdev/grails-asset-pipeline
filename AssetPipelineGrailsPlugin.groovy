@@ -16,6 +16,7 @@ class AssetPipelineGrailsPlugin {
 		"grails-app/assets/**",
 		"test/dummy/**"
 	]
+	def developers      = [ [name: 'Brian Wheeler'] ]
 
 	def doWithSpring = {
 		def manifestProps = new Properties()
