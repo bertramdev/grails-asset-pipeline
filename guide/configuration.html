@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2 Configuration 1.0.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>2</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>The Asset-Pipeline is a plugin used for managing and processing static assets in Grails applications. Asset-Pipeline functions include processing and minification of both CSS and JavaScript files. It is also capable of being extended to compile custom static assets, such as CoffeeScript.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2 Configuration - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> David Estes</p>
+
+                    <p><strong>Version:</strong> 1.0.1</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="configuration">2 Configuration</h1>
+Asset-Pipeline has several customizable options to tweak the compiler to suit your needs. Below is a list of the various configuration options and explanations for how to use them<p class="paragraph"/><h3>Excludes and Includes</h3><p class="paragraph"/>Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>grails.assets.excludes</td><td>"tiny_mce/src/<strong class="bold">.js"</td></tr><tr class="table-even"><td>grails.assets.plugin."twitter-bootstrap".excludes</td><td>"</strong><strong class="bold">/</strong>.less"</td></tr><tr class="table-odd"><td>grails.assets.plugin."twitter-bootstrap".includes</td><td>"bootstrap.less"</td></tr></table><p class="paragraph"/>Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the <code>bootstrap.less</code> file can be compiled from the <code>twitter-bootstrap plugin</code>.<p class="paragraph"/><h3>Minification</h3><p class="paragraph"/>The Asset-pipeline comes with the newer version of UglifyJs to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. UglifyJS can be enabled/disabled entirely as well as configured via various options.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>grails.assets.minifyJs</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyOptions</td><td><strong class="bold">Map</strong></td></tr></table><p class="paragraph"/><div class="code"><pre>grails.assets.minifyOptions = &#91;
+  strictSemicolons: <span class="java&#45;keyword">false</span>,
+  mangleOptions: &#91;mangle: <span class="java&#45;keyword">true</span>, toplevel: <span class="java&#45;keyword">false</span>, defines: <span class="java&#45;keyword">null</span>, except: <span class="java&#45;keyword">null</span>, no_functions:<span class="java&#45;keyword">false</span>&#93;,
+  genOptions: &#91;indent_start:0, indent_level:4, quote_keys: <span class="java&#45;keyword">false</span>, space_colon: <span class="java&#45;keyword">false</span>, beautify: <span class="java&#45;keyword">false</span>, ascii_only: <span class="java&#45;keyword">false</span>, inline_script:<span class="java&#45;keyword">false</span>&#93;
+&#93;</pre></div><p class="paragraph"/>Above are the default values for the majority of UglifyJS. For specifics on what these options do please refer to the documentation for UglifyJS. It is worth noting that <code>mangle: true</code> is what mangles variable names and may need to be turned off using this information.<p class="paragraph"/><h3>Mappings and Asset Taglib URLs</h3><p class="paragraph"/>In many cases you may want to change the URL for which to include your static assets. This can be useful when using a CDN or perhaps even using Nginx to server your static assets.<p class="paragraph"/>To change the url for your taglibs use the following configuration option:<p class="paragraph"/><div class="code"><pre>grails.assets.url = <span class="java&#45;quote">"http://cdn.example.com/"</span></pre></div><p class="paragraph"/>Now your files are gonna reference the CDN when running in the production environment. To go with this feature, you can have your application automatically copy your asset files out of your base war file on startup of your application.<p class="paragraph"/><div class="code"><pre>grails.assets.storagePath = <span class="java&#45;quote">"/<span class="java&#45;keyword">var</span>/cdn/path"</span></pre></div><p class="paragraph"/>You can also change the default tomcat path for both debugging and file inclusion using the <code>mapping</code> config option.<p class="paragraph"/><div class="code"><pre>grails.assets.mapping = 'assets'</pre></div><p class="paragraph"/>For all these configuration options, you will want to put these config values in the appropriate environment in Config.groovy.
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

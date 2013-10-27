@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>Asset-Pipeline Plugin 1.0.1</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+        <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <script type="text/javascript">
+function addJsClass(el) {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+    </head>
+
+    <body class="body" onload="addJsClass();">
+        <div id="navigation">
+            <ul>
+                <li>
+                    <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                        <a href="../guide/index.html" class="button">Table of contents</a>
+                        <div id="nav-summary-childs" style="display:none;">
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#configuration"><strong>2</strong><span>Configuration</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#usage"><strong>3</strong><span>Usage</span></a></div>
+                            
+                        </div>
+                    </div>
+                </li>
+                <li class="separator selected">
+                    <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+                </li>
+            </ul>
+        </div>
+        <div id="header">
+            <div class="images clearfix">
+                
+                
+            </div>
+            <p>The Asset-Pipeline is a plugin used for managing and processing static assets in Grails applications. Asset-Pipeline functions include processing and minification of both CSS and JavaScript files. It is also capable of being extended to compile custom static assets, such as CoffeeScript.</p>
+        </div>
+
+
+        <table id="colset" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td id="col1">
+                    <div id="main" class="corner-all">
+
+                        <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                        <div class="project">
+                            <h1>Asset-Pipeline Plugin - Reference Documentation</h1>
+                            <p><strong>Authors:</strong> David Estes</p>
+                            <p><strong>Version:</strong> 1.0.1</p>
+                            
+                        </div>
+
+                        
+                        <div id="table-of-content">
+                            <h2>Table of Contents</h2>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#configuration"><strong>2</strong><span>Configuration</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#usage"><strong>3</strong><span>Usage</span></a></div>
+                            
+                            <div style="clear:both" ></div>
+                        </div>
+                        
+                        
+
+<h1 id="introduction">1 Introduction</h1>
+The Grails Asset-Pipeline is a plugin used for managing and processing static assets in <a href="http://grails.org" target="blank">Grails</a> applications. Asset-Pipeline functions include processing and minification of both CSS and JavaScript files. It is also capable of being extended to compile custom static assets, such as CoffeeScript.<p class="paragraph"/>This guide documents the configuration needed to setup the plugin and provides sample code on how to use it.<p class="paragraph"/><h3>Relation to Resources Plugin</h3><p class="paragraph"/>Asset-Pipeline is intended to replace the defacto Grails equivalent <a href="http://grails.org/plugin/resources" target="blank">resources-plugin</a> with a more efficient, developer friendly architecture (similar to <a href="http://guides.rubyonrails.org/asset_pipeline.html" target="blank">Rails Asset Pipeline</a>). The Asset-Pipeline levereges the latest in minification (UglifyJS) to reduce your asset sizes as much as possible. A few differences between the resources plugin and asset-pipeline include:
+<ul class="star">
+<li>On the fly processing - No more waiting for your assets to reload after making a change</li>
+<li>Compiled assets on war create - No more hanging up application boot times while processing files. <code>grails war</code></li>
+<li>Reduced Dependence - The plugin has compression, minification, and cache-digests built in.</li>
+<li>Easy Debugging - Makes for easy debugging by keeping files seperate in development mode.</li>
+<li>Simpler manifests and taglibs - Read on for more information.</li>
+</ul><p class="paragraph"/><h3>Additional Information</h3>
+<ul class="star">
+<li><a href="https://github.com/bertramdev/coffee-grails-asset-pipeline" target="blank">Coffeescript Asset-Pipeline Plugin</a></li>
+<li><a href="https://github.com/bertramdev/less-grails-asset-pipeline" target="blank">LESS Css Asset-Pipeline Plugin</a></li>
+<li><a href="https://github.com/bertramdev/handlebars-grails-asset-pipeline" target="blank">Handlebars Asset-Pipeline Plugin</a></li>
+<li><a href="https://github.com/bertramdev/ember-grails-asset-pipeline" target="blank">Ember Asset-Pipeline Plugin</a></li>
+<li><a href="http://guides.rubyonrails.org/asset_pipeline.html" target="blank">Rails Asset Pipeline Guide</a></li>
+</ul><p class="paragraph"/><h3>Release History</h3>
+<ul class="star">
+<li>October 13, 2012</li>
+<ul class="star">
+<li>1.0.1 release</li>
+</ul></ul><p class="paragraph"/>
+
+
+<h1 id="configuration">2 Configuration</h1>
+Asset-Pipeline has several customizable options to tweak the compiler to suit your needs. Below is a list of the various configuration options and explanations for how to use them<p class="paragraph"/><h3>Excludes and Includes</h3><p class="paragraph"/>Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>grails.assets.excludes</td><td>"tiny_mce/src/<strong class="bold">.js"</td></tr><tr class="table-even"><td>grails.assets.plugin."twitter-bootstrap".excludes</td><td>"</strong><strong class="bold">/</strong>.less"</td></tr><tr class="table-odd"><td>grails.assets.plugin."twitter-bootstrap".includes</td><td>"bootstrap.less"</td></tr></table><p class="paragraph"/>Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the <code>bootstrap.less</code> file can be compiled from the <code>twitter-bootstrap plugin</code>.<p class="paragraph"/><h3>Minification</h3><p class="paragraph"/>The Asset-pipeline comes with the newer version of UglifyJs to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. UglifyJS can be enabled/disabled entirely as well as configured via various options.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>grails.assets.minifyJs</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyOptions</td><td><strong class="bold">Map</strong></td></tr></table><p class="paragraph"/><div class="code"><pre>grails.assets.minifyOptions = &#91;
+  strictSemicolons: <span class="java&#45;keyword">false</span>,
+  mangleOptions: &#91;mangle: <span class="java&#45;keyword">true</span>, toplevel: <span class="java&#45;keyword">false</span>, defines: <span class="java&#45;keyword">null</span>, except: <span class="java&#45;keyword">null</span>, no_functions:<span class="java&#45;keyword">false</span>&#93;,
+  genOptions: &#91;indent_start:0, indent_level:4, quote_keys: <span class="java&#45;keyword">false</span>, space_colon: <span class="java&#45;keyword">false</span>, beautify: <span class="java&#45;keyword">false</span>, ascii_only: <span class="java&#45;keyword">false</span>, inline_script:<span class="java&#45;keyword">false</span>&#93;
+&#93;</pre></div><p class="paragraph"/>Above are the default values for the majority of UglifyJS. For specifics on what these options do please refer to the documentation for UglifyJS. It is worth noting that <code>mangle: true</code> is what mangles variable names and may need to be turned off using this information.<p class="paragraph"/><h3>Mappings and Asset Taglib URLs</h3><p class="paragraph"/>In many cases you may want to change the URL for which to include your static assets. This can be useful when using a CDN or perhaps even using Nginx to server your static assets.<p class="paragraph"/>To change the url for your taglibs use the following configuration option:<p class="paragraph"/><div class="code"><pre>grails.assets.url = <span class="java&#45;quote">"http://cdn.example.com/"</span></pre></div><p class="paragraph"/>Now your files are gonna reference the CDN when running in the production environment. To go with this feature, you can have your application automatically copy your asset files out of your base war file on startup of your application.<p class="paragraph"/><div class="code"><pre>grails.assets.storagePath = <span class="java&#45;quote">"/<span class="java&#45;keyword">var</span>/cdn/path"</span></pre></div><p class="paragraph"/>You can also change the default tomcat path for both debugging and file inclusion using the <code>mapping</code> config option.<p class="paragraph"/><div class="code"><pre>grails.assets.mapping = 'assets'</pre></div><p class="paragraph"/>For all these configuration options, you will want to put these config values in the appropriate environment in Config.groovy.
+
+
+
+<h1 id="usage">3 Usage</h1>
+Asset-Pipeline automatically creates a series of folders within your <code>grails-app</code> directory:<p class="paragraph"/><div class="code"><pre>grails&#45;app/assets/javascript
+grails&#45;app/assets/images
+grails&#45;app/assets/stylesheets</pre></div><p class="paragraph"/>Place your static assets in those directories and simply include them into your layouts.<p class="paragraph"/><h3>Setting up Manifests</h3><p class="paragraph"/>Example <code>grails-app/assets/javascripts/application.js</code>:<p class="paragraph"/><div class="code"><pre>//This is a javascript file with its top level require directives
+//= require jquery
+//= require app/models.js
+//= require_tree views
+//= require_self<p class="paragraph"/>console.log(<span class="java&#45;quote">"This is my javascript manifest"</span>);</pre></div><p class="paragraph"/>The above is an example of some of the require directives that can be used. Custom directives can be created and overridden into the <code>DirectiveProcessor</code> class.<p class="paragraph"/><blockquote class="note">
+Make sure an empty line does not exist between the top of the file and your require directives, these requires will be ignored!
+</blockquote><p class="paragraph"/>Optionally, assets can be excluded from processing if included by your require tree. This can dramatically reduce compile time for your assets. To do so simply leverage the excludes configuration option:<p class="paragraph"/><div class="code"><pre>grails.assets.excludes = &#91;<span class="java&#45;quote">"tiny_mce/src/&#42;.js"</span>&#93;</pre></div><p class="paragraph"/>Or Exclude at the plugin level:<p class="paragraph"/><div class="code"><pre>grails.assets.plugin.<span class="java&#45;quote">"twitter&#45;bootstrap"</span>.excludes = &#91;<span class="java&#45;quote">"&#42;&#42;/&#42;.less"</span>&#93;
+grails.assets.plugin.<span class="java&#45;quote">"twitter&#45;bootstrap"</span>.includes = &#91;<span class="java&#45;quote">"bootstrap.less"</span>&#93;</pre></div><p class="paragraph"/>The above will tell asset-pipeline not to precompile less files individually within the twitter-bootstrap plugin, but will compile bootstrap.less.<p class="paragraph"/><h3>Including Assets in Views</h3><p class="paragraph"/>Asset pipeline provides several new tag libs for including javascript and css into your gsp files. For example:<p class="paragraph"/><div class="code"><pre>&#60;head&#62;
+    &#60;asset:stylesheet src=<span class="java&#45;quote">"application.css"</span>/&#62;
+    &#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span>/&#62;
+    &#60;asset:link rel=<span class="java&#45;quote">"shortcut icon"</span> href=<span class="java&#45;quote">"favicon.ico"</span> type=<span class="java&#45;quote">"image/x&#45;icon"</span>/&#62;
+&#60;/head&#62;</pre></div><p class="paragraph"/>These helpers will automatically adjust to point to the cache-digested versions of the files when running in a non-development environment.<p class="paragraph"/><blockquote class="note">
+In development mode your stylesheets and javascripts will be included as individual script tags. This is intended to make it easier for debugging. Bundling is enabled in all other environments and can be forced in development mode by adding <code>grails.assets.bundle=true</code> to your <code>Config.groovy</code>.
+</blockquote><p class="paragraph"/><h3>Using with Plugins</h3><p class="paragraph"/>Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The <code>grails-app/assets</code>, and <code>web-app</code> (for legacy plugin support) folders from all plugins are considered include paths. Essentially, when a file is requested (i.e. <code>jquery.js</code>) The Asset-Pipeline first will check the local applications assets folder. If not found there, it will scan through all the installed plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of a JavaScript file in your local project.<p class="paragraph"/><h3>Using with Stylesheets</h3><p class="paragraph"/>Asset Pipeline now automatically tries to convert relative urls specified in your CSS files to absolute paths. This makes it easier to use third party libraries within the Asset-Pipeline stack.<p class="paragraph"/><h3>Precompiling for Production</h3><p class="paragraph"/>Assets are now automatically precompiled into <code>target/assets</code> when you create a war file. This should further simplify the deployment process. During a war create, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run <code>grails asset-clean</code>.<p class="paragraph"/>During war build your assets are also minified using UglifierJs. To disable this feature you can add the following option to your config:<p class="paragraph"/><div class="code"><pre>grails.assets.minifyJs = <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/><h3>Serving Assets from External Storage Directory</h3><p class="paragraph"/>Asset Pipeline can be configured to copy your assets files out into an external storage path. This can be useful for setting up your web server (i.e. Nginx) to directly server your static assets. To do so, simply define a config variable in your <code>Config.groovy</code> environment block.<p class="paragraph"/><div class="code"><pre>environments &#123;
+    production &#123;
+        grails.assets.storagePath = <span class="java&#45;quote">"/full/path/to/storage"</span>
+    &#125;
+&#125;</pre></div><p class="paragraph"/>It is also possible to configure a custom CDN asset url for serving this assets:<p class="paragraph"/><div class="code"><pre>environments &#123;
+    production &#123;
+        grails.assets.url = <span class="java&#45;quote">"http://s3.amazonaws.com/asset&#45;pipe/assets/"</span>
+    &#125;
+&#125;</pre></div><p class="paragraph"/><h3>Custom Files</h3><p class="paragraph"/>Asset Pipeline uses classes of type <code>AssetFile</code>. By default, this plugin comes with a <code>JsAssetFile</code>, and <code>CssAssetFile</code>. These define the match pattern syntax for understanding requires directives, known extensions, processors, and content-type. The application bases its file look-up on content-type of the request rather than extension. This allows the user to maybe define a <code>CoffeeAssetFile</code> with the JavaScript content type and a request to <code>localhost/assets/app.js</code> would be able to find <code>assets/app.coffee</code>. To add custom file definitions you must add the definition in 2 locations:<p class="paragraph"/>Add the reference to your <code>AssetHelper.assetSpecs</code> static property in your plugins startup or Bootstrap:<p class="paragraph"/><div class="code"><pre>def doWithDynamicMethods = &#123; ctx &#45;&#62;
+    AssetHelper.assetSpecs &#60;&#60; HandlebarsAssetFile
+&#125;</pre></div><p class="paragraph"/>Add an <code>_Events.groovy</code> file and register an event listener for <code>eventAssetPrecompileStart</code>:<p class="paragraph"/><div class="code"><pre>eventAssetPrecompileStart = &#123; assetConfig &#45;&#62;
+    assetConfig.specs &#60;&#60; 'asset.pipeline.handlebars.HandlebarsAssetFile'
+&#125;</pre></div><p class="paragraph"/>We do this instead of Artefacts so that we do not have to load up the full application stack during precompile. This saves &#62; 30% of memory usage right off the bat and reduces compile time significantly.<p class="paragraph"/>
+
+                    </div>
+                </td>
+                <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+            </tr>
+        </table>
+
+        <div id="footer">
+            
+            
+        </div>
+
+
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+    </body>
+</html>
