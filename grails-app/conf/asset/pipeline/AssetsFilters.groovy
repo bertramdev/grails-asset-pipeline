@@ -27,6 +27,16 @@ class AssetsFilters {
                     return
                 }
 
+                // Check for GZip
+                def acceptsEncoding = request.getHeader("Accept-Encoding")
+                if(acceptsEncoding && acceptsEncoding.split(",").contains("gzip")) {
+                    def gzipFile = grailsApplication.parentContext.getResource("assets${fileUri}.gz")
+                    if(gzipFile.exists()) {
+                        file = gzipFile
+                        response.setHeader('Content-Encoding','gzip')
+                    }
+                }
+
                 def format = servletContext.getMimeType(request.forwardURI)
                 response.setContentType(format)
                 response.setHeader('Cache-Control','public, max-age=31536000')
