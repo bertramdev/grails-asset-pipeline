@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3.3 Linking to Assets 1.0.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/configuration.html"><strong>2</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>The Asset-Pipeline is a plugin used for managing and processing static assets in Grails applications. Asset-Pipeline functions include processing and minification of both CSS and JavaScript files. It is also capable of being extended to compile custom static assets, such as CoffeeScript.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/configuration.html">&lt;&lt; <strong>2</strong><span>Configuration</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>3.3 Linking to Assets - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> David Estes</p>
+
+                    <p><strong>Version:</strong> 1.0.1</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="linking">3.3 Linking to Assets</h2>
+Asset Pipeline adds a few new taglibs to properly reference your assets. These taglibs automatically handle swapout of cache digest names during production use as well as any custom url mapping changes.<p class="paragraph"/><h3>Views</h3><p class="paragraph"/><div class="code"><pre>&#60;head&#62;
+  &#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span>/&#62;
+  &#60;asset:stylesheet src=<span class="java&#45;quote">"application.css"</span>/&#62;
+&#60;/head&#62;</pre></div><p class="paragraph"/>The primary include tags, as show above, are quite useful for including your relevant javascript or stylesheet files. Notice that you do not have to prefix with '/assets' as this is handled automatically by the tag.<p class="paragraph"/>In GSP views you can also reference images included in the asset-pipeline with the following tag:<p class="paragraph"/><div class="code"><pre>&#60;asset:image src=<span class="java&#45;quote">"logo.png"</span> width=<span class="java&#45;quote">"200"</span> height=<span class="java&#45;quote">"200"</span>/&#62;</pre></div><p class="paragraph"/>Assets can also be referenced within subdirectories if required and simply require the use of the relative path.<p class="paragraph"/><div class="code"><pre>&#60;asset:image src=<span class="java&#45;quote">"icons/delete.png"</span>/&#62;</pre></div><p class="paragraph"/><h3>Stylesheet References</h3><p class="paragraph"/>Stylesheets commonly make reference to images and in some cases other css files using the '@import' directive. With the asset-pipeline in Grails, relative paths can be recalculated and automatically reference the proper file.
+For example, if you have a css file that looks like this:<p class="paragraph"/><div class="code"><pre>body &#123;
+	background: url('/assets/mybg.png') top left repeat&#45;all;
+&#125;</pre></div><p class="paragraph"/>The generated output of this css file will be exactly the same:<p class="paragraph"/><div class="code"><pre>body &#123;
+	background: url('/assets/mybg.png') top left repeat&#45;all;
+&#125;</pre></div><p class="paragraph"/>But, if we use a relative path, the asset-pipeline understands this path and can recalculate a new relative path based on whatever root file may have required the css:<p class="paragraph"/><div class="code"><pre>body &#123;
+	background: url('mybg.png') top left repeat&#45;all;
+&#125;</pre></div><p class="paragraph"/>Would then become:<p class="paragraph"/><div class="code"><pre>body &#123;
+	background: url('mybg&#45;a87c78f.png') top left repeat&#45;all;
+&#125;</pre></div><p class="paragraph"/><blockquote class="note">
+In production mode your image references or css references will automatically get their cache-digested name appended to them when using relative paths. More on this later.
+</blockquote>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/configuration.html">&lt;&lt; <strong>2</strong><span>Configuration</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
