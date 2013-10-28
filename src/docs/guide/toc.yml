@@ -4,6 +4,6 @@ configuration:
   title: Configuration
 usage:
   title: Usage
-	directives: Manifests and Directives
-	organization: Asset Organization
+  directives: Manifests and Directives
+  organization: Asset Organization
   linking: Linking to Assets
