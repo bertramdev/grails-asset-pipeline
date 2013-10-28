@@ -152,7 +152,7 @@ Things to be Done
 Contributions
 -------------
 All contributions are of course welcome as this is an ACTIVE project. Any help with regards to reviewing platform compatibility, adding more tests, and general cleanup is most welcome.
-Thanks to several people for suggestions throughout development. Notably: Brian Wheeler (@bdwheeler), Rick Jensen (@cdeszaq), and more to follow I'm sure...
+Thanks to several people for suggestions throughout development. Notably: Brian Wheeler (@bdwheeler), Rick Jensen (@cdeszaq), Bobby Warner(@bobbywarner), and more to follow I'm sure...
 
 Additional Resources
 --------------------
