@@ -29,7 +29,7 @@ class AssetsFilters {
 
                 // Check for GZip
                 def acceptsEncoding = request.getHeader("Accept-Encoding")
-                if(acceptsEncoding && acceptsEncoding.split(",").contains("gzip")) {
+                if(acceptsEncoding?.split(",")?.contains("gzip")) {
                     def gzipFile = grailsApplication.parentContext.getResource("assets${fileUri}.gz")
                     if(gzipFile.exists()) {
                         file = gzipFile
