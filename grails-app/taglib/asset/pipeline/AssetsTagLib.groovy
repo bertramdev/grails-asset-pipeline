@@ -93,7 +93,7 @@ class AssetsTagLib {
 		def conf = grailsApplication.config.grails.assets
 
 		def assetRootPath = assetUriRootPath(grailsApplication, request)
-		def assetUrl = (!ignorePrefix && conf.url) ? conf.url : "$assetRootPath/"
+		def assetUrl = (!ignorePrefix && conf.url) ? conf.url : "$assetRootPath"
 
 		if(conf.precompiled) {
 			def realPath = conf.manifest.getProperty(src)
@@ -111,6 +111,6 @@ class AssetsTagLib {
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = context.assetProcessorService.assetMapping
 
-		return conf.url ?: (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping" )
+		return conf.url ?: (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
 	}
 }
