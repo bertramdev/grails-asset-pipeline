@@ -2,7 +2,9 @@ import org.apache.tools.ant.DirectoryScanner
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 // import asset.pipeline.*
+includeTargets << grailsScript("_PackagePlugins")
 includeTargets << grailsScript("_GrailsBootstrap")
+
 
 target(assetClean: "Cleans Compiled Assets Directory") {
 	// Clear compiled assets folder
