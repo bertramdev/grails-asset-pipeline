@@ -5,7 +5,6 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 includeTargets << grailsScript("_PackagePlugins")
 includeTargets << grailsScript("_GrailsBootstrap")
 
-
 target(assetClean: "Cleans Compiled Assets Directory") {
 	// Clear compiled assets folder
   def assetDir = new File("target/assets")
