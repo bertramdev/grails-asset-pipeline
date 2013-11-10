@@ -4,7 +4,7 @@ import org.codehaus.groovy.grails.web.context.ServletContextHolder
 
 class DirectiveProcessor {
 
-  static DIRECTIVES = [require_self: "requireSelfDirective" ,require_tree: "requireTreeDirective", require: "requireFileDirective"]
+  static DIRECTIVES = [require_self: "requireSelfDirective" ,require_tree: "requireTreeDirective", require_full_tree: "requireFullTreeDirective" , require: "requireFileDirective"]
 
   def contentType
   def precompiler
@@ -135,6 +135,23 @@ class DirectiveProcessor {
     }
 
     recursiveTreeAppend(parentFile,tree)
+  }
+
+  def requireFullTreeDirective(command, fileSpec, tree) {
+    def parentFile
+    if(!command[1] || command[1] == '.') {
+      parentFile = new File(fileSpec.file.getParent())
+    } else {
+      parentFile = new File([fileSpec.file.getParent(),command[1]].join(File.separator))
+    }
+    def relativeParent = relativePath(parentFile,true)
+
+    AssetHelper.getAssetPaths().each { path ->
+      def parentFileScoped = [path, parentFile].join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
+      if(parentFileScoped.exists() && parentFileScoped.isDirectory()) {
+        recursiveTreeAppend(parentFileScoped, tree)
+      }
+    }
   }
 
   def recursiveTreeAppend(directory,tree) {
