@@ -147,7 +147,8 @@ class DirectiveProcessor {
     def relativeParent = relativePath(parentFile,true)
 
     AssetHelper.getAssetPaths().each { path ->
-      def parentFileScoped = [path, parentFile].join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
+      def parentFileScoped = new File(path, relativeParent)
+      println "Looking at Path: ${[path,relativeParent]}"
       if(parentFileScoped.exists() && parentFileScoped.isDirectory()) {
         recursiveTreeAppend(parentFileScoped, tree)
       }
