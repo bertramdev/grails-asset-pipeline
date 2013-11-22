@@ -30,14 +30,18 @@ class AssetsController {
         } else {
             assetFile = assetProcessorService.serveAsset(uri,format, extension)
         }
-
+        println "SERVING FILES!"
 		if(assetFile) {
             response.setContentType(format)
-            // Disable caching when hitting development mode resources
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
             response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
             response.setDateHeader("Expires", 0); // Proxies.
-            response.outputStream << assetFile
+            if(format == 'text/html') {
+                render contentType: 'text/html', text: new String(assetFile)
+            } else {
+                response.outputStream << assetFile
+                response.flushBuffer()
+            }
         }
         else {
             render status: 404
