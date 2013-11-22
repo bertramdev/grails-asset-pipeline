@@ -30,7 +30,6 @@ class AssetsController {
         } else {
             assetFile = assetProcessorService.serveAsset(uri,format, extension)
         }
-        println "SERVING FILES!"
 		if(assetFile) {
             response.setContentType(format)
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
