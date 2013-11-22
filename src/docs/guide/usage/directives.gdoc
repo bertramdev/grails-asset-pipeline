@@ -21,6 +21,7 @@ Or an example stylesheet syntax may look like this:
 *= require header
 *= require navigation
 *= require_tree .
+*= require_full_tree .
 */
 {code}
 
