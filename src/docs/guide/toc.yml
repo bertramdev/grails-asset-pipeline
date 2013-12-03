@@ -7,3 +7,8 @@ usage:
   directives: Manifests and Directives
   organization: Asset Organization
   linking: Linking to Assets
+extending:
+  title: Extending Asset-Pipeline
+  assetfile: Asset File Definitions
+  processors: Processors
+  postprocessors: Post-Processors
