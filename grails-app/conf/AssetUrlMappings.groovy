@@ -4,7 +4,7 @@ class AssetUrlMappings {
 
 	static mappings = {ApplicationContext context ->
 		def grailsApplication
-		def path = context.assetProcessorService.assetMapping
+		def path = context?.assetProcessorService?.assetMapping ?: 'assets'
 
 		"/$path/$id**" (
 			controller: 'assets',
