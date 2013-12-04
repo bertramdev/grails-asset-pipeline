@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Asset-Pipeline Plugin 1.0.2</title>
+        <title>Asset-Pipeline Plugin 1.1.5</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -28,6 +28,8 @@ function addJsClass(el) {
                             <div class="toc-item" style="margin-left:0"><a href="#configuration"><strong>2</strong><span>Configuration</span></a></div>
                             
                             <div class="toc-item" style="margin-left:0"><a href="#usage"><strong>3</strong><span>Usage</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#extending"><strong>4</strong><span>Extending Asset-Pipeline</span></a></div>
                             
                         </div>
                     </div>
@@ -56,7 +58,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>Asset-Pipeline Plugin - Reference Documentation</h1>
                             <p><strong>Authors:</strong> David Estes</p>
-                            <p><strong>Version:</strong> 1.0.2</p>
+                            <p><strong>Version:</strong> 1.1.5</p>
                             
                         </div>
 
@@ -75,6 +77,14 @@ function addJsClass(el) {
                             <div class="toc-item" style="margin-left:10px"><a href="#organization"><strong>3.2</strong><span>Asset Organization</span></a></div>
                             
                             <div class="toc-item" style="margin-left:10px"><a href="#linking"><strong>3.3</strong><span>Linking to Assets</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#extending"><strong>4</strong><span>Extending Asset-Pipeline</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#assetfile"><strong>4.1</strong><span>Asset File Definitions</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#processors"><strong>4.2</strong><span>Processors</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#postprocessors"><strong>4.3</strong><span>Post-Processors</span></a></div>
                             
                             <div style="clear:both" ></div>
                         </div>
@@ -98,13 +108,18 @@ The Grails Asset-Pipeline is a plugin used for managing and processing static as
 <li><a href="http://guides.rubyonrails.org/asset_pipeline.html" target="blank">Rails Asset Pipeline Guide</a></li>
 </ul><p class="paragraph"/><h3>Release History</h3>
 <ul class="star">
-<li>October 13, 2012</li>
+<li>October 13, 2013</li>
 <ul class="star">
 <li>1.0.1 release</li>
 </ul>
-<li>October 28, 2012</li>
+<li>October 28, 2013</li>
 <ul class="star">
 <li>1.0.2 release</li>
+</ul>
+<li>November 22, 2013</li>
+<ul class="star">
+<li>1.1.2 Release</li>
+<li>1.1.3 Release</li>
 </ul></ul><p class="paragraph"/>
 
 
@@ -151,12 +166,14 @@ In development mode your stylesheets and javascripts will be included as individ
 <h2 id="directives">3.1 Manifests and Directives</h2>
 Asset Pipeline controls asset depdencency by using a custom syntax with commands called "directives". These directives give more fine grained control over what needs included as well as load order.<p class="paragraph"/><h3>Manifest Files</h3><p class="paragraph"/>In the grails asset pipeline, the concept of a manifest file exists. This is typically the root/parent javascript or css file which requires all of your application code. This file is then included into your application with a taglib.  Another comparison that can be made here is to the 'Resources Plugin' modules; The difference being, your manifest is kept within the source code of your javascript or css rather than within a seperate file you keep having to jump back to.<p class="paragraph"/>An example javascript manifest called 'application.js' might look like this:<p class="paragraph"/><div class="code"><pre>//= require jquery/jquery
 //= require_self
-//= require_tree .</pre></div><p class="paragraph"/>Or an example stylesheet syntax may look like this:<p class="paragraph"/><div class="code"><pre>/&#42;
+//= require_tree .
+//= require_full_tree .</pre></div><p class="paragraph"/>Or an example stylesheet syntax may look like this:<p class="paragraph"/><div class="code"><pre>/&#42;
 &#42;= require_self
 &#42;= require header
 &#42;= require navigation
 &#42;= require_tree .
-&#42;/</pre></div><p class="paragraph"/><h3>Directives</h3><p class="paragraph"/>In javascript files, the directive begins with '//='. These directives tell us which files should be injected into this javascript file and in what order. The 'require' directive simply will require a single file into the manifest.<p class="paragraph"/>The 'require_tree' directive is a bit different and will tell asset-pipeline to recursively include all javascript in the specified directory. This will include javascript sorted in alphabetical order, but the ordering of this type of require should not be relied upon. You can adjust the require order of the "require_tree" directive by using directives within any sub-javascript file. For example, lets say we have a folder called 'models' with a Book and an Author. Lets go further and say we want to ensure the Book model requires author first in a require_tree. This can be done by simply adding "//=require author" at the top of book.js file.<p class="paragraph"/>Another directive is the 'require_self' directive. This command allows you to control where in the manifest the contents of the current file should reside. If the require_self directive is not specified, the contents of the current file are appended to the end of the manifest.<p class="paragraph"/><blockquote class="note">
+&#42;= require_full_tree .
+&#42;/</pre></div><p class="paragraph"/><h3>Directives</h3><p class="paragraph"/>In javascript files, the directive begins with '//='. These directives tell us which files should be injected into this javascript file and in what order. The 'require' directive simply will require a single file into the manifest.<p class="paragraph"/>The 'require_tree' directive is a bit different and will tell asset-pipeline to recursively include all javascript in the specified directory. This will include javascript sorted in alphabetical order, but the ordering of this type of require should not be relied upon. You can adjust the require order of the "require_tree" directive by using directives within any sub-javascript file. For example, lets say we have a folder called 'models' with a Book and an Author. Lets go further and say we want to ensure the Book model requires author first in a require_tree. This can be done by simply adding "//=require author" at the top of book.js file. The "require_full_tree" directive is an additional directive similar to require_tree except that it will include files from all plugins that contain the relative base path. This is helpful when developing an application that is split into multiple plugins.<p class="paragraph"/>Another directive is the 'require_self' directive. This command allows you to control where in the manifest the contents of the current file should reside. If the require_self directive is not specified, the contents of the current file are appended to the end of the manifest.<p class="paragraph"/><blockquote class="note">
 In the examples above, 2 different directive prefixes were shown, one for css, and one for javascript. It is important to note that the syntax of these directives can vary based on the file type and preprocessor definition. For example, coffeescript files begin with "#=".
 </blockquote>
 
@@ -201,6 +218,97 @@ For example, if you have a css file that looks like this:<p class="paragraph"/><
 &#125;</pre></div><p class="paragraph"/><blockquote class="note">
 In production mode your image references or css references will automatically get their cache-digested name appended to them when using relative paths. More on this later.
 </blockquote>
+
+
+
+<h1 id="extending">4 Extending Asset-Pipeline</h1>
+The asset-pipeline is extremely extensible and easy to customize to suit ones needs. You might extend the asset pipeline to handle a new type of asset that may need preprocessed before being served to the browser, or you may want to define a new custom directive. This guide will go over the basics of how to perform those tasks with ease.
+
+
+
+<h2 id="assetfile">4.1 Asset File Definitions</h2>
+The AssetFile definition is where our journey begins. This is the defining file for various file types. Without this definition, the asset-pipeline will treat an unknown file type as a standard passthrough resource. As an example lets first look at the CssAssetFile definition.<p class="paragraph"/><div class="code"><pre>class CssAssetFile &#123;
+  <span class="java&#45;keyword">static</span> <span class="java&#45;keyword">final</span> <span class="java&#45;object">String</span> contentType = 'text/css'
+  <span class="java&#45;keyword">static</span> extensions = &#91;'css'&#93;
+  <span class="java&#45;keyword">static</span> compiledExtension = 'css'
+  <span class="java&#45;keyword">static</span> processors = &#91;CssProcessor&#93;<p class="paragraph"/>  File file
+  def baseFile<p class="paragraph"/>  CssAssetFile(file,baseFile=<span class="java&#45;keyword">null</span>) &#123;
+    <span class="java&#45;keyword">this</span>.file = file
+    <span class="java&#45;keyword">this</span>.baseFile = baseFile
+  &#125;<p class="paragraph"/>  def processedStream(precompiler=<span class="java&#45;keyword">false</span>) &#123;<p class="paragraph"/>    def fileText = file?.text<p class="paragraph"/>    <span class="java&#45;keyword">for</span>(processor in processors) &#123;
+      def processInstance = processor.newInstance(precompiler)
+      fileText = processInstance.process(fileText, <span class="java&#45;keyword">this</span>)
+    &#125;
+    <span class="java&#45;keyword">return</span> fileText
+    // Return File Stream
+  &#125;<p class="paragraph"/>  def directiveForLine(line) &#123;
+    line.find(/&#42;=(.&#42;)/) &#123; fullMatch, directive &#45;&#62; <span class="java&#45;keyword">return</span> directive &#125;
+  &#125;
+&#125;</pre></div><p class="paragraph"/>This file definition is pretty short but allows us to define some very useful information. First, we look at the static definitions at the top of the class. These static definitions are fairly easy to meta-override with groovy and add additional processors or adjust with added plugins.<p class="paragraph"/>The 'contentType' property is used to match a file definition with an incoming file request. When the browser requests a 'text/css' content-type file , this file is matched and files matching this definition are scanned. The 'extensions' list tells asset-pipeline which file extensions to scan through and match. In this case it is just 'css', but in the case of ,for example, LESS we may be looking for extensions 'less', or 'css.less'.<p class="paragraph"/>The compiledExtension property tells asset-pipelines precompiler what the final file extension should be.<p class="paragraph"/>Finally, the processors array determines the list of processors that need be run on the file contents before returning a result. This array is executed in order. In this case, we have the CssProcessor (a processor for converting the relative image paths and replacing with their cache digested version).<p class="paragraph"/><h4>Directive Definition</h4><p class="paragraph"/>An assetFile can specify a REGEXP pattern for require directives. These directives are used to bundle assets together. Some file types don't utilize these require directives and simply returning a null value will cancel directive processing.<p class="paragraph"/><div class="code"><pre>def directiveForLine(line) &#123;
+    line.find(/&#42;=(.&#42;)/) &#123; fullMatch, directive &#45;&#62; <span class="java&#45;keyword">return</span> directive &#125;
+  &#125;</pre></div><p class="paragraph"/>The example above shows a match pattern for css files. This allows it to match require directives for the following example:<p class="paragraph"/><div class="code"><pre>/&#42;
+&#42;= require_self
+&#42;= require_file example_b
+&#42;= require_tree .
+&#42;/<p class="paragraph"/>body &#123;
+  margin&#45;top:25px;
+&#125;</pre></div><p class="paragraph"/><h4>Processing Data streams</h4><p class="paragraph"/>Processors are used to precompile certain assets, and/or adjust the file path contents. The Processor class itself will get a more in depth explanation in the next section. For now the part we want to look at is the processedStream function.<p class="paragraph"/><div class="code"><pre>def processedStream(precompiler=<span class="java&#45;keyword">false</span>) &#123;<p class="paragraph"/>  def fileText = file?.text<p class="paragraph"/>  <span class="java&#45;keyword">for</span>(processor in processors) &#123;
+    def processInstance = processor.newInstance(precompiler)
+    fileText = processInstance.process(fileText, <span class="java&#45;keyword">this</span>)
+  &#125;
+  <span class="java&#45;keyword">return</span> fileText
+  // Return File Stream
+&#125;</pre></div><p class="paragraph"/>The example above iterates over all of the processor classes defined in our static "processors" variable. This creates a new instance and informs the processor wether this is a developer mode request or being issued by the precompiler (useful for determining if file replacements need to be cache digested or not). The processedStream method is required to be in every AssetFile definition and some do vary. For example, the LESS and Coffee definitions take advantage of the CacheManager to reduce development overhead by only recompiling changed files. An example of this is provided below:<p class="paragraph"/><div class="code"><pre>def processedStream(precompiler=<span class="java&#45;keyword">false</span>) &#123;
+  def fileText = file?.text
+  def md5 = AssetHelper.getByteDigest(fileText.bytes)
+  <span class="java&#45;keyword">if</span>(!precompiler) &#123;
+    def cache = CacheManager.findCache(file.canonicalPath, md5)
+    <span class="java&#45;keyword">if</span>(cache) &#123;
+      <span class="java&#45;keyword">return</span> cache
+    &#125;
+  &#125;
+  <span class="java&#45;keyword">for</span>(processor in processors) &#123;
+    def processInstance = processor.newInstance(precompiler)
+    fileText = processInstance.process(fileText, <span class="java&#45;keyword">this</span>)
+  &#125;<p class="paragraph"/>  <span class="java&#45;keyword">if</span>(!precompiler) &#123;
+    CacheManager.createCache(file.canonicalPath,md5,fileText)
+  &#125;<p class="paragraph"/>  <span class="java&#45;keyword">return</span> fileText
+  // Return File Stream
+&#125;</pre></div><p class="paragraph"/>In the future we may further improve this extensibility by providing a default base class for these standard style stream methods.<p class="paragraph"/><h4>Adding the Asset definiton to the list of AssetFiles</h4><p class="paragraph"/>Originally, asset-pipeline took advantage of the Artefact syntax to generate this class list. However, this became problematic as it added a great deal of overhead to precompilation during War creation. To solve this a static asset.pipeline.AssetHelper.assetSpecs static array was used instead. This array is used by both development mode runtime and war creation so it has to be added in 2 places. If you are creating a plugin to facilitate your added functionality, you will want to use the 'doWithDynamicMethods' to add your asset file.<p class="paragraph"/><div class="code"><pre>AssetHelper.assetSpecs &#60;&#60; LessAssetFile</pre></div><p class="paragraph"/>One other place we have to add this is in a 'scripts/_Events.groovy' file. An example below is pulled from the LESS asset-pipeline plugin.<p class="paragraph"/><div class="code"><pre>eventAssetPrecompileStart = &#123; assetConfig &#45;&#62;
+  assetConfig.specs &#60;&#60; 'asset.pipeline.less.LessAssetFile'
+&#125;</pre></div><p class="paragraph"/>Notice on this one that the spec array is tied to 'assetConfig' and that instead of providing the class object we provide the classpath as a string. This is necessary to allow the precompiler to facilitate proper class loading across plugins as the full grails stack may not be available during a precompile. This results in a significantly reduced memory overhead during precompiling as the alternative to using Artefacts. Granted, it does require an extra step here, but well worth the cost.<p class="paragraph"/>
+
+
+
+<h2 id="processors">4.2 Processors</h2>
+Processors are where the real power of asset-pipeline comes into play. These are the driving force behind making compileable assets such as LESS, and Coffeescript first class citizens. Gone is the need to run a compiler on the side, and gone is the delay between making changes in development.<p class="paragraph"/>A Processor class has 2 main requirements. It must have a constructor with a (precompiler=false) argument, and it must have a process method. The rest is up to the developer.<p class="paragraph"/><div class="code"><pre>class CoffeeScriptProcessor &#123;<p class="paragraph"/>  Scriptable globalScope
+  <span class="java&#45;object">ClassLoader</span> classLoader
+  def precompilerMode<p class="paragraph"/>  CoffeeScriptProcessor(precompiler=<span class="java&#45;keyword">false</span>)&#123;
+    //some code excluded here <span class="java&#45;keyword">for</span> brevity
+    <span class="java&#45;keyword">this</span>.precompilerMode = precompiler
+  &#125;<p class="paragraph"/>  def process(input, assetFile) &#123;
+    <span class="java&#45;keyword">try</span> &#123;
+      def cx = Context.enter()
+      def compileScope = cx.newObject(globalScope)
+      compileScope.setParentScope(globalScope)
+      compileScope.put(<span class="java&#45;quote">"coffeeScriptSrc"</span>, compileScope, input)
+      def result = cx.evaluateString(compileScope, <span class="java&#45;quote">"CoffeeScript.compile(coffeeScriptSrc)"</span>, <span class="java&#45;quote">"CoffeeScript compile command"</span>, 0, <span class="java&#45;keyword">null</span>)
+      <span class="java&#45;keyword">return</span> result
+    &#125; <span class="java&#45;keyword">catch</span> (Exception e) &#123;
+      <span class="java&#45;keyword">throw</span> <span class="java&#45;keyword">new</span> Exception(<span class="java&#45;quote">""</span><span class="java&#45;quote">"
+        CoffeeScript Engine compilation of coffeescript to javascript failed.
+        $e
+        "</span><span class="java&#45;quote">""</span>)
+    &#125; <span class="java&#45;keyword">finally</span> &#123;
+      Context.exit()
+    &#125;
+  &#125;
+&#125;</pre></div><p class="paragraph"/>Above is an excerpt of the CoffeeScriptProcessor plugin. This plugin takes advantage of RhinoJs to use the coffeescript compiler and provide the application with direct support for coffeescript files. The 'process' method takes an input, as well as a reference to the asset file definition, and returns a result. To use your processor simply add it to your 'static processors' array on the AssetFile definition.<p class="paragraph"/>The LESSProcessor was not used in this example is its more complicated due to its support of the @import LESS directive and cache dependencies on the cache manager. However, it is a great example to look at and highly recommended.
+
+
+
+<h2 id="postprocessors">4.3 Post-Processors</h2>
+Currently, PostProcessor extensibility is not available. This is currently a feature we are implementing to provide easier dropin for custom minifiers and compressors.
 
 
                     </div>

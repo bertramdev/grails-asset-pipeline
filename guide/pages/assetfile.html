@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>4.1 Asset File Definitions 1.1.5</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/configuration.html"><strong>2</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/extending.html"><strong>4</strong><span>Extending Asset-Pipeline</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>The Asset-Pipeline is a plugin used for managing and processing static assets in Grails applications. Asset-Pipeline functions include processing and minification of both CSS and JavaScript files. It is also capable of being extended to compile custom static assets, such as CoffeeScript.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+
+
+                <div class="project">
+                    <h1>4.1 Asset File Definitions - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> David Estes</p>
+
+                    <p><strong>Version:</strong> 1.1.5</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="assetfile">4.1 Asset File Definitions</h2>
+The AssetFile definition is where our journey begins. This is the defining file for various file types. Without this definition, the asset-pipeline will treat an unknown file type as a standard passthrough resource. As an example lets first look at the CssAssetFile definition.<p class="paragraph"/><div class="code"><pre>class CssAssetFile &#123;
+  <span class="java&#45;keyword">static</span> <span class="java&#45;keyword">final</span> <span class="java&#45;object">String</span> contentType = 'text/css'
+  <span class="java&#45;keyword">static</span> extensions = &#91;'css'&#93;
+  <span class="java&#45;keyword">static</span> compiledExtension = 'css'
+  <span class="java&#45;keyword">static</span> processors = &#91;CssProcessor&#93;<p class="paragraph"/>  File file
+  def baseFile<p class="paragraph"/>  CssAssetFile(file,baseFile=<span class="java&#45;keyword">null</span>) &#123;
+    <span class="java&#45;keyword">this</span>.file = file
+    <span class="java&#45;keyword">this</span>.baseFile = baseFile
+  &#125;<p class="paragraph"/>  def processedStream(precompiler=<span class="java&#45;keyword">false</span>) &#123;<p class="paragraph"/>    def fileText = file?.text<p class="paragraph"/>    <span class="java&#45;keyword">for</span>(processor in processors) &#123;
+      def processInstance = processor.newInstance(precompiler)
+      fileText = processInstance.process(fileText, <span class="java&#45;keyword">this</span>)
+    &#125;
+    <span class="java&#45;keyword">return</span> fileText
+    // Return File Stream
+  &#125;<p class="paragraph"/>  def directiveForLine(line) &#123;
+    line.find(/&#42;=(.&#42;)/) &#123; fullMatch, directive &#45;&#62; <span class="java&#45;keyword">return</span> directive &#125;
+  &#125;
+&#125;</pre></div><p class="paragraph"/>This file definition is pretty short but allows us to define some very useful information. First, we look at the static definitions at the top of the class. These static definitions are fairly easy to meta-override with groovy and add additional processors or adjust with added plugins.<p class="paragraph"/>The 'contentType' property is used to match a file definition with an incoming file request. When the browser requests a 'text/css' content-type file , this file is matched and files matching this definition are scanned. The 'extensions' list tells asset-pipeline which file extensions to scan through and match. In this case it is just 'css', but in the case of ,for example, LESS we may be looking for extensions 'less', or 'css.less'.<p class="paragraph"/>The compiledExtension property tells asset-pipelines precompiler what the final file extension should be.<p class="paragraph"/>Finally, the processors array determines the list of processors that need be run on the file contents before returning a result. This array is executed in order. In this case, we have the CssProcessor (a processor for converting the relative image paths and replacing with their cache digested version).<p class="paragraph"/><h4>Directive Definition</h4><p class="paragraph"/>An assetFile can specify a REGEXP pattern for require directives. These directives are used to bundle assets together. Some file types don't utilize these require directives and simply returning a null value will cancel directive processing.<p class="paragraph"/><div class="code"><pre>def directiveForLine(line) &#123;
+    line.find(/&#42;=(.&#42;)/) &#123; fullMatch, directive &#45;&#62; <span class="java&#45;keyword">return</span> directive &#125;
+  &#125;</pre></div><p class="paragraph"/>The example above shows a match pattern for css files. This allows it to match require directives for the following example:<p class="paragraph"/><div class="code"><pre>/&#42;
+&#42;= require_self
+&#42;= require_file example_b
+&#42;= require_tree .
+&#42;/<p class="paragraph"/>body &#123;
+  margin&#45;top:25px;
+&#125;</pre></div><p class="paragraph"/><h4>Processing Data streams</h4><p class="paragraph"/>Processors are used to precompile certain assets, and/or adjust the file path contents. The Processor class itself will get a more in depth explanation in the next section. For now the part we want to look at is the processedStream function.<p class="paragraph"/><div class="code"><pre>def processedStream(precompiler=<span class="java&#45;keyword">false</span>) &#123;<p class="paragraph"/>  def fileText = file?.text<p class="paragraph"/>  <span class="java&#45;keyword">for</span>(processor in processors) &#123;
+    def processInstance = processor.newInstance(precompiler)
+    fileText = processInstance.process(fileText, <span class="java&#45;keyword">this</span>)
+  &#125;
+  <span class="java&#45;keyword">return</span> fileText
+  // Return File Stream
+&#125;</pre></div><p class="paragraph"/>The example above iterates over all of the processor classes defined in our static "processors" variable. This creates a new instance and informs the processor wether this is a developer mode request or being issued by the precompiler (useful for determining if file replacements need to be cache digested or not). The processedStream method is required to be in every AssetFile definition and some do vary. For example, the LESS and Coffee definitions take advantage of the CacheManager to reduce development overhead by only recompiling changed files. An example of this is provided below:<p class="paragraph"/><div class="code"><pre>def processedStream(precompiler=<span class="java&#45;keyword">false</span>) &#123;
+  def fileText = file?.text
+  def md5 = AssetHelper.getByteDigest(fileText.bytes)
+  <span class="java&#45;keyword">if</span>(!precompiler) &#123;
+    def cache = CacheManager.findCache(file.canonicalPath, md5)
+    <span class="java&#45;keyword">if</span>(cache) &#123;
+      <span class="java&#45;keyword">return</span> cache
+    &#125;
+  &#125;
+  <span class="java&#45;keyword">for</span>(processor in processors) &#123;
+    def processInstance = processor.newInstance(precompiler)
+    fileText = processInstance.process(fileText, <span class="java&#45;keyword">this</span>)
+  &#125;<p class="paragraph"/>  <span class="java&#45;keyword">if</span>(!precompiler) &#123;
+    CacheManager.createCache(file.canonicalPath,md5,fileText)
+  &#125;<p class="paragraph"/>  <span class="java&#45;keyword">return</span> fileText
+  // Return File Stream
+&#125;</pre></div><p class="paragraph"/>In the future we may further improve this extensibility by providing a default base class for these standard style stream methods.<p class="paragraph"/><h4>Adding the Asset definiton to the list of AssetFiles</h4><p class="paragraph"/>Originally, asset-pipeline took advantage of the Artefact syntax to generate this class list. However, this became problematic as it added a great deal of overhead to precompilation during War creation. To solve this a static asset.pipeline.AssetHelper.assetSpecs static array was used instead. This array is used by both development mode runtime and war creation so it has to be added in 2 places. If you are creating a plugin to facilitate your added functionality, you will want to use the 'doWithDynamicMethods' to add your asset file.<p class="paragraph"/><div class="code"><pre>AssetHelper.assetSpecs &#60;&#60; LessAssetFile</pre></div><p class="paragraph"/>One other place we have to add this is in a 'scripts/_Events.groovy' file. An example below is pulled from the LESS asset-pipeline plugin.<p class="paragraph"/><div class="code"><pre>eventAssetPrecompileStart = &#123; assetConfig &#45;&#62;
+  assetConfig.specs &#60;&#60; 'asset.pipeline.less.LessAssetFile'
+&#125;</pre></div><p class="paragraph"/>Notice on this one that the spec array is tied to 'assetConfig' and that instead of providing the class object we provide the classpath as a string. This is necessary to allow the precompiler to facilitate proper class loading across plugins as the full grails stack may not be available during a precompile. This results in a significantly reduced memory overhead during precompiling as the alternative to using Artefacts. Granted, it does require an extra step here, but well worth the cost.<p class="paragraph"/>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
