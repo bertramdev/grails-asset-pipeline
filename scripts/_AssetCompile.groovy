@@ -96,7 +96,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					fileData = newFileData
 				}
 				if(assetFile.encoding) {
-					fileDate = fileDate.getBytes(assetFile.encoding)
+					fileData = fileData.getBytes(assetFile.encoding)
 				} else {
 					fileData = fileData.bytes
 				}
