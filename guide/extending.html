@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4 Extending Asset-Pipeline 1.1.5</title>
+    <title>4 Extending Asset-Pipeline 1.2.1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -72,7 +72,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 1.1.5</p>
+                    <p><strong>Version:</strong> 1.2.1</p>
 
                     
                 </div>
@@ -106,10 +106,16 @@ The AssetFile definition is where our journey begins. This is the defining file 
   <span class="java&#45;keyword">static</span> extensions = &#91;'css'&#93;
   <span class="java&#45;keyword">static</span> compiledExtension = 'css'
   <span class="java&#45;keyword">static</span> processors = &#91;CssProcessor&#93;<p class="paragraph"/>  File file
-  def baseFile<p class="paragraph"/>  CssAssetFile(file,baseFile=<span class="java&#45;keyword">null</span>) &#123;
+  def baseFile
+  def encoding<p class="paragraph"/>  CssAssetFile(file,baseFile=<span class="java&#45;keyword">null</span>) &#123;
     <span class="java&#45;keyword">this</span>.file = file
     <span class="java&#45;keyword">this</span>.baseFile = baseFile
-  &#125;<p class="paragraph"/>  def processedStream(precompiler=<span class="java&#45;keyword">false</span>) &#123;<p class="paragraph"/>    def fileText = file?.text<p class="paragraph"/>    <span class="java&#45;keyword">for</span>(processor in processors) &#123;
+  &#125;<p class="paragraph"/>  def processedStream(precompiler=<span class="java&#45;keyword">false</span>) &#123;<p class="paragraph"/>    def fileText
+    <span class="java&#45;keyword">if</span>(baseFile?.encoding || encoding) &#123;
+      fileText = file?.getText(baseFile?.encoding ? baseFile.encoding : encoding)
+    &#125; <span class="java&#45;keyword">else</span> &#123;
+      fileText = file?.text
+    &#125;<p class="paragraph"/>    <span class="java&#45;keyword">for</span>(processor in processors) &#123;
       def processInstance = processor.newInstance(precompiler)
       fileText = processInstance.process(fileText, <span class="java&#45;keyword">this</span>)
     &#125;
