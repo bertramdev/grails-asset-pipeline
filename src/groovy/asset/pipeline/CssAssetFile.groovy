@@ -8,6 +8,7 @@ class CssAssetFile{
 
 	File file
 	def baseFile
+	def encoding
 
 	CssAssetFile(file,baseFile=null) {
 		this.file = file
@@ -16,7 +17,14 @@ class CssAssetFile{
 
 	def processedStream(precompiler=false) {
 
-		def fileText = file?.text
+		def fileText
+		if(baseFile?.encoding || encoding) {
+			fileText = file?.text(baseFile?.encoding ? baseFile.encoding : encoding)
+		} else {
+			fileText = file?.text
+		}
+
+
 
 		for(processor in processors) {
 			def processInstance = processor.newInstance(precompiler)

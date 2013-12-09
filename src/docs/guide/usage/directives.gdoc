@@ -22,6 +22,7 @@ Or an example stylesheet syntax may look like this:
 *= require navigation
 *= require_tree .
 *= require_full_tree .
+*= encoding UTF-8
 */
 {code}
 
@@ -33,6 +34,7 @@ require | Includes a single file into the manifest
 require_tree | Recursively includes all files and subdirectories in the path
 require_self | Inserts the body of the current file
 require_full_tree | Include files from all plugins that contain the relative base path
+encoding | Set the processor encoding for this bundle (i.e. UTF-8 or ANSI or Latin1)
 {table}
 
 In javascript files, the directive begins with '//='. These directives tell us which files should be injected into this javascript file and in what order.

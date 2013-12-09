@@ -8,6 +8,8 @@ class JsAssetFile{
 
 	File file
 	def baseFile
+	def encoding
+
 
 	JsAssetFile(file, baseFile=null) {
 		this.file = file
@@ -15,7 +17,14 @@ class JsAssetFile{
 	}
 
 	def processedStream(precompiler=false) {
-		def fileText = file?.text
+
+		def fileText
+		if(baseFile?.encoding || encoding) {
+			fileText = file?.text(baseFile?.encoding ? baseFile.encoding : encoding)
+		} else {
+			fileText = file?.text
+		}
+
 		for(processor in processors) {
 			def processInstance = processor.newInstance()
 			fileText = processInstance.process(fileText)

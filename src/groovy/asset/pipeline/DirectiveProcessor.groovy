@@ -4,7 +4,7 @@ import org.codehaus.groovy.grails.web.context.ServletContextHolder
 
 class DirectiveProcessor {
 
-  static DIRECTIVES = [require_self: "requireSelfDirective" ,require_tree: "requireTreeDirective", require_full_tree: "requireFullTreeDirective" , require: "requireFileDirective"]
+  static DIRECTIVES = [require_self: "requireSelfDirective" ,require_tree: "requireTreeDirective", require_full_tree: "requireFullTreeDirective" , require: "requireFileDirective", encoding: "encodingTypeDirective"]
 
   def contentType
   def precompiler
@@ -124,6 +124,16 @@ class DirectiveProcessor {
 
   def requireSelfDirective(command, file, tree) {
     tree.tree << "self"
+  }
+
+  def encodingTypeDirective(command, fileSpec, tree) {
+    if(!command[1]) {
+      return;
+    }
+    if(fileSpec.baseFile) {
+      fileSpec.baseFile.encoding = command[1]
+    }
+    fileSpec.encoding = command[1]
   }
 
   def requireTreeDirective(command, fileSpec, tree) {

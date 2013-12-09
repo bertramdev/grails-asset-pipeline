@@ -95,7 +95,12 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					}
 					fileData = newFileData
 				}
-				fileData = fileData.getBytes('utf-8')
+				if(assetFile.encoding) {
+					fileDate = fileDate.getBytes(assetFile.encoding)
+				} else {
+					fileData = fileData.bytes
+				}
+
 			} else {
 				digestName = assetHelper.getByteDigest(assetFile.bytes)
 				def existingDigestFile = manifestProperties.getProperty("${fileName}.${extension}")
