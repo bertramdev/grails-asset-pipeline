@@ -19,7 +19,7 @@ class CssAssetFile{
 
 		def fileText
 		if(baseFile?.encoding || encoding) {
-			fileText = file?.text(baseFile?.encoding ? baseFile.encoding : encoding)
+			fileText = file?.getText(baseFile?.encoding ? baseFile.encoding : encoding)
 		} else {
 			fileText = file?.text
 		}
