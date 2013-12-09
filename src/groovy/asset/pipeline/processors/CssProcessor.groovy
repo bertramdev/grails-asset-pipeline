@@ -3,6 +3,7 @@ import asset.pipeline.*
 import java.net.URL
 class CssProcessor {
 	def precompilerMode
+    def conf = grailsApplication.config.grails.assets
 
 	CssProcessor(precompiler=false) {
 		this.precompilerMode = precompiler
@@ -14,7 +15,7 @@ class CssProcessor {
 			def replacementPath = assetPath.trim()
 			if(cachedPaths[assetPath]) {
 				replacementPath = cachedPaths[assetPath]
-			} else if(isRelativePath(assetPath)) {
+			} else if(isRelativePath(assetPath) && !conf.disableVersioningImage) {
 				def urlRep = new URL("http://hostname/${assetPath}") //Split out subcomponents
 				def relativeFileName = [relativePath(assetFile.file),urlRep.path].join(File.separator)
 
