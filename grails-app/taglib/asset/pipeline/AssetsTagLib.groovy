@@ -31,11 +31,13 @@ class AssetsTagLib {
 				uri = src
 				extension = 'js'
 			}
+			// def startTime = new Date().time
 			def list = assetProcessorService.getDependencyList(uri, 'application/javascript', extension)
 			list.each { dep ->
 				def depAssetPath = assetPath("${dep}", true)
 				out << "<script src=\"${depAssetPath}?compile=false\" type=\"text/javascript\"></script>"
 			}
+			// println "Fetching Dev Mode Dependency List Time ${new Date().time - startTime}"
 		}
 	}
 

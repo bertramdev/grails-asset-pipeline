@@ -101,19 +101,21 @@ class DirectiveProcessor {
 	def findDirectives(fileSpec, tree) {
       def lines = fileSpec.file.readLines()
       // def directiveFound = false
+      def startTime = new Date().time
 			lines.find { line ->
-        // if(!line && directiveFound == true) {
-        //   return true
-        // }
         def directive = fileSpec.directiveForLine(line)
 				if(directive) {
+
 					directive = directive.trim()
           def unprocessedArgs = directive.split(" ")
 
           def processor = DIRECTIVES[unprocessedArgs[0].toLowerCase()]
 
           if(processor) {
-            def directiveArguments = new groovy.text.GStringTemplateEngine().createTemplate(directive).make().toString().split(" ")
+            def directiveArguments = unprocessedArgs
+            if('$' in directive) {
+              directiveArguments = new groovy.text.GStringTemplateEngine().createTemplate(directive).make().toString().split(" ")
+            }
             directiveArguments[0] = directiveArguments[0].toLowerCase()
             this."${processor}"(directiveArguments, fileSpec,tree)
           }
