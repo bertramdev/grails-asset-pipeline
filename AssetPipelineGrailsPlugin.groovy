@@ -1,7 +1,7 @@
 import grails.util.Environment
 
 class AssetPipelineGrailsPlugin {
-	def version         = "1.2.3"
+	def version         = "1.2.4"
 	def grailsVersion   = "2.0 > *"
 	def title           = "Asset Pipeline Plugin"
 	def author          = "David Estes"
@@ -22,13 +22,13 @@ class AssetPipelineGrailsPlugin {
 		def manifestProps = new Properties()
 		def manifestFile
 		try {
-			manifestFile = application.getParentContext().getResource("assets/manifest.properties").getFile()
+			manifestFile = application.getParentContext().getResource("assets/manifest.properties")
 		} catch(e) {
 			//Silent fail
 		}
 		if(manifestFile?.exists()) {
 			try {
-				manifestProps.load(manifestFile.newDataInputStream())
+				manifestProps.load(manifestFile.inputStream)
 				application.config.grails.assets.manifest = manifestProps
 
 			} catch(e) {
