@@ -7,7 +7,8 @@ includeTargets << grailsScript("_GrailsBootstrap")
 
 target(assetClean: "Cleans Compiled Assets Directory") {
 	// Clear compiled assets folder
-  def assetDir = new File("target/assets")
+	println "Asset Precompiler Args ${argsMap}"
+  def assetDir = new File(argsMap.target ?: "target/assets")
   if(assetDir.exists()) {
   	assetDir.deleteDir()
   }
@@ -15,6 +16,7 @@ target(assetClean: "Cleans Compiled Assets Directory") {
 
 target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
   depends(configureProxy,compile)
+
   def assetHelper             = classLoader.loadClass('asset.pipeline.AssetHelper')
   def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
   def assetConfig = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
@@ -26,7 +28,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
   def grailsApplication = ApplicationHolder.getApplication()
   def uglifyJsProcessor =  classLoader.loadClass('asset.pipeline.processors.UglifyJsProcessor').newInstance()
-  def minifyJs			  	= grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : true
+  def minifyJs			  	= grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : (argsMap.containsKey('minifyJs') ? argsMap.minifyJs == 'true' : true)
   event("StatusUpdate",["Precompiling Assets!"])
 
   // Load in additional assetSpecs
@@ -38,7 +40,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
   }
 
   // Check for existing Compiled Assets
-  def assetDir = new File("target/assets")
+  def assetDir = new File(argsMap.target ?: "target/assets")
   if(assetDir.exists()) {
   	def manifestFile = new File("target/assets/manifest.properties")
   	if(manifestFile.exists())
