@@ -39,7 +39,7 @@ class AssetHelper {
 		return AssetHelper.assetSpecs
 	}
 
-	static artefactForFile(file,contentType, baseFile=null) {
+	static assetForFile(file,contentType, baseFile=null) {
 		if(contentType == null || file == null) {
 			return file
 		}
@@ -58,19 +58,25 @@ class AssetHelper {
 		return file
 	}
 
+	@Deprecated
 	static artefactForFile(file) {
+		println "DEPRECATION WARNING: AssetHelper.artefactForFile() has been renamed to AssetHelper.assetForFile()."
+		AssetHelper.assetForFile()
+	}
+
+	static assetForFile(file) {
 		if(file == null) {
 			return file
 		}
 
-		def possibleFileSpec = AssetHelper.artefactForFileName(file.getName())
+		def possibleFileSpec = AssetHelper.assetForFileName(file.getName())
 		if(possibleFileSpec) {
 			return possibleFileSpec.newInstance(file)
 		}
 		return file
 	}
 
-	static artefactForFileName(filename) {
+	static assetForFileName(filename) {
 		def grailsApplication = Holders.getGrailsApplication()
 		return AssetHelper.assetFileClasses().find{ fileClass ->
 			fileClass.extensions.find { filename.endsWith(".${it}") }
@@ -162,7 +168,7 @@ class AssetHelper {
 	}
 
 	static assetMimeTypeForURI(uri) {
-		def fileSpec = artefactForFileName(uri)
+		def fileSpec = assetForFileName(uri)
 		if(fileSpec) {
 			return fileSpec.contentType
 		}

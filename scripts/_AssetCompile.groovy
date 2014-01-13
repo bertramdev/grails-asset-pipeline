@@ -66,7 +66,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		event("StatusUpdate",["Processing File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])
 		def extension   = assetHelper.extensionFromURI(fileName)
 		fileName        = assetHelper.nameWithoutExtension(fileName)
-		def assetFile   = assetHelper.artefactForFile(assetHelper.fileForUri(filesToProcess[counter],null,null))
+		def assetFile   = assetHelper.assetForFile(assetHelper.fileForUri(filesToProcess[counter],null,null))
 		def digestName
 
 		if(assetFile) {
@@ -254,7 +254,7 @@ removeDeletedFiles = { manifestProperties, filesToProcess, assetHelper ->
 			def fileName    = fileToProcess
 			def extension   = assetHelper.extensionFromURI(fileName)
 			fileName        = assetHelper.nameWithoutExtension(fileName)
-			def assetFile   = assetHelper.artefactForFile(assetHelper.fileForUri(fileToProcess,null,null))
+			def assetFile   = assetHelper.assetForFile(assetHelper.fileForUri(fileToProcess,null,null))
 			if(assetFile && assetFile.class.name != 'java.io.File' && assetFile.compiledExtension) {
 				extension = assetFile.compiledExtension
 				fileName = assetHelper.fileNameWithoutExtensionFromArtefact(fileName,assetFile)

@@ -64,7 +64,7 @@ class CssProcessor {
 		if(useDigest) {
 			def extension = AssetHelper.extensionFromURI(file.getName())
 			def fileName  = AssetHelper.nameWithoutExtension(file.getName())
-			def assetFile = AssetHelper.artefactForFile(file)
+			def assetFile = AssetHelper.assetForFile(file)
 			def digestName
 			if(assetFile != file) {
 				def directiveProcessor = new DirectiveProcessor(assetFile.contentType, true)

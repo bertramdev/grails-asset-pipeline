@@ -175,7 +175,7 @@ class DirectiveProcessor {
       }
       else if(AssetHelper.assetMimeTypeForURI(file.getAbsolutePath()) == contentType) {
         if(!isFileInTree(file,tree)) {
-          tree.tree << getDependencyTree(AssetHelper.artefactForFile(file,contentType, this.baseFile))
+          tree.tree << getDependencyTree(AssetHelper.assetForFile(file,contentType, this.baseFile))
         }
       }
     }
