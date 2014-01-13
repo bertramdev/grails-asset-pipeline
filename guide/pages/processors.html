@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4.2 Processors 1.2.1</title>
+    <title>4.2 Processors 1.2.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -72,7 +72,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 1.2.1</p>
+                    <p><strong>Version:</strong> 1.2.4</p>
 
                     
                 </div>
@@ -82,7 +82,7 @@ function addJsClass() {
                 
 
 <h2 id="processors">4.2 Processors</h2>
-Processors are where the real power of asset-pipeline comes into play. These are the driving force behind making compileable assets such as LESS, and Coffeescript first class citizens. Gone is the need to run a compiler on the side, and gone is the delay between making changes in development.<p class="paragraph"/>A Processor class has 2 main requirements. It must have a constructor with a (precompiler=false) argument, and it must have a process method. The rest is up to the developer.<p class="paragraph"/><div class="code"><pre>class CoffeeScriptProcessor &#123;<p class="paragraph"/>  Scriptable globalScope
+Processors are where the real power of asset-pipeline comes into play. These are the driving force behind making compileable assets such as LESS, and Coffeescript first class citizens. Gone is the need to run a compiler on the side, and gone is the delay between making changes in development.<p class="paragraph"/>A Processor class has 2 main requirements. It must have a constructor with a <code>precompiler=false</code> argument, and it must have a process method. The rest is up to the developer.<p class="paragraph"/><div class="code"><pre>class CoffeeScriptProcessor &#123;<p class="paragraph"/>  Scriptable globalScope
   <span class="java&#45;object">ClassLoader</span> classLoader
   def precompilerMode<p class="paragraph"/>  CoffeeScriptProcessor(precompiler=<span class="java&#45;keyword">false</span>)&#123;
     //some code excluded here <span class="java&#45;keyword">for</span> brevity
@@ -104,7 +104,7 @@ Processors are where the real power of asset-pipeline comes into play. These are
       Context.exit()
     &#125;
   &#125;
-&#125;</pre></div><p class="paragraph"/>Above is an excerpt of the CoffeeScriptProcessor plugin. This plugin takes advantage of RhinoJs to use the coffeescript compiler and provide the application with direct support for coffeescript files. The 'process' method takes an input, as well as a reference to the asset file definition, and returns a result. To use your processor simply add it to your 'static processors' array on the AssetFile definition.<p class="paragraph"/>The LESSProcessor was not used in this example is its more complicated due to its support of the @import LESS directive and cache dependencies on the cache manager. However, it is a great example to look at and highly recommended.
+&#125;</pre></div><p class="paragraph"/>Above is an excerpt of the <code>CoffeeScriptProcessor</code> plugin. This plugin takes advantage of RhinoJs to use the CoffeeScript compiler and provide the application with direct support for CoffeeScript files. The <code>process</code> method takes an input, as well as a reference to the asset file definition, and returns a result. To use your processor simply add it to your 'static processors' array on the <code>AssetFile</code> definition.<p class="paragraph"/>The <code>LESSProcessor</code> was not used in this example as it's more complicated due to supporting the @import LESS directive and cache dependencies on the cache manager. However, it is a great example to look at and highly recommended.
 
 
 
