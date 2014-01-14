@@ -32,7 +32,7 @@ class DirectiveProcessor {
 
   def getFlattenedRequireList(file) {
     if(file.class.name == 'java.io.File') {
-      return relativePath(file)
+      return [path: relativePath(file), encoding: null]
     }
     def flattenedList = []
     def tree = getDependencyTree(file)
@@ -47,7 +47,7 @@ class DirectiveProcessor {
       if(childTree == "self") {
         def extension = treeSet.file.compiledExtension
         def fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(relativePath(treeSet.file.file, true),treeSet.file)
-        flattenedList << "${fileName}.${extension}"
+        flattenedList << [path: "${fileName}.${extension}", encoding: treeSet.file.encoding]
         selfLoaded = true
       } else {
         flattenedList = loadRequiresForTree(childTree, flattenedList)
@@ -57,7 +57,7 @@ class DirectiveProcessor {
     if(!selfLoaded) {
       def extension = treeSet.file.compiledExtension
       def fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(relativePath(treeSet.file.file, true),treeSet.file)
-      flattenedList << "${fileName}.${extension}"
+      flattenedList << [path: "${fileName}.${extension}", encoding: treeSet.file.encoding]
     }
     return flattenedList
   }

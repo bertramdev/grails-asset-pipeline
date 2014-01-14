@@ -40,6 +40,6 @@ class DirectiveProcessorSpec extends IntegrationSpec {
 		when:
 			def dependencyList = directiveProcessor.getFlattenedRequireList(file)
 		then:
-			dependencyList.findIndexOf{ it == "asset-pipeline/test/libs/file_c.js" } < dependencyList.findIndexOf{ it == "asset-pipeline/test/libs/file_b.js"}
+			dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_c.js" } < dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_b.js"}
 	}
 }
