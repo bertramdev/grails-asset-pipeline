@@ -76,6 +76,10 @@ class AssetsTagLib {
 		out << "<img src=\"${assetPath(src)}\" ${paramsToHtmlAttr(attrs)}/>"
 	}
 
+	def path = { attrs ->
+		def src = attrs.remove('src')
+		out << "${assetPath(src)}"
+	}
 	/**
 	 * @attr href REQUIRED
 	 * @attr rel REQUIRED
