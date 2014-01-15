@@ -55,4 +55,5 @@ class AssetPipelineGrailsPlugin {
             application.config.grails.assets.precompiled = !Environment.isDevelopmentMode()
         }
     }
+
 }

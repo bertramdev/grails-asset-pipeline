@@ -14,13 +14,19 @@ The primary include tags, as show above, are quite useful for including your rel
 In GSP views you can also reference images included in the asset-pipeline with the following tag:
 
 {code}
-  <asset:image src="logo.png" width="200" height="200"/>
+<asset:image src="logo.png" width="200" height="200"/>
 {code}
 
 Assets can also be referenced within subdirectories if required and simply require the use of the relative path.
 
 {code}
-  <asset:image src="icons/delete.png"/>
+<asset:image src="icons/delete.png"/>
+{code}
+
+It is also possible to return an assetPath as a string for injection in your own tags:
+
+{code}
+<link href="${assetPath(src: 'manifest.json')}"/>
 {code}
 
 h3. Stylesheet References

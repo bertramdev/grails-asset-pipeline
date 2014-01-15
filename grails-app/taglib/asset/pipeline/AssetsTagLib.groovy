@@ -5,6 +5,7 @@ import grails.util.Environment
 class AssetsTagLib {
 
 	static namespace = "asset"
+	static returnObjectForTags = ['assetPath']
 
 	def grailsApplication
 	def assetProcessorService
@@ -39,7 +40,7 @@ class AssetsTagLib {
 				modifierParams << "encoding=${attrs.charset}"
 			}
 			list.each { dep ->
-				def depAssetPath = assetPath("${dep.path}", true)
+				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
 				out << "<script src=\"${depAssetPath}?${modifierParams.join("&")}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
 			}
 			// println "Fetching Dev Mode Dependency List Time ${new Date().time - startTime}"
@@ -78,7 +79,7 @@ class AssetsTagLib {
 				modifierParams << "encoding=${attrs.charset}"
 			}
 			list.each { dep ->
-				def depAssetPath = assetPath("${dep.path}", true)
+				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
 				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join("&")}\" ${paramsToHtmlAttr(attrs)} />"
 			}
 		}
@@ -101,7 +102,15 @@ class AssetsTagLib {
 	}
 
 
-	String assetPath(src, ignorePrefix = false) {
+	Closure assetPath = { attrs ->
+		def src
+		def ignorePrefix = false
+    if (attrs instanceof Map) {
+    	src = attrs.src
+    	ignorePrefix = attrs.containsKey('ignorePrefix')? attrs.ignorePrefix : false
+    } else {
+    	src = attrs
+    }
 
 		def conf = grailsApplication.config.grails.assets
 

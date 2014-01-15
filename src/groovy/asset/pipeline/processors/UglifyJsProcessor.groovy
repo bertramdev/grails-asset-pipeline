@@ -23,6 +23,7 @@ import org.mozilla.javascript.tools.shell.Global
 import org.mozilla.javascript.NativeObject
 
 class UglifyJsProcessor {
+    static contentTypes = ['application/javascript']
     private Scriptable scope
     private Function uglify
 
@@ -47,7 +48,13 @@ class UglifyJsProcessor {
         Context.exit()
     }
 
-    def parseOptions(options) {
+
+
+    def process(inputText, options = [:]) {
+        call uglify, inputText, parseOptions(options)
+    }
+
+    private NativeObject parseOptions(options) {
 
         def jsOptions = new NativeObject()
 
@@ -66,10 +73,6 @@ class UglifyJsProcessor {
             }
         }
         return jsOptions
-    }
-
-    def process(inputText, options = [:]) {
-        call uglify, inputText, parseOptions(options)
     }
 
     private synchronized String call(Function fn, Object[] args) {
