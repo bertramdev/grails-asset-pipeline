@@ -17,7 +17,6 @@ class AssetsController {
             uri = params.id[0..(-extension.size()-2)]
         }
 
-
         def assetFile
         if(params.containsKey('compile') && params.boolean('compile') == false) {
             assetFile = assetProcessorService.serveUncompiledAsset(uri,format, extension, params.encoding)
