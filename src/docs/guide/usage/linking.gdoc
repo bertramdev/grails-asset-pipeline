@@ -29,6 +29,20 @@ It is also possible to return an assetPath as a string for injection in your own
 <link href="${assetPath(src: 'manifest.json')}"/>
 {code}
 
+And Lastly it is also possible to execute a code section only if an asset exists or to simply test for existence
+
+{code}
+<asset:assetPathExists src="test.js">
+This will only be displayed if the asset exists
+</asset:assetPathExists>
+{code}
+
+or
+
+{code}
+asset.assetPathExists(src: 'test.js') //returns true or false
+{code}
+
 h3. Stylesheet References
 
 Stylesheets commonly make reference to images and in some cases other css files using the '@import' directive. With the asset-pipeline in Grails, relative paths can be recalculated and automatically reference the proper file.

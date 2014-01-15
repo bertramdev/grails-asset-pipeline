@@ -126,6 +126,29 @@ class AssetsTagLib {
 		return "${assetUrl}${src}"
 	}
 
+	Closure assetPathExists = { attrs, body ->
+		def src = attrs.remove('src')
+		def conf = grailsApplication.config.grails.assets
+		if(conf.precompiled) {
+			def realPath = conf.manifest.getProperty(src)
+			if(realPath) {
+				if(body) {
+					out << body
+				}
+				return true
+			}
+		} else {
+			def assetFile = AssetHelper.fileForFullName(src)
+			if(assetFile) {
+				if(body) {
+					out << body
+				}
+				return true
+			}
+		}
+		return false
+	}
+
 	private paramsToHtmlAttr(attrs) {
 		attrs.collect { key, value -> "${key}=\"${value.replace('\'', '\\\'')}\"" }?.join(" ")
 	}
