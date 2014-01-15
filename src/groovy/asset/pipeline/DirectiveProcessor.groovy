@@ -185,7 +185,7 @@ class DirectiveProcessor {
             if(file.isDirectory()) {
                 recursiveTreeAppend(file,tree)
             }
-            else if(AssetHelper.assetMimeTypeForURI(file.getAbsolutePath()) == contentType) {
+            else if(contentType in AssetHelper.assetMimeTypeForURI(file.getAbsolutePath())) {
                 if(!isFileInTree(file,tree)) {
                     tree.tree << getDependencyTree(AssetHelper.assetForFile(file,contentType, this.baseFile))
                 }

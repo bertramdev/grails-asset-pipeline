@@ -12,6 +12,7 @@ class AssetsController {
         def lastUriComponent = uriComponents[uriComponents.length - 1]
         //TODO: Only track extension from last /
 
+        format = "application/x-javascript"
         if(format != "application/javascript" && format != "text/css" && lastUriComponent.lastIndexOf(".") >= 0 && uri.lastIndexOf(".") >= 0) {
             uri = params.id.substring(0,uri.lastIndexOf("."))
             extension = params.id.substring(params.id.lastIndexOf(".") + 1)
@@ -19,9 +20,11 @@ class AssetsController {
 
         if(extension) {
             format = servletContext.getMimeType(request.forwardURI)
+
         }
         if(!format) {
-            format = AssetHelper.assetMimeTypeForURI(request.forwardURI)
+            def contentTypes = AssetHelper.assetMimeTypeForURI(request.forwardURI)
+            format = contentTypes ? contentTypes[0] : null
         }
 
         def assetFile

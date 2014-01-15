@@ -33,6 +33,7 @@ class AssetHelper {
         def grailsApplication = Holders.getGrailsApplication()
 
         if(contentType) {
+
             def possibleFileSpecs = AssetHelper.getPossibleFileSpecs(contentType)
             if(possibleFileSpecs) {
                     def file =  AssetHelper.fileForUriIfHasAnyAssetType(uri, possibleFileSpecs, baseFile)
@@ -186,6 +187,9 @@ class AssetHelper {
     static assetMimeTypeForURI(uri) {
         def fileSpec = assetForFileName(uri)
         if(fileSpec) {
+            if(fileSpec.contentType instanceof String) {
+                return [fileSpec.contentType]
+            }
             return fileSpec.contentType
         }
         return null
@@ -260,7 +264,7 @@ class AssetHelper {
     }
 
     static getPossibleFileSpecs(String contentType){
-        AssetHelper.assetFileClasses().findAll { it.contentType == contentType }
+        AssetHelper.assetFileClasses().findAll { (it.contentType instanceof String) ? it.contentType == contentType : contentType in it.contentType }
     }
 
     static getByteDigest(fileBytes) {
