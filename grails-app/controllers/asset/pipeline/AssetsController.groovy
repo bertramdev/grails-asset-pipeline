@@ -12,7 +12,6 @@ class AssetsController {
         def lastUriComponent = uriComponents[uriComponents.length - 1]
         //TODO: Only track extension from last /
 
-        format = "application/x-javascript"
         if(format != "application/javascript" && format != "text/css" && lastUriComponent.lastIndexOf(".") >= 0 && uri.lastIndexOf(".") >= 0) {
             uri = params.id.substring(0,uri.lastIndexOf("."))
             extension = params.id.substring(params.id.lastIndexOf(".") + 1)
