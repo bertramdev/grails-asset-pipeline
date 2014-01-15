@@ -24,11 +24,14 @@ class AssetProcessorService {
         return null
     }
 
-    def serveUncompiledAsset(uri, contentType, extension = null) {
+    def serveUncompiledAsset(uri, contentType, extension = null,encoding=null) {
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
 
         def directiveProcessor = new DirectiveProcessor(contentType)
         if (assetFile) {
+            if(encoding && assetFile.class.name != "java.io.File") {
+                assetFile.encoding = encoding
+            }
             return directiveProcessor.fileContents(assetFile)
         }
 

@@ -34,9 +34,13 @@ class AssetsTagLib {
 			}
 			// def startTime = new Date().time
 			def list = assetProcessorService.getDependencyList(uri, 'application/javascript', extension)
+			def modifierParams = ["compile=false"]
+			if(attrs.charset) {
+				modifierParams << "encoding=${attrs.charset}"
+			}
 			list.each { dep ->
 				def depAssetPath = assetPath("${dep.path}", true)
-				out << "<script src=\"${depAssetPath}?compile=false\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
+				out << "<script src=\"${depAssetPath}?${modifierParams.join("&")}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
 			}
 			// println "Fetching Dev Mode Dependency List Time ${new Date().time - startTime}"
 		}
@@ -69,9 +73,13 @@ class AssetsTagLib {
 				extension = 'css'
 			}
 			def list = assetProcessorService.getDependencyList(uri, 'text/css', extension)
+			def modifierParams = ["compile=false"]
+			if(attrs.charset) {
+				modifierParams << "encoding=${attrs.charset}"
+			}
 			list.each { dep ->
 				def depAssetPath = assetPath("${dep.path}", true)
-				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?compile=false\" ${paramsToHtmlAttr(attrs)} />"
+				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join("&")}\" ${paramsToHtmlAttr(attrs)} />"
 			}
 		}
 	}

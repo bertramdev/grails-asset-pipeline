@@ -107,7 +107,7 @@ class DirectiveProcessor {
 
     def fileContents(file) {
         if(file.class.name == 'java.io.File') {
-            return file.text
+            return file.bytes
         }
         return file.processedStream(this.precompiler)
     }
