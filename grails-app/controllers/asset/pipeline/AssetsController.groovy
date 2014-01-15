@@ -7,24 +7,16 @@ class AssetsController {
     def index() {
         def uri = params.id
         def extension = AssetHelper.extensionFromURI(request.forwardURI)
-        def format = servletContext.getMimeType(request.forwardURI)
-        def uriComponents = uri.split("/")
-        def lastUriComponent = uriComponents[uriComponents.length - 1]
-        //TODO: Only track extension from last /
-
-        if(format != "application/javascript" && format != "text/css" && lastUriComponent.lastIndexOf(".") >= 0 && uri.lastIndexOf(".") >= 0) {
-            uri = params.id.substring(0,uri.lastIndexOf("."))
-            extension = params.id.substring(params.id.lastIndexOf(".") + 1)
-        }
-
-        if(extension) {
+        def contentTypes = AssetHelper.assetMimeTypeForURI(request.forwardURI)
+        def format = contentTypes ? contentTypes[0] : null
+        if(!format)  {
             format = servletContext.getMimeType(request.forwardURI)
+        }
 
+        if(extension && uri.endsWith(".${extension}")) {
+            uri = params.id[0..(-extension.size()-2)]
         }
-        if(!format) {
-            def contentTypes = AssetHelper.assetMimeTypeForURI(request.forwardURI)
-            format = contentTypes ? contentTypes[0] : null
-        }
+
 
         def assetFile
         if(params.containsKey('compile') && params.boolean('compile') == false) {

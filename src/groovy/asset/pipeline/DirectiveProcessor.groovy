@@ -126,7 +126,7 @@ class DirectiveProcessor {
 
                 if(processor) {
                     def directiveArguments = unprocessedArgs
-                    if('$' in directive) {
+                    if(directive.indexOf('$') >= 0) {
                         directiveArguments = new groovy.text.GStringTemplateEngine().createTemplate(directive).make().toString().split(" ")
                     }
                     directiveArguments[0] = directiveArguments[0].toLowerCase()

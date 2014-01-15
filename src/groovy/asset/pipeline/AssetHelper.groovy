@@ -152,15 +152,19 @@ class AssetHelper {
 
     static extensionFromURI(uri) {
 
+        def uriComponents = uri.split("/")
+        def lastUriComponent = uriComponents[uriComponents.length - 1]
         def extension
-        if(uri.lastIndexOf(".") >= 0) {
+        if(lastUriComponent.lastIndexOf(".") >= 0) {
             extension = uri.substring(uri.lastIndexOf(".") + 1)
         }
         return extension
     }
 
     static nameWithoutExtension(uri) {
-        if(uri.lastIndexOf(".") >= 0) {
+        def uriComponents = uri.split("/")
+        def lastUriComponent = uriComponents[uriComponents.length - 1]
+        if(lastUriComponent.lastIndexOf(".") >= 0) {
             return uri.substring(0,uri.lastIndexOf("."))
         }
         return uri

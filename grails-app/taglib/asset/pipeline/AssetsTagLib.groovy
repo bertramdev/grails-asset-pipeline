@@ -39,7 +39,6 @@ class AssetsTagLib {
 			if(attrs.charset) {
 				modifierParams << "encoding=${attrs.charset}"
 			}
-			println list
 			list.each { dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
 				out << "<script src=\"${depAssetPath}?${modifierParams.join("&")}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
