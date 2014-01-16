@@ -77,14 +77,15 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 					extension = assetFile.compiledExtension
 					fileName = assetHelper.fileNameWithoutExtensionFromArtefact(fileName,assetFile)
 				}
-				def directiveProcessor = directiveProcessorClass.newInstance(assetFile.contentType, true)
+				def contentType = (assetFile.contentType instanceof String) ? assetFile.contentType : assetFile.contentType[0]
+
+				def directiveProcessor = directiveProcessorClass.newInstance(contentType, true)
 				fileData   = directiveProcessor.compile(assetFile)
 				digestName = assetHelper.getByteDigest(fileData.bytes)
 				def existingDigestFile = manifestProperties.getProperty("${fileName}.${extension}")
 				if(existingDigestFile && existingDigestFile == "${fileName}-${digestName}.${extension}") {
 					isUnchanged=true
 				}
-				def contentType = (assetFile.contentType instanceof String) ? assetFile.contentType : assetFile.contentType[0]
 
 				if(fileName.indexOf(".min") == -1 && contentType == 'application/javascript' && minifyJs && !isUnchanged) {
 					def newFileData = fileData
