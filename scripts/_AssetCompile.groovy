@@ -84,7 +84,9 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 				if(existingDigestFile && existingDigestFile == "${fileName}-${digestName}.${extension}") {
 					isUnchanged=true
 				}
-				if(fileName.indexOf(".min") == -1 && assetFile.contentType == 'application/javascript' && minifyJs && !isUnchanged) {
+				def contentType = (assetFile.contentType instanceof String) ? assetFile.contentType : assetFile.contentType[0]
+
+				if(fileName.indexOf(".min") == -1 && contentType == 'application/javascript' && minifyJs && !isUnchanged) {
 					def newFileData = fileData
 					try {
 						event("StatusUpdate",["Uglifying File ${counter+1} of ${filesToProcess.size()} - ${fileName}"])

@@ -31,7 +31,7 @@ class HelperGetsJavascriptAssetSpec extends IntegrationSpec{
             file instanceof File
     }
 
-    def "gets a javascript file given a uri and content type"() {
+    def "gets a javascript file given a uri and content type application/javascript"() {
         given: "A uri and contentType"
             def uri = "asset-pipeline/test/test.js"
             def contentType = "application/javascript"
@@ -41,7 +41,30 @@ class HelperGetsJavascriptAssetSpec extends IntegrationSpec{
 
         then:
             file instanceof JsAssetFile
+    }
 
+    def "gets a javascript file given a uri and content type application/x-javascript"() {
+        given: "A uri and contentType"
+            def uri = "asset-pipeline/test/test.js"
+            def contentType = "application/x-javascript"
+
+        when:
+            def file = AssetHelper.fileForUri(uri, contentType)
+
+        then:
+            file instanceof JsAssetFile
+    }
+
+    def "gets a javascript file given a uri and content type text/javascript"() {
+        given: "A uri and contentType"
+            def uri = "asset-pipeline/test/test.js"
+            def contentType = "text/javascript"
+
+        when:
+            def file = AssetHelper.fileForUri(uri, contentType)
+
+        then:
+            file instanceof JsAssetFile
     }
 
     def "gets a javascript file given a uri and extension()"() {

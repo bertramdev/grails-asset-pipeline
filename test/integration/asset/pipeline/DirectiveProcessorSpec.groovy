@@ -46,6 +46,20 @@ class DirectiveProcessorSpec extends IntegrationSpec {
             dependencyList.size() == 5
     }
 
+    def "evaluates GString directives if detected"() {
+        given: "A uri and file extension with require directives"
+            def uri                = "asset-pipeline/test/gstringtest.js"
+            def fileExtension      = "js"
+            def contentType        = "application/javascript"
+            def file               = AssetHelper.fileForUri(uri, contentType, fileExtension)
+            def directiveProcessor = new DirectiveProcessor(contentType)
+        when:
+            def dependencyList = directiveProcessor.getFlattenedRequireList(file)
+            println dependencyList
+        then:
+            dependencyList.size() == 2
+    }
+
     def "gets dependency list order correct"() {
         given: "A uri and file extension with require directives"
             def uri                = "asset-pipeline/test/test.js"
