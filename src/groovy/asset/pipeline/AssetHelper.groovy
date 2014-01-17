@@ -67,7 +67,7 @@ class AssetHelper {
             for(extension in fileSpec.extensions) {
                 def fileName = file.getAbsolutePath()
                 if(fileName.endsWith("." + extension)) {
-                    return fileSpec.newInstance(file, baseFile)
+                    return fileSpec.newInstance(file: file, baseFile:baseFile)
                 }
             }
         }
@@ -88,7 +88,7 @@ class AssetHelper {
 
         def possibleFileSpec = AssetHelper.assetForFileName(file.getName())
         if(possibleFileSpec) {
-            return possibleFileSpec.newInstance(file)
+            return possibleFileSpec.newInstance(file:file)
         }
         return file
     }
@@ -244,7 +244,7 @@ class AssetHelper {
 
                 def file = AssetHelper.fileForFullName(fullName)
                 if(file) {
-                    return fileSpec.newInstance(file, baseFile)
+                    return fileSpec.newInstance(file: file, baseFile: baseFile)
                 }
             }
         }

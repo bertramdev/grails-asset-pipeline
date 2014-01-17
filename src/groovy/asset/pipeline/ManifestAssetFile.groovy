@@ -16,40 +16,13 @@
 
 package asset.pipeline
 
-class ManifestAssetFile {
+class ManifestAssetFile extends AbstractAssetFile{
     static final String contentType = 'text/cache-manifest'
     static extensions = ['manifest']
     static compiledExtension = 'manifest'
     static processors = []
 
-    File file
-    def baseFile
-    def encoding
-
-    ManifestAssetFile(file, baseFile=null) {
-        this.file = file
-        this.baseFile = baseFile
-    }
-
-    def processedStream(precompiler=false) {
-        def fileText
-
-        if(baseFile?.encoding || encoding) {
-            fileText = file?.getText(baseFile?.encoding ? baseFile.encoding : encoding)
-        } else {
-            fileText = file?.text
-        }
-
-        for(processor in processors) {
-            def processInstance = processor.newInstance()
-            fileText = processInstance.process(fileText)
-        }
-
-        // Return File Stream
-        return fileText
-    }
-
-    def directiveForLine(line) {
+    String directiveForLine(String line) {
         return null
     }
 }
