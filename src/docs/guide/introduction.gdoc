@@ -16,6 +16,7 @@ h3. Additional Information
 
 * [Coffeescript Asset-Pipeline Plugin|https://github.com/bertramdev/coffee-grails-asset-pipeline]
 * [LESS Css Asset-Pipeline Plugin|https://github.com/bertramdev/less-grails-asset-pipeline]
+* [SASS/SCSS Compass Asset-Pipeline Plugin|https://github.com/bertramdev/sass-grails-asset-pipeline]
 * [Handlebars Asset-Pipeline Plugin|https://github.com/bertramdev/handlebars-grails-asset-pipeline]
 * [Ember Asset-Pipeline Plugin|https://github.com/bertramdev/ember-grails-asset-pipeline]
 * [Rails Asset Pipeline Guide|http://guides.rubyonrails.org/asset_pipeline.html]
