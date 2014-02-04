@@ -116,7 +116,9 @@ class AssetsTagLib {
 
 		def assetRootPath = assetUriRootPath(grailsApplication, request)
 		def assetUrl = (!ignorePrefix && conf.url) ? conf.url : "$assetRootPath"
-
+		if(assetUrl instanceof Closure) {
+			assetUrl = assetUrl(request)
+		}
 		if(conf.precompiled) {
 			def realPath = conf.manifest.getProperty(src)
 			if(realPath) {
