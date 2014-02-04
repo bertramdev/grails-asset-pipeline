@@ -43,7 +43,19 @@ To change the url for your taglibs use the following configuration option:
 grails.assets.url = "http://cdn.example.com/"
 {code}
 
-Now your files are gonna reference the CDN when running in the production environment. To go with this feature, you can have your application automatically copy your asset files out of your base war file on startup of your application.
+Now your files are gonna reference the CDN when running in the production environment. To go with this feature, you can have your application automatically copy your asset files out of your base war file on startup of your application. Optionally the asset url config can also be defined as a closure that takes a request argument.
+
+{code}
+grails.assets.url = { request ->
+	if(request.isSecure()) {
+		return "https://cdn.example.com/"
+	} else {
+		return "http://cdn.example.com/"
+	}
+}
+{code}
+
+This allows more fine grained control of your asset urls based on the incoming request. An example, might be ssl detection or even changing cdn region by source Ip.
 
 {code}
 grails.assets.storagePath = "/var/cdn/path"
