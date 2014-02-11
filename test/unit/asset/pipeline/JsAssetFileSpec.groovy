@@ -36,7 +36,8 @@ class JsAssetFileSpec extends Specification {
 	 		'//= require jquery' | 'require jquery'
 	 		'Blank Section'      | null
 	 		'//= require_tree .' | 'require_tree .'
-
     }
+
+
 
 }
