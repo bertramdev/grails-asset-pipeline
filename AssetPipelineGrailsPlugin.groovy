@@ -52,7 +52,7 @@ class AssetPipelineGrailsPlugin {
         }
 
         if(!application.config.grails.assets.containsKey("precompiled")) {
-            application.config.grails.assets.precompiled = !Environment.isDevelopmentMode()
+            application.config.grails.assets.precompiled = !Environment.isDevelopmentMode() || application.warDeployed
         }
     }
 

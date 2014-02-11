@@ -20,9 +20,9 @@ import grails.test.mixin.TestFor
 import spock.lang.Specification
 
 /**
- * @author Tommy Barker
+ * @author David Estes
  */
-// @TestFor(CacheManager)
+
 class CacheManagerSpec extends Specification {
 
     void "should createCache by filename and md5"() {

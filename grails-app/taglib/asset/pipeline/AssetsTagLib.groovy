@@ -21,7 +21,7 @@ class AssetsTagLib {
 
 		def conf = grailsApplication.config.grails.assets
 		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
-    def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && conf.bundle != true)
+		def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && !grailsApplication.warDeployed && conf.bundle != true)
 
 		if(!debugMode) {
 			out << "<script src=\"${assetPath(src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
@@ -61,7 +61,7 @@ class AssetsTagLib {
 		def uri
 		def extension
 		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
-    def debugMode      = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && conf.bundle != true)
+	    def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && !grailsApplication.warDeployed && conf.bundle != true)
 
 		if(!debugMode) {
 			out << "<link rel=\"stylesheet\" href=\"${assetPath(src)} ${paramsToHtmlAttr(attrs)}\"/>"
