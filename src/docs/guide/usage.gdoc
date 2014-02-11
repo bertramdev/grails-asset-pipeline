@@ -1,7 +1,7 @@
 Asset-Pipeline automatically creates a series of folders within your @grails-app@ directory:
 
 {code}
-grails-app/assets/javascript
+grails-app/assets/javascripts
 grails-app/assets/images
 grails-app/assets/stylesheets
 {code}
