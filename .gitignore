@@ -8,5 +8,6 @@ plugin.xml
 /web-app/WEB-INF
 test/dummy/web-app/assets
 test/dummy/web-app/target
+cobertura.ser
 *.idea/**
 *.iml
