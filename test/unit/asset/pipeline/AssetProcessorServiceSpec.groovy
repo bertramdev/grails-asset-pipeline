@@ -55,4 +55,54 @@ class AssetProcessorServiceSpec extends Specification {
         then: "error is thrown since only one level is supported"
             thrown(IllegalArgumentException)
     }
+
+    void "can get flattened dependency list"() {
+        given: 
+            def fileUri = "asset-pipeline/test/test"
+            def extension = "js"
+            def contentType = "application/javascript"
+            def depList
+        when: 
+            depList = service.getDependencyList(fileUri, contentType, extension)
+        then:
+            depList?.size() > 0
+
+        when:
+            depList = service.getDependencyList("unknownfile", contentType, extension)
+        then:
+            depList == null
+    }
+
+    void "can serve unprocessed asset for dev debug"() {
+        given: 
+            def fileUri = "asset-pipeline/test/test"
+            def extension = "js"
+            def contentType = "application/javascript"
+            def uncompiledFile
+        when: 
+            uncompiledFile = service.serveUncompiledAsset(fileUri, contentType, extension)
+        then:
+            !uncompiledFile.contains("This is File A")
+        when:
+            uncompiledFile = service.serveUncompiledAsset('unknownfile', contentType, extension)
+        then:
+            uncompiledFile == null
+    }
+
+    void "can serve compiled assets"() {
+        given: 
+            def fileUri = "asset-pipeline/test/test"
+            def extension = "js"
+            def contentType = "application/javascript"
+            def uncompiledFile
+        when: 
+            uncompiledFile = service.serveAsset(fileUri, contentType, extension)
+        then:
+            uncompiledFile.contains("This is File A")
+        when:
+            uncompiledFile = service.serveAsset('unknownfile', contentType, extension)
+        then:
+            uncompiledFile == null
+    }
+
 }
