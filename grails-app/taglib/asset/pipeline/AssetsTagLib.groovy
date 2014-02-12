@@ -24,7 +24,7 @@ class AssetsTagLib {
 		def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && !grailsApplication.warDeployed && conf.bundle != true)
 
 		if(!debugMode) {
-			out << "<script src=\"${assetPath(src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
+			out << "<script src=\"${assetPath(src:src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
 		} else {
 			if (src.lastIndexOf(".") >= 0) {
 				uri = src.substring(0, src.lastIndexOf("."))
@@ -64,7 +64,7 @@ class AssetsTagLib {
 	    def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && !grailsApplication.warDeployed && conf.bundle != true)
 
 		if(!debugMode) {
-			out << "<link rel=\"stylesheet\" href=\"${assetPath(src)} ${paramsToHtmlAttr(attrs)}\"/>"
+			out << link([rel: 'stylesheet', href:src] + attrs)
 		} else {
 			if (src.lastIndexOf(".") >= 0) {
 				uri = src.substring(0, src.lastIndexOf("."))
@@ -87,7 +87,7 @@ class AssetsTagLib {
 
 	def image = { attrs ->
 		def src = attrs.remove('src')
-		out << "<img src=\"${assetPath(src)}\" ${paramsToHtmlAttr(attrs)}/>"
+		out << "<img src=\"${assetPath(src:src)}\" ${paramsToHtmlAttr(attrs)}/>"
 	}
 
 
@@ -98,34 +98,12 @@ class AssetsTagLib {
 	 */
 	def link = { attrs ->
 		def href = attrs.remove('href')
-		out << "<link ${paramsToHtmlAttr(attrs)} href=\"${assetPath(href)}\"/>"
+		out << "<link ${paramsToHtmlAttr(attrs)} href=\"${assetPath(src:href)}\"/>"
 	}
 
 
 	Closure assetPath = { attrs ->
-		def src
-		def ignorePrefix = false
-    if (attrs instanceof Map) {
-    	src = attrs.src
-    	ignorePrefix = attrs.containsKey('ignorePrefix')? attrs.ignorePrefix : false
-    } else {
-    	src = attrs
-    }
-
-		def conf = grailsApplication.config.grails.assets
-
-		def assetRootPath = assetUriRootPath(grailsApplication, request)
-		def assetUrl = (!ignorePrefix && conf.url) ? conf.url : "$assetRootPath"
-		if(assetUrl instanceof Closure) {
-			assetUrl = assetUrl(request)
-		}
-		if(conf.precompiled) {
-			def realPath = conf.manifest.getProperty(src)
-			if(realPath) {
-				return "${assetUrl}${realPath}"
-			}
-		}
-		return "${assetUrl}${src}"
+		g.assetPath(attrs)
 	}
 
 	Closure assetPathExists = { attrs, body ->
@@ -152,17 +130,7 @@ class AssetsTagLib {
 	}
 
 	private paramsToHtmlAttr(attrs) {
-		attrs.collect { key, value -> "${key}=\"${value.replace('\'', '\\\'')}\"" }?.join(" ")
+		attrs.collect { key, value -> "${key}=\"${value.toString().replace('\'', '\\\'')}\"" }?.join(" ")
 	}
 
-
-
-
-	private assetUriRootPath(grailsApplication, request) {
-		def context = grailsApplication.mainContext
-		def conf    = grailsApplication.config.grails.assets
-		def mapping = context.assetProcessorService.assetMapping
-
-		return conf.url ?: (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
-	}
 }

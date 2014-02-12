@@ -14,12 +14,12 @@ class AssetMethodTagLib {
 	def assetPath = { attrs ->
 		def src
 		def ignorePrefix = false
-    if (attrs instanceof Map) {
-    	src = attrs.src
-    	ignorePrefix = attrs.containsKey('ignorePrefix')? attrs.ignorePrefix : false
-    } else {
-    	src = attrs
-    }
+		if (attrs instanceof Map) {
+			src = attrs.src
+			ignorePrefix = attrs.containsKey('ignorePrefix')? attrs.ignorePrefix : false
+		} else {
+			src = attrs
+		}
 
 		def conf = grailsApplication.config.grails.assets
 
@@ -39,7 +39,7 @@ class AssetMethodTagLib {
 	private assetUriRootPath(grailsApplication, request) {
 		def context = grailsApplication.mainContext
 		def conf    = grailsApplication.config.grails.assets
-		def mapping = context.assetProcessorService.assetMapping
+		def mapping = assetProcessorService.assetMapping
 
 		return conf.url ?: (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
 	}
