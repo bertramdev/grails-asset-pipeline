@@ -218,10 +218,10 @@ Asset Pipeline adds a few new taglibs to properly reference your assets. These t
 This will only be displayed <span class="java&#45;keyword">if</span> the asset exists
 &#60;/asset:assetPathExists&#62;</pre></div><p class="paragraph"/>or<p class="paragraph"/><div class="code"><pre>asset.assetPathExists(src: 'test.js') //returns <span class="java&#45;keyword">true</span> or <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/><h4>Deferred Scripts</h4><p class="paragraph"/>Asset-Pipeline provides a set of tags that can be used to ensure script blocks are deferred to the end of your page. This is not recommended as its not very unobtrusive, but has been added to help newcomers upgrade existing apps from resources.<p class="paragraph"/><div class="code"><pre>&#60;asset:script type=<span class="java&#45;quote">"text/javascript"</span>&#62;
   console.log(<span class="java&#45;quote">"Hello World"</span>);
-&#60;/asset&#62;
+&#60;/asset:script&#62;
 &#60;asset:script type=<span class="java&#45;quote">"text/javascript"</span>&#62;
   console.log(<span class="java&#45;quote">"Hello World 2"</span>);
-&#60;/asset&#62;</pre></div><p class="paragraph"/>Now to render the output of these scripts simply use the following:<p class="paragraph"/><div class="code"><pre>&#60;asset:deferredScripts/&#62;</pre></div><p class="paragraph"/><h3>Stylesheet References</h3><p class="paragraph"/>Stylesheets commonly make reference to images and in some cases other css files using the '@import' directive. With the asset-pipeline in Grails, relative paths can be recalculated and automatically reference the proper file.
+&#60;/asset:script&#62;</pre></div><p class="paragraph"/>Now to render the output of these scripts simply use the following:<p class="paragraph"/><div class="code"><pre>&#60;asset:deferredScripts/&#62;</pre></div><p class="paragraph"/><h3>Stylesheet References</h3><p class="paragraph"/>Stylesheets commonly make reference to images and in some cases other css files using the '@import' directive. With the asset-pipeline in Grails, relative paths can be recalculated and automatically reference the proper file.
 For example, if you have a css file that looks like this:<p class="paragraph"/><div class="code"><pre>body &#123;
 	background: url('/assets/mybg.png') top left repeat&#45;all;
 &#125;</pre></div><p class="paragraph"/>The generated output of this css file will be exactly the same:<p class="paragraph"/><div class="code"><pre>body &#123;
