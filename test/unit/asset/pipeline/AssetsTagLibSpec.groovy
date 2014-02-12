@@ -109,5 +109,32 @@ class AssetsTagLibSpec extends Specification {
     expect:
       tagLib.link(href: assetSrc, rel:'test') == '<link rel="test" href="/assets/grails_logo.png"/>'
   }
-    
+
+  void "test if asset path exists in dev mode"() {
+    given:
+      def fileUri = "asset-pipeline/test/test.css"
+      grailsApplication.config.grails.assets.precompiled = false
+    expect:
+      tagLib.assetPathExists([src: fileUri], 'true') != ''
+  }
+
+  void "test if asset path exists in prod mode"() {
+    given:
+      def fileUri = "asset-pipeline/test/test.css"
+      Properties manifestProperties = new Properties()
+      manifestProperties.setProperty(fileUri,fileUri)
+
+      grailsApplication.config.grails.assets.precompiled = false
+      grailsApplication.config.grails.assets.manifest = manifestProperties
+    expect:
+      tagLib.assetPathExists([src: fileUri], 'true') != ''
+  }
+
+  void "asset path should not exist in dev mode"() {
+    given:
+      def fileUri = "asset-pipeline/test/notfound.css"
+      grailsApplication.config.grails.assets.precompiled = false
+    expect:
+      tagLib.assetPathExists([src: fileUri], 'true') == ''
+  }
 }

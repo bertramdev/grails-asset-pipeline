@@ -105,4 +105,5 @@ class AssetProcessorServiceSpec extends Specification {
             uncompiledFile == null
     }
 
+
 }
