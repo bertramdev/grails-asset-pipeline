@@ -64,8 +64,8 @@ class AssetsTagLibSpec extends Specification {
       output = tagLib.javascript(src: assetSrc)
 
     then:
-      1 * assetProcessorServiceMock.getDependencyList('asset-pipeline/test/test', 'application/javascript', 'js') >> { [[path: "/assets/asset-pipeline/test/test.js"],[path:"/assets/asset-pipeline/test/test2.js"]] }
-      // response.contentAsString == '<script src="/assets/asset-pipeline/test/test.js" type="text/javascript" ></script>'
+      1 * assetProcessorServiceMock.getDependencyList('asset-pipeline/test/test', 'application/javascript', 'js') >> { [[path: "asset-pipeline/test/test.js"],[path:"asset-pipeline/test/test2.js"]] }
+      output == '<script src="/assets/asset-pipeline/test/test.js?compile=false" type="text/javascript" ></script><script src="/assets/asset-pipeline/test/test2.js?compile=false" type="text/javascript" ></script>'
     
   }
 
@@ -75,6 +75,25 @@ class AssetsTagLibSpec extends Specification {
       def assetSrc = "asset-pipeline/test/test.css"
     expect:
       tagLib.stylesheet(href: assetSrc) == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css"/>'
+  }
+
+  void "should return stylesheet link tag with seperated files when debugMode is on"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = false
+      grailsApplication.config.grails.assets.allowDebugParam = true
+      params."_debugAssets" = "y"
+      def stringWriter = new StringWriter()
+      
+      def assetSrc = "asset-pipeline/test/test.css"
+      def output
+    when:
+      // tagLib.out = stringWriter
+      output = tagLib.stylesheet(src: assetSrc)
+
+    then:
+      1 * assetProcessorServiceMock.getDependencyList('asset-pipeline/test/test', 'text/css', 'css') >> { [[path: "asset-pipeline/test/test.css"],[path:"asset-pipeline/test/test2.css"]] }
+      output == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css?compile=false"  /><link rel="stylesheet" href="/assets/asset-pipeline/test/test2.css?compile=false"  />'
+    
   }
 
   void "should return image tag"() {
