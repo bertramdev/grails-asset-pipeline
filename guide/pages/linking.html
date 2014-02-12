@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3.3 Linking to Assets 1.5.1</title>
+    <title>3.3 Linking to Assets 1.5.3</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -74,7 +74,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 1.5.1</p>
+                    <p><strong>Version:</strong> 1.5.3</p>
 
                     
                 </div>
@@ -87,9 +87,14 @@ function addJsClass() {
 Asset Pipeline adds a few new taglibs to properly reference your assets. These taglibs automatically handle swapout of cache digest names during production use as well as any custom url mapping changes.<p class="paragraph"/><h3>Views</h3><p class="paragraph"/><div class="code"><pre>&#60;head&#62;
   &#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span>/&#62;
   &#60;asset:stylesheet src=<span class="java&#45;quote">"application.css"</span>/&#62;
-&#60;/head&#62;</pre></div><p class="paragraph"/>The primary include tags, as show above, are quite useful for including your relevant javascript or stylesheet files. Notice that you do not have to prefix with '/assets' as this is handled automatically by the tag.<p class="paragraph"/>In GSP views you can also reference images included in the asset-pipeline with the following tag:<p class="paragraph"/><div class="code"><pre>&#60;asset:image src=<span class="java&#45;quote">"logo.png"</span> width=<span class="java&#45;quote">"200"</span> height=<span class="java&#45;quote">"200"</span>/&#62;</pre></div><p class="paragraph"/>Assets can also be referenced within subdirectories if required and simply require the use of the relative path.<p class="paragraph"/><div class="code"><pre>&#60;asset:image src=<span class="java&#45;quote">"icons/delete.png"</span>/&#62;</pre></div><p class="paragraph"/>It is also possible to return an assetPath as a string for injection in your own tags:<p class="paragraph"/><div class="code"><pre>&#60;link href=<span class="java&#45;quote">"$&#123;assetPath(src: 'manifest.json')&#125;"</span>/&#62;</pre></div><p class="paragraph"/>And Lastly it is also possible to execute a code section only if an asset exists or to simply test for existence<p class="paragraph"/><div class="code"><pre>&#60;asset:assetPathExists src=<span class="java&#45;quote">"test.js"</span>&#62;
+&#60;/head&#62;</pre></div><p class="paragraph"/>The primary include tags, as show above, are quite useful for including your relevant javascript or stylesheet files. Notice that you do not have to prefix with '/assets' as this is handled automatically by the tag.<p class="paragraph"/>In GSP views you can also reference images included in the asset-pipeline with the following tag:<p class="paragraph"/><div class="code"><pre>&#60;asset:image src=<span class="java&#45;quote">"logo.png"</span> width=<span class="java&#45;quote">"200"</span> height=<span class="java&#45;quote">"200"</span>/&#62;</pre></div><p class="paragraph"/>Assets can also be referenced within subdirectories if required and simply require the use of the relative path.<p class="paragraph"/><div class="code"><pre>&#60;asset:image src=<span class="java&#45;quote">"icons/delete.png"</span>/&#62;</pre></div><p class="paragraph"/>It is also possible to return an assetPath as a string for injection in your own tags:<p class="paragraph"/><div class="code"><pre>&#60;link href=<span class="java&#45;quote">"$&#123;assetPath(src: 'manifest.json')&#125;"</span>/&#62;</pre></div><p class="paragraph"/>It is also possible to execute a code section only if an asset exists or to simply test for existence<p class="paragraph"/><div class="code"><pre>&#60;asset:assetPathExists src=<span class="java&#45;quote">"test.js"</span>&#62;
 This will only be displayed <span class="java&#45;keyword">if</span> the asset exists
-&#60;/asset:assetPathExists&#62;</pre></div><p class="paragraph"/>or<p class="paragraph"/><div class="code"><pre>asset.assetPathExists(src: 'test.js') //returns <span class="java&#45;keyword">true</span> or <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/><h3>Stylesheet References</h3><p class="paragraph"/>Stylesheets commonly make reference to images and in some cases other css files using the '@import' directive. With the asset-pipeline in Grails, relative paths can be recalculated and automatically reference the proper file.
+&#60;/asset:assetPathExists&#62;</pre></div><p class="paragraph"/>or<p class="paragraph"/><div class="code"><pre>asset.assetPathExists(src: 'test.js') //returns <span class="java&#45;keyword">true</span> or <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/><h4>Deferred Scripts</h4><p class="paragraph"/>Asset-Pipeline provides a set of tags that can be used to ensure script blocks are deferred to the end of your page. This is not recommended as its not very unobtrusive, but has been added to help newcomers upgrade existing apps from resources.<p class="paragraph"/><div class="code"><pre>&#60;asset:script type=<span class="java&#45;quote">"text/javascript"</span>&#62;
+  console.log(<span class="java&#45;quote">"Hello World"</span>);
+&#60;/asset&#62;
+&#60;asset:script type=<span class="java&#45;quote">"text/javascript"</span>&#62;
+  console.log(<span class="java&#45;quote">"Hello World 2"</span>);
+&#60;/asset&#62;</pre></div><p class="paragraph"/>Now to render the output of these scripts simply use the following:<p class="paragraph"/><div class="code"><pre>&#60;asset:deferredScripts/&#62;</pre></div><p class="paragraph"/><h3>Stylesheet References</h3><p class="paragraph"/>Stylesheets commonly make reference to images and in some cases other css files using the '@import' directive. With the asset-pipeline in Grails, relative paths can be recalculated and automatically reference the proper file.
 For example, if you have a css file that looks like this:<p class="paragraph"/><div class="code"><pre>body &#123;
 	background: url('/assets/mybg.png') top left repeat&#45;all;
 &#125;</pre></div><p class="paragraph"/>The generated output of this css file will be exactly the same:<p class="paragraph"/><div class="code"><pre>body &#123;
