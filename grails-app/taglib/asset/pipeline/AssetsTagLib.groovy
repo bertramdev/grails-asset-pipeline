@@ -117,7 +117,7 @@ class AssetsTagLib {
 			return
 		}
 		assetBlocks.each { assetBlock ->
-			out << "<script paramsToHtmlAttr(assetBlock.attrs)>"
+			out << "<script ${paramsToHtmlAttr(assetBlock.attrs)}>"
 			out << assetBlock.body
 			out << "</script>"
 		}
