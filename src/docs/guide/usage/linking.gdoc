@@ -29,7 +29,7 @@ It is also possible to return an assetPath as a string for injection in your own
 <link href="${assetPath(src: 'manifest.json')}"/>
 {code}
 
-And Lastly it is also possible to execute a code section only if an asset exists or to simply test for existence
+It is also possible to execute a code section only if an asset exists or to simply test for existence
 
 {code}
 <asset:assetPathExists src="test.js">
@@ -41,6 +41,25 @@ or
 
 {code}
 asset.assetPathExists(src: 'test.js') //returns true or false
+{code}
+
+h4. Deferred Scripts
+
+Asset-Pipeline provides a set of tags that can be used to ensure script blocks are deferred to the end of your page. This is not recommended as its not very unobtrusive, but has been added to help newcomers upgrade existing apps from resources.
+
+{code}
+<asset:script type="text/javascript">
+  console.log("Hello World");
+</asset>
+<asset:script type="text/javascript">
+  console.log("Hello World 2");
+</asset>
+{code}
+
+Now to render the output of these scripts simply use the following:
+
+{code}
+<asset:deferredScripts/>
 {code}
 
 h3. Stylesheet References
