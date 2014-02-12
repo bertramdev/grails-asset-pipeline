@@ -31,4 +31,16 @@ class CssProcessorSpec extends IntegrationSpec {
         then:
             processedCss.contains("url('../../grails_logo.png')")
     }
+
+    def "replaces image urls with relative paths and cache digest names in precompiler mode"() {
+        given: "some css and a CssProcessor"
+            
+            def cssProcessor = new CssProcessor(true)
+            def file = new File("grails-app/assets/stylesheets/asset-pipeline/test/test.css")
+            def assetFile    = new CssAssetFile(file: file)
+        when:
+            def processedCss = cssProcessor.process(assetFile.file.text, assetFile)
+        then:
+            processedCss.contains("url('../../grails_logo-eabe4af98753b0163266d7e68bbd32e3.png')")
+    }
 }

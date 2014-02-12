@@ -30,7 +30,7 @@ class UglifyJsProcessorSpec extends IntegrationSpec {
             def uglifyJsProcessor = new UglifyJsProcessor()
 
         when:
-            def minifiedJs = uglifyJsProcessor.process(js,[strictSemicolons: false])
+            def minifiedJs = uglifyJsProcessor.process(js,[strictSemicolons: false, mangleOptions:[mangle: true]])
         then:
             minifiedJs.size() < js.size()
     }
