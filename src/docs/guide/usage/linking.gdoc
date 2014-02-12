@@ -50,10 +50,10 @@ Asset-Pipeline provides a set of tags that can be used to ensure script blocks a
 {code}
 <asset:script type="text/javascript">
   console.log("Hello World");
-</asset>
+</asset:script>
 <asset:script type="text/javascript">
   console.log("Hello World 2");
-</asset>
+</asset:script>
 {code}
 
 Now to render the output of these scripts simply use the following:
