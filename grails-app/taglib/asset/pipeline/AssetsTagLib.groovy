@@ -102,6 +102,28 @@ class AssetsTagLib {
 	}
 
 
+	def script = { attrs, body ->
+		def assetBlocks = request.getAttribute('assetScriptBlocks')
+		if(!assetBlocks) {
+			assetBlocks = []
+		}
+		assetBlocks << [attrs: attrs, body: body]
+		request.setAttribute('assetScriptBlocks')
+	}
+
+	def deferredScripts = { attrs ->
+		def assetBlocks = request.getAttribute('assetScriptBlocks')
+		if(!assetBlocks) {
+			return
+		}
+		assetBlocks.each { assetBlock ->
+			out << "<script paramsToHtmlAttr(assetBlock.attrs)>"
+			out << assetBlock.body
+			out << "</script>"
+		}
+	}
+
+
 	Closure assetPath = { attrs ->
 		g.assetPath(attrs)
 	}
