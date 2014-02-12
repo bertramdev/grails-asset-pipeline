@@ -108,7 +108,7 @@ class AssetsTagLib {
 			assetBlocks = []
 		}
 		assetBlocks << [attrs: attrs, body: body]
-		request.setAttribute('assetScriptBlocks')
+		request.setAttribute('assetScriptBlocks', assetBlocks)
 	}
 
 	def deferredScripts = { attrs ->
@@ -117,9 +117,7 @@ class AssetsTagLib {
 			return
 		}
 		assetBlocks.each { assetBlock ->
-			out << "<script ${paramsToHtmlAttr(assetBlock.attrs)}>"
-			out << assetBlock.body
-			out << "</script>"
+			out << "<script ${paramsToHtmlAttr(assetBlock.attrs)}>${assetBlock.body}</script>"
 		}
 	}
 

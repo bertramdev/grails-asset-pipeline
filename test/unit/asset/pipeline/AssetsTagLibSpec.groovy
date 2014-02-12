@@ -137,4 +137,15 @@ class AssetsTagLibSpec extends Specification {
     expect:
       tagLib.assetPathExists([src: fileUri], 'true') == ''
   }
+
+  void "should render deferred scripts"() {
+    given:
+      def script1 = "console.log('hello world 1');"
+      def script2 = "console.log('hello world 2');"
+    when:
+      tagLib.script([type:'text/javascript'], script1)
+      tagLib.script([type:'text/javascript'], script2)
+    then:
+      tagLib.deferredScripts() == "<script type=\"text/javascript\">${script1}</script><script type=\"text/javascript\">${script2}</script>"
+  }
 }
