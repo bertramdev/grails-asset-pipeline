@@ -1,39 +1,13 @@
 The @AssetFile@ definition is where our journey begins. This is the defining file for various file types. Without this definition, the asset-pipeline will treat an unknown file type as a standard passthrough resource. As an example, lets first look at the @CssAssetFile@ definition.
 
 {code}
-class CssAssetFile {
+class CssAssetFile extends AbstractAssetFile {
   static final String contentType = 'text/css'
   static extensions = ['css']
   static compiledExtension = 'css'
   static processors = [CssProcessor]
 
-  File file
-  def baseFile
-  def encoding
-
-  CssAssetFile(file,baseFile=null) {
-    this.file = file
-    this.baseFile = baseFile
-  }
-
-  def processedStream(precompiler=false) {
-
-    def fileText
-    if(baseFile?.encoding || encoding) {
-      fileText = file?.getText(baseFile?.encoding ? baseFile.encoding : encoding)
-    } else {
-      fileText = file?.text
-    }
-
-    for(processor in processors) {
-      def processInstance = processor.newInstance(precompiler)
-      fileText = processInstance.process(fileText, this)
-    }
-    return fileText
-    // Return File Stream
-  }
-
-  def directiveForLine(line) {
+  String directiveForLine(String line) {
     line.find(/\*=(.*)/) { fullMatch, directive -> return directive }
   }
 }
@@ -76,26 +50,18 @@ h4. Processing Data streams
 Processors are used to precompile certain assets, and/or adjust the file path contents. The Processor class itself will get a more in depth explanation in the next section. For now the part we want to look at is the processedStream function.
 
 {code}
-def processedStream(precompiler=false) {
+String processedStream(Boolean precompiler) {
+  def fileText
+  def skipCache = precompiler ?: (!processors || processors.size() == 0)
 
-  def fileText = file?.text
-
-  for(processor in processors) {
-    def processInstance = processor.newInstance(precompiler)
-    fileText = processInstance.process(fileText, this)
+  if(baseFile?.encoding || encoding) {
+    fileText = file?.getText(baseFile?.encoding ? baseFile.encoding : encoding)
+  } else {
+    fileText = file?.text
   }
-  return fileText
-  // Return File Stream
-}
-{code}
 
-The example above iterates over all of the processor classes defined in our static @processors@ variable. This creates a new instance and informs the processor whether this is a developer mode request or being issued by the precompiler (useful for determining if file replacements need to be cache digested or not). The @processedStream@ method is required to be in every @AssetFile@ definition and some do vary. For example, the LESS and Coffee definitions take advantage of the @CacheManager@ to reduce development overhead by only recompiling changed files. An example of this is provided below:
-
-{code}
-def processedStream(precompiler=false) {
-  def fileText = file?.text
   def md5 = AssetHelper.getByteDigest(fileText.bytes)
-  if(!precompiler) {
+  if(!skipCache) {
     def cache = CacheManager.findCache(file.canonicalPath, md5)
     if(cache) {
       return cache
@@ -106,16 +72,15 @@ def processedStream(precompiler=false) {
     fileText = processInstance.process(fileText, this)
   }
 
-  if(!precompiler) {
+  if(!skipCache) {
     CacheManager.createCache(file.canonicalPath,md5,fileText)
   }
 
   return fileText
-  // Return File Stream
 }
 {code}
 
-In the future, we may further improve this extensibility by providing a default base class for these standard style stream methods.
+The example above iterates over all of the processor classes defined in our static @processors@ variable. This creates a new instance and informs the processor whether this is a developer mode request or being issued by the precompiler (useful for determining if file replacements need to be cache digested or not). The @processedStream@ method is now a part of the @AbstractAssetFile@ definition and handles cache management if there are processors.
 
 h4. Adding the Asset definiton to the list of AssetFiles
 
