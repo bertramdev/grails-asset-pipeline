@@ -1,16 +1,175 @@
 package asset.pipeline
 import org.apache.tools.ant.DirectoryScanner
-
+import groovy.util.logging.Log4j
+import asset.pipeline.processors.UglifyJsProcessor
+@Log4j
 class AssetCompiler {
 
 	def includeRules = [:]
 	def excludeRules = [:]
 	def assetPaths = [:]
+	def options = [:]
+	def eventListener
+  Properties manifestProperties
 
-	static compressExcludesExtensions = ['png', 'jpg','jpeg', 'gif', 'zip', 'gz']
+  AssetCompiler(options=[:], eventListener) {
+  	this.eventListener = eventListener
+  	this.options = options
+  	if(!options.compileDir) {
+  		options.compileDir = "target/assets"
+  	}
+  	if(!options.excludesGzip) {
+  		options.excludesGzip = ['png', 'jpg','jpeg', 'gif', 'zip', 'gz']
+  	} else {
+  		options.excludesGzip += ['png', 'jpg','jpeg', 'gif', 'zip', 'gz']
+  	}
+	  // Load in additional assetSpecs
+	  options.specs?.each { spec ->
+	  	def specClass = this.class.classLoader.loadClass(spec)
+	  	if(specClass) {
+	    	AssetHelper.assetSpecs += specClass
+	  	}
+	  }
+  	manifestProperties = new Properties()
+  }
 
-	void addPaths(String key, String paths) {
+  void compile() {
+  	def assetDir       = initializeWorkspace()
+  	def filesToProcess = this.getAllAssets()
+  	def uglifyJsProcessor = new UglifyJsProcessor()
+		// Lets clean up assets that are no longer being compiled
+		removeDeletedFiles(filesToProcess)
+
+		filesToProcess.eachWithIndex { fileName, index ->
+      eventListener?.triggerEvent("StatusUpdate", "Processing File ${index+1} of ${filesToProcess.size()} - ${fileName}")
+
+			def digestName
+			def isUnchanged = false
+			def assetFile   = AssetHelper.assetForFile(AssetHelper.fileForUri(filesToProcess[index],null,null))
+			def extension   = AssetHelper.extensionFromURI(fileName)
+			fileName        = AssetHelper.nameWithoutExtension(fileName)
+
+			if(assetFile) {
+				def fileData
+				if(assetFile.class.name != 'java.io.File') {
+					if(assetFile.compiledExtension) {
+						extension = assetFile.compiledExtension
+						fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(fileName,assetFile)
+					}
+					def contentType = (assetFile.contentType instanceof String) ? assetFile.contentType : assetFile.contentType[0]
+					def directiveProcessor = new DirectiveProcessor(contentType, true)
+					fileData   = directiveProcessor.compile(assetFile)
+					digestName = AssetHelper.getByteDigest(fileData.bytes)
+
+					def existingDigestFile = manifestProperties.getProperty("${fileName}.${extension}")
+					if(existingDigestFile && existingDigestFile == "${fileName}-${digestName}.${extension}") {
+						isUnchanged=true
+					}
+
+					if(fileName.indexOf(".min") == -1 && contentType == 'application/javascript' && options.minifyJs && !isUnchanged) {
+						def newFileData = fileData
+						try {
+				      eventListener?.triggerEvent("StatusUpdate", "Uglifying File ${index+1} of ${filesToProcess.size()} - ${fileName}")
+							newFileData = uglifyJsProcessor.process(fileData, options.minifyOptions ?: [:])
+
+						} catch(e) {
+							log.error("Uglify JS Exception", e)
+							newFileData = fileData
+						}
+						fileData = newFileData
+					}
+
+					if(assetFile.encoding) {
+						fileData = fileData.getBytes(assetFile.encoding)
+					} else {
+						fileData = fileData.bytes
+					}
+
+				} else {
+					digestName = AssetHelper.getByteDigest(assetFile.bytes)
+					def existingDigestFile = manifestProperties.getProperty("${fileName}.${extension}")
+					if(existingDigestFile && existingDigestFile == "${fileName}-${digestName}.${extension}") {
+						isUnchanged=true
+					}
+				}
+
+				if(!isUnchanged) {
+					def outputFileName = fileName
+					if(extension) {
+						outputFileName = "${fileName}.${extension}"
+					}
+					def outputFile = new File(options.compileDir, "${outputFileName}")
+
+					def parentTree = new File(outputFile.parent)
+					parentTree.mkdirs()
+					outputFile.createNewFile()
+
+					if(fileData) {
+						def outputStream = outputFile.newOutputStream()
+						outputStream.write(fileData, 0 , fileData.length)
+						outputStream.flush()
+						outputStream.close()
+					} else {
+						if(assetFile.class.name == 'java.io.File') {
+							AssetHelper.copyFile(assetFile, outputFile)
+						} else {
+							AssetHelper.copyFile(assetFile.file, outputFile)
+							digestName = AssetHelper.getByteDigest(assetFile.file.bytes)
+						}
+					}
+
+					if(extension) {
+						try {
+
+							def digestedFile = new File(options.compileDir,"${fileName}-${digestName}${extension ? ('.' + extension) : ''}")
+							digestedFile.createNewFile()
+							AssetHelper.copyFile(outputFile, digestedFile)
+							manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${digestName}${extension ? ('.' + extension) : ''}")
+
+							// Zip it Good!
+							if(!options.excludesGzip.find{ it.toLowerCase() == extension.toLowerCase()}) {
+								eventListener?.triggerEvent("StatusUpdate","Compressing File ${index+1} of ${filesToProcess.size()} - ${fileName}")
+								createCompressedFiles(outputFile, digestedFile)
+							}
+
+
+						} catch(ex) {
+							log.error("Error Compiling File ${fileName}.${extension}",ex)
+						}
+					}
+				}
+
+			}
+
+		}
+
+		saveManifest()
+		eventListener?.triggerEvent("StatusUpdate","Finished Precompiling Assets")
+
+  }
+
+  private initializeWorkspace() {
+  		 // Check for existing Compiled Assets
+	  def assetDir = new File(options.compileDir)
+	  if(assetDir.exists()) {
+	  	def manifestFile = new File(options.compileDir,"manifest.properties")
+	  	if(manifestFile.exists())
+		  	manifestProperties.load(manifestFile.newDataInputStream())
+	  } else {
+	  	assetDir.mkdirs()
+	  }
+	  return assetDir
+  }
+
+	void addPaths(String key, paths) {
 		// If key is not specified, group with "application"
+		def assetPath = assetPaths[key ?: 'application'] ?: []
+		if(paths instanceof String) {
+			paths = [paths]
+		}
+		assetPath += paths
+		assetPath.unique()
+		assetPaths[key ?: 'application'] = assetPath
 
 	}
 
@@ -27,7 +186,7 @@ class AssetCompiler {
 		if(includeRules[key]) {
 			includes += includeRules[key]
 		}
-		return inclues.unique()
+		return includes.unique()
 	}
 
 	def getExcludesForPathKey(String key) {
@@ -43,38 +202,103 @@ class AssetCompiler {
 	}
 
 
-	// def getAllAssets { grailsApplication, assetHelper ->
-	// 	DirectoryScanner scanner = new DirectoryScanner()
-	// 	def assetPaths           = assetHelper.getAssetPathsByPlugin()
-	// 	def filesToProcess       = []
+	def getAllAssets() {
+		DirectoryScanner scanner = new DirectoryScanner()
+		def assetPaths           = assetPaths
+		def filesToProcess       = []
 
-	// 	assetPaths.each { key, value ->
-	// 		scanner.setExcludes(excludesForPlugin(grailsApplication, key) as String[])
-	// 		scanner.setIncludes(["**/*"] as String[])
-	// 		for(path in value) {
-	// 	    scanner.setBasedir(path)
-	// 	    scanner.setCaseSensitive(false)
-	// 	    scanner.scan()
-	// 	    filesToProcess += scanner.getIncludedFiles().flatten()
-	// 		}
+		assetPaths.each { key, value ->
+			scanner.setExcludes(getExcludesForPathKey(key) as String[])
+			scanner.setIncludes(["**/*"] as String[])
+			for(path in value) {
+		    scanner.setBasedir(path)
+		    scanner.setCaseSensitive(false)
+		    scanner.scan()
+		    filesToProcess += scanner.getIncludedFiles().flatten()
+			}
 
-	// 		scanner.setExcludes([] as String[])
-	// 		def includes = includesForPlugin(grailsApplication, key)
-	// 		if(includes.size() > 0) {
-	// 			scanner.setIncludes(includes as String[])
-	// 			for(path in value) {
-	// 		    scanner.setBasedir(path)
-	// 		    scanner.setCaseSensitive(false)
-	// 		    scanner.scan()
-	// 		    filesToProcess += scanner.getIncludedFiles().flatten()
-	// 			}
-	// 		}
+			scanner.setExcludes([] as String[])
+			def includes = getIncludesForPathKey(key)
+			if(includes.size() > 0) {
+				scanner.setIncludes(includes as String[])
+				for(path in value) {
+			    scanner.setBasedir(path)
+			    scanner.setCaseSensitive(false)
+			    scanner.scan()
+			    filesToProcess += scanner.getIncludedFiles().flatten()
+				}
+			}
 
-	// 	}
+		}
 
+		filesToProcess.unique()
 
-	// 	filesToProcess.unique()
+		return filesToProcess //Make sure we have a unique set
+	}
 
-	// 	return filesToProcess //Make sure we have a unique set
-	// }
+	private saveManifest() {
+		// Update Manifest
+		def manifestFile = new File(options.compileDir,'manifest.properties')
+		manifestProperties.store(manifestFile.newWriter(),"")
+	}
+
+	private createCompressedFiles(outputFile, digestedFile) {
+		def targetStream  = new java.io.ByteArrayOutputStream()
+		def zipStream     = new java.util.zip.GZIPOutputStream(targetStream)
+		def zipFile       = new File("${outputFile.getAbsolutePath()}.gz")
+		def zipFileDigest = new File("${digestedFile.getAbsolutePath()}.gz")
+
+		zipStream.write(outputFile.bytes)
+		zipFile.createNewFile()
+		zipFileDigest.createNewFile()
+		zipStream.finish()
+
+		zipFile.bytes = targetStream.toByteArray()
+		AssetHelper.copyFile(zipFile, zipFileDigest)
+		targetStream.close()
+	}
+
+	private removeDeletedFiles(filesToProcess) {
+		def compiledFileNames = filesToProcess.collect { fileToProcess ->
+			def fileName    = fileToProcess
+			def extension   = AssetHelper.extensionFromURI(fileName)
+			fileName        = AssetHelper.nameWithoutExtension(fileName)
+			def assetFile   = AssetHelper.assetForFile(AssetHelper.fileForUri(fileToProcess,null,null))
+			if(assetFile && assetFile.class.name != 'java.io.File' && assetFile.compiledExtension) {
+				extension = assetFile.compiledExtension
+				fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(fileName,assetFile)
+			}
+			return "${fileName}.${extension}"
+		}
+
+		def propertiesToRemove = []
+		manifestProperties.keySet().each { compiledName ->
+			def fileFound = compiledFileNames.find{ it == compiledName.toString()}
+			if(!fileFound) {
+				def digestedName = manifestProperties.getProperty(compiledName)
+				def compiledFile = new File(options.compileDir, compiledName)
+				def digestedFile = new File(options.compileDir, digestedName)
+				def zippedFile = new File(options.compileDir, "${compiledName}.gz")
+				def zippedDigestFile = new File(options.compileDir, "${digestedName}.gz")
+				if(compiledFile.exists()) {
+					compiledFile.delete()
+				}
+				if(digestedFile.exists()) {
+					digestedFile.delete()
+				}
+				if(zippedFile.exists()) {
+					zippedFile.delete()
+				}
+				if(zippedDigestFile.exists()) {
+					zippedDigestFile.delete()
+				}
+				propertiesToRemove << compiledName
+			}
+		}
+
+		propertiesToRemove.each {
+			manifestProperties.remove(it)
+		}
+	}
+
 }
