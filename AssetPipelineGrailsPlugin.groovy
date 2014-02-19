@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 import grails.util.Environment
+import grails.plugin.webxml.FilterManager
+
 
 class AssetPipelineGrailsPlugin {
-    def version         = "1.5.5"
+    def version         = "1.5.6"
     def grailsVersion   = "2.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -53,6 +55,30 @@ class AssetPipelineGrailsPlugin {
 
         if(!application.config.grails.assets.containsKey("precompiled")) {
             application.config.grails.assets.precompiled = !Environment.isDevelopmentMode() || application.warDeployed
+        }
+    }
+
+    def getWebXmlFilterOrder() {
+        ["AssetPipelineFilter": FilterManager.GRAILS_WEB_REQUEST_POSITION - 120]
+    }
+
+    def doWithWebDescriptor = { xml ->
+        def mapping = application.config?.grails?.assets?.mapping ?: "assets"
+        def filters = xml.filter[0]
+        filters + {
+            'filter' {
+                'filter-name'('AssetPipelineFilter')
+                'filter-class'('asset.pipeline.AssetPipelineFilter')
+            }
+        }
+
+        def mappings = xml.'filter-mapping'[0]
+        mappings + {
+            'filter-mapping' {
+                'filter-name'('AssetPipelineFilter')
+                'url-pattern'("/${mapping}/*")
+                dispatcher('REQUEST')
+            }
         }
     }
 

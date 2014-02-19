@@ -22,13 +22,13 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+        provided(":webxml:1.4.1") 
+
         build ':release:2.2.1', ':rest-client-builder:1.0.3', {
             export = false
         }
         test ":code-coverage:1.2.7"
-        // compile ':functional-spock:0.6',':tomcat:2.2.4', {
-        //     export = false
-        // }
+        
         test ':spock:0.7', {
             excludes 'spock-grails-support', 'hibernate', 'grails-hibernate'
             export = false
