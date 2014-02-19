@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3 Usage 1.5.3</title>
+    <title>3 Usage 1.5.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -74,7 +74,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 1.5.3</p>
+                    <p><strong>Version:</strong> 1.5.4</p>
 
                     
                 </div>
@@ -90,6 +90,9 @@ function addJsClass() {
                     </div>
                     
                     <div class="toc-item" style="margin-left:0px"><a href="#linking"><strong>3.3</strong><span>Linking to Assets</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#encoding"><strong>3.4</strong><span>Encoding</span></a>
                     </div>
                     
                 </div>
@@ -144,7 +147,6 @@ In the examples above, 2 different directive prefixes were shown, one for css, a
 </blockquote>
 
 
-
 <h2 id="organization">3.2 Asset Organization</h2>
 Asset pipeline organization occurs within the "grails-app/assets" folder. This folder can exist within both the main application as well as a plugin.<p class="paragraph"/><blockquote class="note">
 A plugin will also include its web-app directory to better deal with plugins that wish to support both the resources plugin as well as asset-pipeline.
@@ -191,6 +193,13 @@ For example, if you have a css file that looks like this:<p class="paragraph"/><
 &#125;</pre></div><p class="paragraph"/><blockquote class="note">
 In production mode your image references or css references will automatically get their cache-digested name appended to them when using relative paths. More on this later.
 </blockquote>
+
+
+
+<h2 id="encoding">3.4 Encoding</h2>
+In some cases it may be necessary to specify an encoding for your assets. An example might be for Japanese characters in a javascript file. To do this 2 things must be done. First we simply set the charset attribute when we include are javascript file:<p class="paragraph"/><div class="code"><pre>&#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span> charset=<span class="java&#45;quote">"utf&#45;8"</span>/&#62;</pre></div><p class="paragraph"/>This should take care of testing in development mode and debugging. However, when we move to production/war mode the precompiler has no way to infer the desired encoding for compilation. To accomplish this we have the <code>//= encoding</code> directive. This can be placed at the top of your <code>application.js</code> to define the desired compilation encoding.<p class="paragraph"/><div class="code"><pre>//=encoding UTF&#45;8
+//=require_self
+//=require_tree .</pre></div><p class="paragraph"/>That's all there is to it.
 
 
 

@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4.3 Post-Processors 1.5.4</title>
+    <title>3.4 Encoding 1.5.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -59,16 +59,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/configuration.html">&lt;&lt; <strong>2</strong><span>Configuration</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
+                    <div class="toc-item next-right"><a href="../../guide/extending.html"><strong>4</strong><span>Extending Asset-Pipeline</span> >></a></div>
+                
 
 
                 <div class="project">
-                    <h1>4.3 Post-Processors - Reference Documentation</h1>
+                    <h1>3.4 Encoding - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> David Estes</p>
 
@@ -81,14 +83,18 @@ function addJsClass() {
 
                 
 
-<h2 id="postprocessors">4.3 Post-Processors</h2>
-Currently, PostProcessor extensibility is not available. This is currently a feature we are implementing to provide easier dropin for custom minifiers and compressors.
+<h2 id="encoding">3.4 Encoding</h2>
+In some cases it may be necessary to specify an encoding for your assets. An example might be for Japanese characters in a javascript file. To do this 2 things must be done. First we simply set the charset attribute when we include are javascript file:<p class="paragraph"/><div class="code"><pre>&#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span> charset=<span class="java&#45;quote">"utf&#45;8"</span>/&#62;</pre></div><p class="paragraph"/>This should take care of testing in development mode and debugging. However, when we move to production/war mode the precompiler has no way to infer the desired encoding for compilation. To accomplish this we have the <code>//= encoding</code> directive. This can be placed at the top of your <code>application.js</code> to define the desired compilation encoding.<p class="paragraph"/><div class="code"><pre>//=encoding UTF&#45;8
+//=require_self
+//=require_tree .</pre></div><p class="paragraph"/>That's all there is to it.
 
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/configuration.html">&lt;&lt; <strong>2</strong><span>Configuration</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/extending.html"><strong>4</strong><span>Extending Asset-Pipeline</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
