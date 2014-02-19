@@ -28,6 +28,10 @@ class AssetsController {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
             response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
             response.setDateHeader("Expires", 0); // Proxies.
+            if(params.encoding) {
+                response.setCharacterEncoding(params.encoding)
+            }
+
             if(format == 'text/html') {
                 render contentType: 'text/html', text: new String(assetFile)
             } else {
