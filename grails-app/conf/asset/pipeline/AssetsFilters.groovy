@@ -37,9 +37,19 @@ class AssetsFilters {
                     }
                 }
 
+
                 def format = servletContext.getMimeType(request.forwardURI)
+                def encoding = request.getCharacterEncoding()
+                if(encoding) {
+                    response.setCharacterEncoding(encoding)
+                }
+
+                // if(request.getAttribute('org.apache.tomcat.sendfile.support')) {
+                //     println "Tomcat Supports Send File"
+                // }
                 response.setContentType(format)
                 response.setHeader('Cache-Control','public, max-age=31536000')
+
                 response.outputStream << file.inputStream.getBytes()
                 return false
             }
