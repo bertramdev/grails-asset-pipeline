@@ -128,13 +128,13 @@ class AssetsTagLib {
 
 	def assetPathExists = { attrs, body ->
 		def src = attrs.remove('src')
-		println "Checking if ${src} exists"
-		if(isAssetPath(src)) {
-			if(body) {
-				out << body
-			}
-		}
-	}
+		def exists = isAssetPath(src)
+            if (exists){
+                out << (body() ?: true)
+            } else {
+                out << ''
+            } 
+    }
 
 	def isAssetPath(src) {
 		def conf = grailsApplication.config.grails.assets
