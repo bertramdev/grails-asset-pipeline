@@ -115,7 +115,31 @@ class AssetsTagLibSpec extends Specification {
       def fileUri = "asset-pipeline/test/test.css"
       grailsApplication.config.grails.assets.precompiled = false
     expect:
-      tagLib.assetPathExists([src: fileUri], 'true') != ''
+      tagLib.assetPathExists([src: fileUri])
+  }
+  
+  void "test if asset path is missing in dev mode"() {
+    given:
+      def fileUri = "asset-pipeline/test/missing.css"
+      grailsApplication.config.grails.assets.precompiled = false
+    expect:
+      !tagLib.assetPathExists([src: fileUri]) 
+  }
+  
+  void "test if asset path exists in dev mode and closure renders the body"() {
+    given:
+      def fileUri = "asset-pipeline/test/test.css"
+      grailsApplication.config.grails.assets.precompiled = false
+    expect:
+      applyTemplate( "<asset:assetPathExists src=\"$fileUri\">text to render</asset:assetPathExists>" ) == 'text to render'
+  }
+  
+  void "test if asset path is missing in dev mode and closure doesn't render the body"() {
+    given:
+      def fileUri = "asset-pipeline/test/missing.css"
+      grailsApplication.config.grails.assets.precompiled = false
+    expect:
+      applyTemplate( "<asset:assetPathExists src=\"$fileUri\">text to render</asset:assetPathExists>" ) == ''
   }
 
   void "test if asset path exists in prod mode"() {
@@ -127,7 +151,7 @@ class AssetsTagLibSpec extends Specification {
       grailsApplication.config.grails.assets.precompiled = false
       grailsApplication.config.grails.assets.manifest = manifestProperties
     expect:
-      tagLib.assetPathExists([src: fileUri], 'true') != ''
+      tagLib.assetPathExists([src: fileUri])
   }
 
   void "asset path should not exist in dev mode"() {
@@ -135,7 +159,7 @@ class AssetsTagLibSpec extends Specification {
       def fileUri = "asset-pipeline/test/notfound.css"
       grailsApplication.config.grails.assets.precompiled = false
     expect:
-      tagLib.assetPathExists([src: fileUri], 'true') == ''
+      !tagLib.assetPathExists([src: fileUri])
   }
 
   void "should render deferred scripts"() {
