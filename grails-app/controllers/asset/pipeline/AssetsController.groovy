@@ -5,9 +5,11 @@ class AssetsController {
 	def assetProcessorService
 
     def index() {
-        def uri = params.id
-        def extension = AssetHelper.extensionFromURI(request.forwardURI)
+        def uri          = params.id
+        def extension    = AssetHelper.extensionFromURI(request.forwardURI)
         def contentTypes = AssetHelper.assetMimeTypeForURI(request.forwardURI)
+        def encoding     = params.encoding ?: request.characterEncoding
+
         def format = contentTypes ? contentTypes[0] : null
         if(!format)  {
             format = servletContext.getMimeType(request.forwardURI)
@@ -19,16 +21,15 @@ class AssetsController {
 
         def assetFile
         if(params.containsKey('compile') && params.boolean('compile') == false) {
-            assetFile = assetProcessorService.serveUncompiledAsset(uri,format, extension, params.encoding)
+            assetFile = assetProcessorService.serveUncompiledAsset(uri,format, extension, encoding)
         } else {
-            assetFile = assetProcessorService.serveAsset(uri,format, extension)
+            assetFile = assetProcessorService.serveAsset(uri,format, extension, encoding)
         }
 		if(assetFile) {
             response.setContentType(format)
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
             response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
             response.setDateHeader("Expires", 0); // Proxies.
-            def encoding = params.encoding ?: request.characterEncoding
             if(encoding) {
                 response.characterEncoding = encoding
             }

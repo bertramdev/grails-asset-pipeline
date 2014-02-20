@@ -44,7 +44,7 @@ class AssetsControllerSpec extends Specification {
     when:
       controller.index()
     then:
-      1 * assetProcessorServiceMock.serveAsset('asset-pipeline/test/test','text/css','css') >> { return "File Contents "}
+      1 * assetProcessorServiceMock.serveAsset('asset-pipeline/test/test','text/css','css',null) >> { return "File Contents "}
       controller.response.status == 200
       controller.response.contentType == "text/css"
   }

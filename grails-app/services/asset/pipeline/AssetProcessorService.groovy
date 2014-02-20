@@ -4,12 +4,22 @@ class AssetProcessorService {
     static transactional = false
     def grailsApplication
 
-    def serveAsset(uri, contentType = null, extension = null) {
+    byte[] serveAsset(uri, contentType = null, extension = null, encoding = null) {
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
 
         def directiveProcessor = new DirectiveProcessor(contentType)
         if (assetFile) {
-            return directiveProcessor.compile(assetFile)
+            if(assetFile.class.name == 'java.io.File') {
+                return assetFile.bytes
+            }
+            def fileContents = directiveProcessor.compile(assetFile)
+            encoding = encoding ?: assetFile.encoding
+            if(encoding) {
+                return fileContents.getBytes(encoding)
+            } else {
+                return fileContents.bytes
+            }
+            
         }
 
         return null
@@ -24,15 +34,21 @@ class AssetProcessorService {
         return null
     }
 
-    def serveUncompiledAsset(uri, contentType, extension = null,encoding=null) {
+    byte[] serveUncompiledAsset(uri, contentType, extension = null,encoding=null) {
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
 
         def directiveProcessor = new DirectiveProcessor(contentType)
         if (assetFile) {
-            if(encoding && assetFile.class.name != "java.io.File") {
-                assetFile.encoding = encoding
+            if(assetFile.class.name == "java.io.File") {
+                return directiveProcessor.fileContents(assetFile)
             }
-            return directiveProcessor.fileContents(assetFile)
+            if(encoding) {
+                assetFile.encoding = encoding
+                return directiveProcessor.fileContents(assetFile).getBytes(encoding)
+            } else {
+                return directiveProcessor.fileContents(assetFile).bytes
+            }
+            
         }
 
         return null

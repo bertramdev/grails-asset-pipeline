@@ -82,7 +82,7 @@ class AssetProcessorServiceSpec extends Specification {
         when: 
             uncompiledFile = service.serveUncompiledAsset(fileUri, contentType, extension)
         then:
-            !uncompiledFile.contains("This is File A")
+            !(new String(uncompiledFile)).contains("This is File A")
         when:
             uncompiledFile = service.serveUncompiledAsset('unknownfile', contentType, extension)
         then:
@@ -98,7 +98,7 @@ class AssetProcessorServiceSpec extends Specification {
         when: 
             uncompiledFile = service.serveAsset(fileUri, contentType, extension)
         then:
-            uncompiledFile.contains("This is File A")
+            (new String(uncompiledFile)).contains("This is File A")
         when:
             uncompiledFile = service.serveAsset('unknownfile', contentType, extension)
         then:

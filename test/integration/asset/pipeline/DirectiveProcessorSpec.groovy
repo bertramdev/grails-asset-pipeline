@@ -27,7 +27,7 @@ class DirectiveProcessorSpec extends IntegrationSpec {
             def file               = AssetHelper.fileForUri(uri, contentType, fileExtension)
             def directiveProcessor = new DirectiveProcessor(contentType)
         when:
-            def fileContent = directiveProcessor.compile(file).toString()
+            def fileContent = new String(directiveProcessor.compile(file))
         then:
             fileContent.contains("This is File B") && fileContent.contains("This is File A") && fileContent.contains("This is File C") && fileContent.contains("console.log(\"Subset A\");");
     }
