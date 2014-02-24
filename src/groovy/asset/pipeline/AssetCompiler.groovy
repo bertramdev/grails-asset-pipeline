@@ -2,6 +2,7 @@ package asset.pipeline
 import org.apache.tools.ant.DirectoryScanner
 import groovy.util.logging.Log4j
 import asset.pipeline.processors.UglifyJsProcessor
+import asset.pipeline.processors.CssMinifyPostProcessor
 @Log4j
 class AssetCompiler {
 
@@ -34,9 +35,10 @@ class AssetCompiler {
   }
 
   void compile() {
-  	def assetDir       = initializeWorkspace()
-  	def filesToProcess = this.getAllAssets()
-  	def uglifyJsProcessor = new UglifyJsProcessor()
+  	def assetDir           = initializeWorkspace()
+  	def filesToProcess     = this.getAllAssets()
+  	def uglifyJsProcessor  = new UglifyJsProcessor()
+  	def minifyCssProcessor = new CssMinifyPostProcessor()
 		// Lets clean up assets that are no longer being compiled
 		removeDeletedFiles(filesToProcess)
 
@@ -69,11 +71,20 @@ class AssetCompiler {
 					if(fileName.indexOf(".min") == -1 && contentType == 'application/javascript' && options.minifyJs && !isUnchanged) {
 						def newFileData = fileData
 						try {
-				      eventListener?.triggerEvent("StatusUpdate", "Uglifying File ${index+1} of ${filesToProcess.size()} - ${fileName}")
+							eventListener?.triggerEvent("StatusUpdate", "Uglifying File ${index+1} of ${filesToProcess.size()} - ${fileName}")
 							newFileData = uglifyJsProcessor.process(fileData, options.minifyOptions ?: [:])
-
 						} catch(e) {
 							log.error("Uglify JS Exception", e)
+							newFileData = fileData
+						}
+						fileData = newFileData
+					} else if(fileName.indexOf(".min") == -1 && contentType == 'text/css' && options.minifyCss && !isUnchanged) {
+						def newFileData = fileData
+						try {
+							eventListener?.triggerEvent("StatusUpdate", "Minifying File ${index+1} of ${filesToProcess.size()} - ${fileName}")
+							newFileData = minifyCssProcessor.process(fileData)
+						} catch(e) {
+							log.error("Minify CSS Exception", e)
 							newFileData = fileData
 						}
 						fileData = newFileData

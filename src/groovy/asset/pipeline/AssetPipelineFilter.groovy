@@ -3,7 +3,9 @@ package asset.pipeline
 import javax.servlet.*
 import org.springframework.web.context.support.WebApplicationContextUtils
 import grails.util.Environment
+import groovy.util.logging.Log4j
 
+@Log4j
 class AssetPipelineFilter implements Filter {
   def applicationContext 
   def servletContext
@@ -44,8 +46,14 @@ class AssetPipelineFilter implements Filter {
       }
       response.setContentType(format)
       response.setHeader('Cache-Control','public, max-age=31536000')
-      response.outputStream << file.inputStream.getBytes()
-      response.flushBuffer()
+
+      try {
+        response.outputStream << file.inputStream.getBytes()
+        response.flushBuffer()  
+      } catch(e) {
+        log.debug("File Transfer Aborted (Probably by the user)",e)
+      }
+      
     }
 
     if (!response.committed) {

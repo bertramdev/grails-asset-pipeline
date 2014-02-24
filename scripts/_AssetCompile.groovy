@@ -25,6 +25,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
   event("AssetPrecompileStart", [assetConfig])
 
   assetConfig.minifyJs = grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : (argsMap.containsKey('minifyJs') ? argsMap.minifyJs == 'true' : true)
+  assetConfig.minifyCss = grailsApplication.config.grails.assets.containsKey('minifyCss') ? grailsApplication.config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
   assetConfig.minifyOptions = grailsApplication.config.grails.assets.minifyOptions
   assetConfig.compileDir = "target/assets"
   assetConfig.excludesGzip = grailsApplication.config.grails.assets.excludesGzip

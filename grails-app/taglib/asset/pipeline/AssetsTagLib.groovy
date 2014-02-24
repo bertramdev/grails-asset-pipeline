@@ -16,6 +16,7 @@ class AssetsTagLib {
 	def javascript = { attrs ->
 		def src = attrs.remove('src')
 		attrs.remove('href')
+		src = "${AssetHelper.nameWithoutExtension(src)}.js"
 		def uri
 		def extension
 
@@ -57,6 +58,7 @@ class AssetsTagLib {
 		if(href) {
 			src = href
 		}
+		src = "${AssetHelper.nameWithoutExtension(src)}.css"
 		def conf = grailsApplication.config.grails.assets
 		def uri
 		def extension

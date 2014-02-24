@@ -34,11 +34,16 @@ class AssetsController {
                 response.characterEncoding = encoding
             }
 
-            if(format == 'text/html') {
-                render contentType: 'text/html', text: new String(assetFile)
-            } else {
-                response.outputStream << assetFile
-                response.flushBuffer()
+
+            try {
+                if(format == 'text/html') {
+                    render contentType: 'text/html', text: new String(assetFile)
+                } else {
+                    response.outputStream << assetFile
+                    response.flushBuffer()
+                }
+            } catch(e) {
+                log.debug("File Transfer Aborted (Probably by the user)",e)
             }
         }
         else {
