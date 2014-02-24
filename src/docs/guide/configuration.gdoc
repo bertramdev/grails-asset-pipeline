@@ -20,6 +20,7 @@ The Asset-pipeline comes with the newer version of UglifyJs to minify your JavaS
 {table}
 *Property* | *Meaning*
 grails.assets.minifyJs | *true* or *false*
+grails.assets.minifyCss | *true* or *false*
 grails.assets.minifyOptions | *Map*
 {table}
 
