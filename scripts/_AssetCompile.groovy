@@ -1,5 +1,4 @@
 import org.apache.tools.ant.DirectoryScanner
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 // import asset.pipeline.*
 includeTargets << grailsScript("_PackagePlugins")
@@ -21,15 +20,12 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
   def assetCompilerClass      = classLoader.loadClass('asset.pipeline.AssetCompiler')
   def directiveProcessorClass = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
   def assetConfig             = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
-  def grailsApplication       = ApplicationHolder.getApplication()
   event("AssetPrecompileStart", [assetConfig])
-
-  assetConfig.minifyJs = grailsApplication.config.grails.assets.containsKey('minifyJs') ? grailsApplication.config.grails.assets.minifyJs : (argsMap.containsKey('minifyJs') ? argsMap.minifyJs == 'true' : true)
-  assetConfig.minifyCss = grailsApplication.config.grails.assets.containsKey('minifyCss') ? grailsApplication.config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
-  assetConfig.minifyOptions = grailsApplication.config.grails.assets.minifyOptions
+  assetConfig.minifyJs = config.grails.assets.containsKey('minifyJs') ? config.grails.assets.minifyJs : (argsMap.containsKey('minifyJs') ? argsMap.minifyJs == 'true' : true)
+  assetConfig.minifyCss = config.grails.assets.containsKey('minifyCss') ? config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
+  assetConfig.minifyOptions = config.grails.assets.minifyOptions
   assetConfig.compileDir = "target/assets"
-  assetConfig.excludesGzip = grailsApplication.config.grails.assets.excludesGzip
-
+  assetConfig.excludesGzip = config.grails.assets.excludesGzip
 
 
   event("StatusUpdate",["Precompiling Assets!"])
@@ -37,11 +33,11 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
   def assetCompiler = assetCompilerClass.newInstance(assetConfig, eventListener)
 
   assetCompiler.assetPaths = assetHelper.getAssetPathsByPlugin()
-  assetCompiler.excludeRules.default = grailsApplication.config.grails.assets.excludes
-  assetCompiler.includeRules.default = grailsApplication.config.grails.assets.includes
+  assetCompiler.excludeRules.default = config.grails.assets.excludes
+  assetCompiler.includeRules.default = config.grails.assets.includes
 
 	// Initialize Exclude/Include Rules
-  grailsApplication.config.grails.assets.plugin.each { pluginName, value ->
+  config.grails.assets.plugin.each { pluginName, value ->
 
   	if(value.excludes) {
   		assetCompiler.excludeRules[pluginName] = value.excludes
