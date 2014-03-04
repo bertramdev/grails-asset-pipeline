@@ -27,7 +27,9 @@ grails.project.dependency.resolution = {
         build ':release:2.2.1', ':rest-client-builder:1.0.3', {
             export = false
         }
-        test ":code-coverage:1.2.7"
+        test ":code-coverage:1.2.7", {
+            export = false
+        }
         
         test ':spock:0.7', {
             excludes 'spock-grails-support', 'hibernate', 'grails-hibernate'
