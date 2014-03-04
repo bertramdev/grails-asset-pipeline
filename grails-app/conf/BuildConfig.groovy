@@ -6,7 +6,8 @@ grails.project.dependency.resolution = {
 
     inherits 'global'
     log 'warn'
-
+    grails.project.dependency.resolver = "maven"
+    
     repositories {
         grailsCentral()
         mavenLocal()
@@ -15,24 +16,15 @@ grails.project.dependency.resolution = {
 
     dependencies {
         runtime 'org.mozilla:rhino:1.7R4'
-
-        test 'org.spockframework:spock-grails-support:0.7-groovy-2.0', {
-            export = false
-        }
     }
 
     plugins {
         compile(":webxml:1.4.1") 
 
-        build ':release:2.2.1', ':rest-client-builder:1.0.3', {
+        build ':release:3.0.1', ':rest-client-builder:2.0.1', {
             export = false
         }
         test ":code-coverage:1.2.7", {
-            export = false
-        }
-        
-        test ':spock:0.7', {
-            excludes 'spock-grails-support', 'hibernate', 'grails-hibernate'
             export = false
         }
     }

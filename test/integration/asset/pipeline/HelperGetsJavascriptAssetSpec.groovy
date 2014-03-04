@@ -16,7 +16,7 @@
 
 package asset.pipeline
 
-import grails.plugin.spock.IntegrationSpec
+import grails.test.spock.IntegrationSpec
 
 class HelperGetsJavascriptAssetSpec extends IntegrationSpec{
 

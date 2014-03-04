@@ -16,7 +16,7 @@
 
 package asset.pipeline.processors
 
-import grails.plugin.spock.IntegrationSpec
+import grails.test.spock.IntegrationSpec
 
 class UglifyJsProcessorSpec extends IntegrationSpec {
     def "minifies js contents"() {
