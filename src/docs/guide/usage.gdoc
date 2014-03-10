@@ -49,7 +49,7 @@ Asset pipeline provides several new tag libs for including javascript and css in
 
 {code}
 <head>
-    <asset:stylesheet src="application.css"/>
+    <asset:stylesheet href="application.css"/>
     <asset:javascript src="application.js"/>
     <asset:link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 </head>
