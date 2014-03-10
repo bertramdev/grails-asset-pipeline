@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Asset-Pipeline Plugin 1.6.0</title>
+        <title>Asset Pipeline Plugin 1.6.2</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -56,9 +56,9 @@ function addJsClass(el) {
                         <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                         <div class="project">
-                            <h1>Asset-Pipeline Plugin - Reference Documentation</h1>
+                            <h1>Asset Pipeline Plugin - Reference Documentation</h1>
                             <p><strong>Authors:</strong> David Estes</p>
-                            <p><strong>Version:</strong> 1.6.0</p>
+                            <p><strong>Version:</strong> 1.6.2</p>
                             
                         </div>
 
@@ -152,7 +152,7 @@ grails&#45;app/assets/stylesheets</pre></div><p class="paragraph"/>Place your st
 Make sure an empty line does not exist between the top of the file and your require directives, these requires will be ignored!
 </blockquote><p class="paragraph"/>Optionally, assets can be excluded from processing if included by your require tree. This can dramatically reduce compile time for your assets. To do so simply leverage the excludes configuration option:<p class="paragraph"/><div class="code"><pre>grails.assets.excludes = &#91;<span class="java&#45;quote">"tiny_mce/src/&#42;.js"</span>&#93;</pre></div><p class="paragraph"/>Or Exclude at the plugin level:<p class="paragraph"/><div class="code"><pre>grails.assets.plugin.<span class="java&#45;quote">"twitter&#45;bootstrap"</span>.excludes = &#91;<span class="java&#45;quote">"&#42;&#42;/&#42;.less"</span>&#93;
 grails.assets.plugin.<span class="java&#45;quote">"twitter&#45;bootstrap"</span>.includes = &#91;<span class="java&#45;quote">"bootstrap.less"</span>&#93;</pre></div><p class="paragraph"/>The above will tell asset-pipeline not to precompile less files individually within the twitter-bootstrap plugin, but will compile bootstrap.less.<p class="paragraph"/><h3>Including Assets in Views</h3><p class="paragraph"/>Asset pipeline provides several new tag libs for including javascript and css into your gsp files. For example:<p class="paragraph"/><div class="code"><pre>&#60;head&#62;
-    &#60;asset:stylesheet src=<span class="java&#45;quote">"application.css"</span>/&#62;
+    &#60;asset:stylesheet href=<span class="java&#45;quote">"application.css"</span>/&#62;
     &#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span>/&#62;
     &#60;asset:link rel=<span class="java&#45;quote">"shortcut icon"</span> href=<span class="java&#45;quote">"favicon.ico"</span> type=<span class="java&#45;quote">"image/x&#45;icon"</span>/&#62;
 &#60;/head&#62;</pre></div><p class="paragraph"/>These helpers will automatically adjust to point to the cache-digested versions of the files when running in a non-development environment.<p class="paragraph"/><blockquote class="note">
