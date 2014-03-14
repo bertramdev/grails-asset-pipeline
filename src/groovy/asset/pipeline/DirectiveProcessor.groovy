@@ -120,7 +120,7 @@ class DirectiveProcessor {
             def directive = fileSpec.directiveForLine(line)
             if(directive) {
             	directive = directive.trim()
-                def unprocessedArgs = directive.split(" ")
+                def unprocessedArgs = directive.split(/\s+/)
 
                 def processor = DIRECTIVES[unprocessedArgs[0].toLowerCase()]
 
