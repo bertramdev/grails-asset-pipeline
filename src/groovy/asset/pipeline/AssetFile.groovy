@@ -15,7 +15,7 @@ interface AssetFile {
     void setBaseFile(AssetFile baseFile)
 
 
-    String processedStream(Boolean precompiler)
+    String processedStream(precompiler)
 
     String directiveForLine(String line)
 

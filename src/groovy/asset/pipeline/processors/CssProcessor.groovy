@@ -22,7 +22,7 @@ class CssProcessor {
     def precompilerMode
 
     CssProcessor(precompiler=false) {
-        this.precompilerMode = precompiler
+        this.precompilerMode = precompiler ? true : false
     }
 
     def process(inputText, assetFile) {

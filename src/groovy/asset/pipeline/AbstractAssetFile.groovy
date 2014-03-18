@@ -5,7 +5,7 @@ abstract class AbstractAssetFile implements AssetFile {
 	AssetFile baseFile
 	String encoding
 
-	String processedStream(Boolean precompiler) {
+	String processedStream(precompiler) {
 		def fileText
 		def skipCache = precompiler ?: (!processors || processors.size() == 0)
 

@@ -5,45 +5,46 @@ import asset.pipeline.processors.UglifyJsProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
 @Log4j
 class AssetCompiler {
-
 	def includeRules = [:]
 	def excludeRules = [:]
 	def assetPaths = [:]
 	def options = [:]
 	def eventListener
-  Properties manifestProperties
+	def filesToProcess = []
+	Properties manifestProperties
 
-  AssetCompiler(options=[:], eventListener) {
-  	this.eventListener = eventListener
-  	this.options = options
-  	if(!options.compileDir) {
-  		options.compileDir = "target/assets"
-  	}
-  	if(!options.excludesGzip) {
-  		options.excludesGzip = ['png', 'jpg','jpeg', 'gif', 'zip', 'gz']
-  	} else {
-  		options.excludesGzip += ['png', 'jpg','jpeg', 'gif', 'zip', 'gz']
-  	}
-	  // Load in additional assetSpecs
-	  options.specs?.each { spec ->
-	  	def specClass = this.class.classLoader.loadClass(spec)
-	  	if(specClass) {
-	    	AssetHelper.assetSpecs += specClass
-	  	}
-	  }
-  	manifestProperties = new Properties()
-  }
+	AssetCompiler(options=[:], eventListener) {
+		this.eventListener = eventListener
+		this.options = options
+		if(!options.compileDir) {
+			options.compileDir = "target/assets"
+		}
+		if(!options.excludesGzip) {
+			options.excludesGzip = ['png', 'jpg','jpeg', 'gif', 'zip', 'gz']
+		} else {
+			options.excludesGzip += ['png', 'jpg','jpeg', 'gif', 'zip', 'gz']
+		}
+		// Load in additional assetSpecs
+		options.specs?.each { spec ->
+			def specClass = this.class.classLoader.loadClass(spec)
+			if(specClass) {
+				AssetHelper.assetSpecs += specClass
+			}
+		}
+		manifestProperties = new Properties()
+	}
 
-  void compile() {
-  	def assetDir           = initializeWorkspace()
-  	def filesToProcess     = this.getAllAssets()
-  	def uglifyJsProcessor  = new UglifyJsProcessor()
-  	def minifyCssProcessor = new CssMinifyPostProcessor()
+	void compile() {
+		def assetDir           = initializeWorkspace()
+		def uglifyJsProcessor  = new UglifyJsProcessor()
+		def minifyCssProcessor = new CssMinifyPostProcessor()
+
+		filesToProcess = this.getAllAssets()
 		// Lets clean up assets that are no longer being compiled
 		removeDeletedFiles(filesToProcess)
 
 		filesToProcess.eachWithIndex { fileName, index ->
-      eventListener?.triggerEvent("StatusUpdate", "Processing File ${index+1} of ${filesToProcess.size()} - ${fileName}")
+		eventListener?.triggerEvent("StatusUpdate", "Processing File ${index+1} of ${filesToProcess.size()} - ${fileName}")
 
 			def digestName
 			def isUnchanged = false
@@ -59,7 +60,7 @@ class AssetCompiler {
 						fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(fileName,assetFile)
 					}
 					def contentType = (assetFile.contentType instanceof String) ? assetFile.contentType : assetFile.contentType[0]
-					def directiveProcessor = new DirectiveProcessor(contentType, true)
+					def directiveProcessor = new DirectiveProcessor(contentType, this)
 					fileData   = directiveProcessor.compile(assetFile)
 					digestName = AssetHelper.getByteDigest(fileData.bytes)
 
@@ -160,14 +161,14 @@ class AssetCompiler {
   }
 
   private initializeWorkspace() {
-  		 // Check for existing Compiled Assets
+		 // Check for existing Compiled Assets
 	  def assetDir = new File(options.compileDir)
 	  if(assetDir.exists()) {
-	  	def manifestFile = new File(options.compileDir,"manifest.properties")
-	  	if(manifestFile.exists())
-		  	manifestProperties.load(manifestFile.newDataInputStream())
+		def manifestFile = new File(options.compileDir,"manifest.properties")
+		if(manifestFile.exists())
+			manifestProperties.load(manifestFile.newDataInputStream())
 	  } else {
-	  	assetDir.mkdirs()
+		assetDir.mkdirs()
 	  }
 	  return assetDir
   }
@@ -222,10 +223,10 @@ class AssetCompiler {
 			scanner.setExcludes(getExcludesForPathKey(key) as String[])
 			scanner.setIncludes(["**/*"] as String[])
 			for(path in value) {
-		    scanner.setBasedir(path)
-		    scanner.setCaseSensitive(false)
-		    scanner.scan()
-		    filesToProcess += scanner.getIncludedFiles().flatten()
+			scanner.setBasedir(path)
+			scanner.setCaseSensitive(false)
+			scanner.scan()
+			filesToProcess += scanner.getIncludedFiles().flatten()
 			}
 
 			scanner.setExcludes([] as String[])
@@ -233,10 +234,10 @@ class AssetCompiler {
 			if(includes.size() > 0) {
 				scanner.setIncludes(includes as String[])
 				for(path in value) {
-			    scanner.setBasedir(path)
-			    scanner.setCaseSensitive(false)
-			    scanner.scan()
-			    filesToProcess += scanner.getIncludedFiles().flatten()
+				scanner.setBasedir(path)
+				scanner.setCaseSensitive(false)
+				scanner.scan()
+				filesToProcess += scanner.getIncludedFiles().flatten()
 				}
 			}
 
