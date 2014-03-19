@@ -43,8 +43,9 @@ class AssetCompiler {
 		// Lets clean up assets that are no longer being compiled
 		removeDeletedFiles(filesToProcess)
 
-		filesToProcess.eachWithIndex { fileName, index ->
-		eventListener?.triggerEvent("StatusUpdate", "Processing File ${index+1} of ${filesToProcess.size()} - ${fileName}")
+		for(int index = 0 ; index < filesToProcess.size() ; index++) {
+			def fileName = filesToProcess[index]
+			eventListener?.triggerEvent("StatusUpdate", "Processing File ${index+1} of ${filesToProcess.size()} - ${fileName}")
 
 			def digestName
 			def isUnchanged = false
