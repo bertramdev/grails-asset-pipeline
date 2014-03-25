@@ -5,10 +5,10 @@ h3. Excludes and Includes
 Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:
 
 {table}
-*Property* | *Meaning*
-grails.assets.excludes | ["tiny_mce/src/*.js"]
-grails.assets.plugin."twitter-bootstrap".excludes | ["**/*.less"]
-grails.assets.plugin."twitter-bootstrap".includes | ["bootstrap.less"]
+*Property* | *Value*
+grails.assets.excludes | \["tiny_mce/src/\*.js"]
+grails.assets.plugin."twitter-bootstrap".excludes | \["\*\*/\*.less"]
+grails.assets.plugin."twitter-bootstrap".includes | \["bootstrap.less"]
 {table}
 
 Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the @bootstrap.less@ file can be compiled from the @twitter-bootstrap plugin@.
@@ -18,7 +18,7 @@ h3. Minification
 The Asset-pipeline comes with the newer version of UglifyJs to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. UglifyJS can be enabled/disabled entirely as well as configured via various options.
 
 {table}
-*Property* | *Meaning*
+*Property* | *Value*
 grails.assets.minifyJs | *true* or *false*
 grails.assets.minifyCss | *true* or *false*
 grails.assets.minifyOptions | *Map*
