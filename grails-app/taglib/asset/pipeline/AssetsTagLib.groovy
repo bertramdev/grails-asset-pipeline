@@ -109,7 +109,7 @@ class AssetsTagLib {
 		if(!assetBlocks) {
 			assetBlocks = []
 		}
-		assetBlocks << [attrs: attrs, body: body]
+		assetBlocks << [attrs: attrs, body: body()]
 		request.setAttribute('assetScriptBlocks', assetBlocks)
 	}
 

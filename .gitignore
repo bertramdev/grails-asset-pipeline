@@ -11,3 +11,5 @@ test/dummy/web-app/target
 cobertura.ser
 *.idea/**
 *.iml
+*.ipr
+*.iws
