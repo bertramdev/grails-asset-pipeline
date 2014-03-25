@@ -18,7 +18,6 @@ package asset.pipeline
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
-import grails.util.Environment
 
 /**
  * @author David Estes
@@ -166,10 +165,20 @@ class AssetsTagLibSpec extends Specification {
     given:
       def script1 = "console.log('hello world 1');"
       def script2 = "console.log('hello world 2');"
+
     when:
-      tagLib.script([type:'text/javascript'], script1)
-      tagLib.script([type:'text/javascript'], script2)
+      applyTemplate("<asset:script type='text/javascript'>$script1</asset:script>")
+      applyTemplate("<asset:script type='text/javascript'>$script2</asset:script>")
+
     then:
-      tagLib.deferredScripts() == "<script type=\"text/javascript\">${script1}</script><script type=\"text/javascript\">${script2}</script>"
+      applyTemplate("<asset:deferredScripts/>") == "<script type=\"text/javascript\">${script1}</script><script type=\"text/javascript\">${script2}</script>"
+  }
+
+  void "should render deferred scripts and evaluate nested groovy expressions"() {
+    when:
+      applyTemplate('<asset:script type="text/javascript"><g:if test="${isTrue}">alert("foo");</g:if></asset:script>', [isTrue: true])
+
+    then:
+      applyTemplate("<asset:deferredScripts/>") == '<script type="text/javascript">alert("foo");</script>'
   }
 }
