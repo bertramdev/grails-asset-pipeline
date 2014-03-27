@@ -64,9 +64,9 @@ class AssetCompiler {
 					def directiveProcessor = new DirectiveProcessor(contentType, this)
 					fileData   = directiveProcessor.compile(assetFile)
 					digestName = AssetHelper.getByteDigest(fileData.bytes)
-
-					def existingDigestFile = manifestProperties.getProperty("${fileName}.${extension}")
-					if(existingDigestFile && existingDigestFile == "${fileName}-${digestName}.${extension}") {
+					def fileNameUri = fileName.replaceAll(AssetHelper.QUOTED_FILE_SEPARATOR, AssetHelper.DIRECTIVE_FILE_SEPARATOR)
+					def existingDigestFile = manifestProperties.getProperty("${fileNameUri}.${extension}")
+					if(existingDigestFile && existingDigestFile == "${fileNameUri}-${digestName}.${extension}") {
 						isUnchanged=true
 					}
 
@@ -137,7 +137,8 @@ class AssetCompiler {
 							def digestedFile = new File(options.compileDir,"${fileName}-${digestName}${extension ? ('.' + extension) : ''}")
 							digestedFile.createNewFile()
 							AssetHelper.copyFile(outputFile, digestedFile)
-							manifestProperties.setProperty("${fileName}.${extension}", "${fileName}-${digestName}${extension ? ('.' + extension) : ''}")
+							def fileNameUri = fileName.replaceAll(AssetHelper.QUOTED_FILE_SEPARATOR, AssetHelper.DIRECTIVE_FILE_SEPARATOR)
+							manifestProperties.setProperty("${fileNameUri}.${extension}", "${fileNameUri}-${digestName}${extension ? ('.' + extension) : ''}")
 
 							// Zip it Good!
 							if(!options.excludesGzip.find{ it.toLowerCase() == extension.toLowerCase()}) {
@@ -285,10 +286,13 @@ class AssetCompiler {
 		}
 
 		def propertiesToRemove = []
-		manifestProperties.keySet().each { compiledName ->
+		manifestProperties.keySet().each { compiledUri ->
+			def compiledName = 	compiledUri.replaceAll(AsstHelper.DIRECTIVE_FILE_SEPARATOR,File.separator)						
+
 			def fileFound = compiledFileNames.find{ it == compiledName.toString()}
 			if(!fileFound) {
-				def digestedName = manifestProperties.getProperty(compiledName)
+				def digestedUri = manifestProperties.getProperty(compiledName)
+				def digestedName = digestedUri.replaceAll(AsstHelper.DIRECTIVE_FILE_SEPARATOR,File.separator)						
 				def compiledFile = new File(options.compileDir, compiledName)
 				def digestedFile = new File(options.compileDir, digestedName)
 				def zippedFile = new File(options.compileDir, "${compiledName}.gz")
