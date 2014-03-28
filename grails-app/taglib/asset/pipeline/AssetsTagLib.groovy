@@ -49,7 +49,7 @@ class AssetsTagLib {
 	}
 
 	/**
-	 * @attr href REQUIRED
+	 * @attr href OPTIONAL alternative to src
 	 * @attr src OPTIONAL alternative to href
 	 */
 	def stylesheet = { attrs ->
