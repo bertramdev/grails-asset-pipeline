@@ -287,12 +287,12 @@ class AssetCompiler {
 
 		def propertiesToRemove = []
 		manifestProperties.keySet().each { compiledUri ->
-			def compiledName = 	compiledUri.replaceAll(AsstHelper.DIRECTIVE_FILE_SEPARATOR,File.separator)						
+			def compiledName = 	compiledUri.replaceAll(AssetHelper.DIRECTIVE_FILE_SEPARATOR,File.separator)						
 
 			def fileFound = compiledFileNames.find{ it == compiledName.toString()}
 			if(!fileFound) {
 				def digestedUri = manifestProperties.getProperty(compiledName)
-				def digestedName = digestedUri.replaceAll(AsstHelper.DIRECTIVE_FILE_SEPARATOR,File.separator)						
+				def digestedName = digestedUri.replaceAll(AssetHelper.DIRECTIVE_FILE_SEPARATOR,File.separator)						
 				def compiledFile = new File(options.compileDir, compiledName)
 				def digestedFile = new File(options.compileDir, digestedName)
 				def zippedFile = new File(options.compileDir, "${compiledName}.gz")
