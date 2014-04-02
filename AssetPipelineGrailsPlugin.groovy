@@ -18,7 +18,7 @@ import grails.plugin.webxml.FilterManager
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "1.7.4"
+    def version         = "1.7.5"
     def grailsVersion   = "2.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"

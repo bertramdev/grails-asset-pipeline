@@ -64,7 +64,7 @@ class AssetCompiler {
 					def directiveProcessor = new DirectiveProcessor(contentType, this)
 					fileData   = directiveProcessor.compile(assetFile)
 					digestName = AssetHelper.getByteDigest(fileData.bytes)
-					def fileNameUri = fileName.replaceAll(AssetHelper.QUOTED_FILE_SEPARATOR, AssetHelper.DIRECTIVE_FILE_SEPARATOR)
+					def fileNameUri = fileName.replaceAll(File.separator, AssetHelper.DIRECTIVE_FILE_SEPARATOR)
 					def existingDigestFile = manifestProperties.getProperty("${fileNameUri}.${extension}")
 					if(existingDigestFile && existingDigestFile == "${fileNameUri}-${digestName}.${extension}") {
 						isUnchanged=true
@@ -137,7 +137,7 @@ class AssetCompiler {
 							def digestedFile = new File(options.compileDir,"${fileName}-${digestName}${extension ? ('.' + extension) : ''}")
 							digestedFile.createNewFile()
 							AssetHelper.copyFile(outputFile, digestedFile)
-							def fileNameUri = fileName.replaceAll(AssetHelper.QUOTED_FILE_SEPARATOR, AssetHelper.DIRECTIVE_FILE_SEPARATOR)
+							def fileNameUri = fileName.replaceAll(File.separator, AssetHelper.DIRECTIVE_FILE_SEPARATOR)
 							manifestProperties.setProperty("${fileNameUri}.${extension}", "${fileNameUri}-${digestName}${extension ? ('.' + extension) : ''}")
 
 							// Zip it Good!
