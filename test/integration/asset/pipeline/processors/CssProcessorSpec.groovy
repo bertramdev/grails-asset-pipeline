@@ -18,6 +18,7 @@ package asset.pipeline.processors
 
 import grails.test.spock.IntegrationSpec
 import asset.pipeline.*
+import grails.util.Holders
 
 class CssProcessorSpec extends IntegrationSpec {
     def "replaces image urls with relative paths"() {
@@ -38,9 +39,12 @@ class CssProcessorSpec extends IntegrationSpec {
             def cssProcessor = new CssProcessor(true)
             def file = new File("grails-app/assets/stylesheets/asset-pipeline/test/test.css")
             def assetFile    = new CssAssetFile(file: file)
+            Holders.metaClass.static.getConfig = { ->
+                [grails: [assets: [[minifyJs: true]]]]
+            }
         when:
             def processedCss = cssProcessor.process(assetFile.file.text, assetFile)
         then:
-            processedCss.contains("url('../../grails_logo-eabe4af98753b0163266d7e68bbd32e3.png')")
+            processedCss.contains("url('../../grails_logo-544aa48b9c2f9b532fe57ed0451c9e6e.png')")
     }
 }

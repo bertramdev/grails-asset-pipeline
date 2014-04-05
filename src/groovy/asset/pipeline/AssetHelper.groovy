@@ -270,11 +270,30 @@ class AssetHelper {
         AssetHelper.assetFileClasses().findAll { (it.contentType instanceof String) ? it.contentType == contentType : contentType in it.contentType }
     }
 
-    static getByteDigest(fileBytes) {
-        // Generate Checksum
+    static getByteDigest(byte[] fileBytes) {
+        // Generate Checksum based on the file contents and the configuration settings
         MessageDigest md = MessageDigest.getInstance("MD5")
-        md.update(fileBytes)
+        byte[] configBytes = Holders.config.grails.assets.toString().bytes
+        md.update(concat(fileBytes, configBytes))
         def checksum = md.digest()
         return checksum.encodeHex().toString()
+    }
+
+    /**
+     * Concatenate multiple byte arrays
+     * @param arrays
+     * @return an array containing the values of all the arrays
+     */
+    static byte[] concat(byte[]... arrays) {
+        int totalLength = arrays.inject(0, { total, array  -> total + array.length }) as int
+        byte[] result = new byte[totalLength]
+
+        // copy the source arrays into the result array
+        arrays.inject(0, { int currentIndex, byte[] array ->
+            System.arraycopy(array, 0, result, currentIndex, array.length)
+            currentIndex + array.length
+        })
+
+        return result
     }
 }

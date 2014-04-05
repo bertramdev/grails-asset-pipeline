@@ -16,23 +16,32 @@
 
 package asset.pipeline
 
-import grails.test.mixin.TestFor
+import grails.util.Holders
 import spock.lang.Specification
 
 /**
  * @author David Estes
  */
 class AssetHelperSpec extends Specification {
-	
-    void "should get byte digest"() {
-     	given:
-	     	def sampleText = "Sample Text"
-	     	def md5Sum
-     	when: 
-     		md5Sum = AssetHelper.getByteDigest(sampleText.bytes)
- 		then:
- 			md5Sum == '83936a3f80ba44c78c9911f5445f2994'
 
+    void "should get byte digest based on file contents and config settings"() {
+        given:
+            Holders.metaClass.static.getConfig = { ->
+                [grails: [assets: [[minifyJs: true]]]]
+            }
+            def sampleText = "Sample Text"
+            def md5Sum
+        when:
+            md5Sum = AssetHelper.getByteDigest(sampleText.bytes)
+        then:
+            md5Sum == '5a15e5d8bb4e8f08c4d76e72894491c6'
+        when:
+            Holders.metaClass.static.getConfig = { ->
+                [grails: [assets: [[minifyJs: false]]]]
+            }
+            md5Sum = AssetHelper.getByteDigest(sampleText.bytes)
+        then:
+            md5Sum == '40901b0561d538750b3da0a7371fb6a2'
     }
 
 
