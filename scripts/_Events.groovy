@@ -12,3 +12,7 @@ eventCreateWarStart = {warName, stagingDir ->
 		fileset dir:assetCompileDir
 	}
 }
+
+eventCleanStart = {
+    Ant.delete('dir':'target/assets')
+}
