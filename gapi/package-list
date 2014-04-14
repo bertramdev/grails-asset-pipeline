@@ -1,3 +1,4 @@
 DefaultPackage
 asset.pipeline
+asset.pipeline.grails
 asset.pipeline.processors
