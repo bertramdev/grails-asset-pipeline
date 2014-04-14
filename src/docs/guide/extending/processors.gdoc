@@ -1,17 +1,17 @@
 Processors are where the real power of asset-pipeline comes into play. These are the driving force behind making compileable assets such as LESS, and Coffeescript first class citizens. Gone is the need to run a compiler on the side, and gone is the delay between making changes in development.
 
-A Processor class has 2 main requirements. It must have a constructor with a @precompiler=false@ argument, and it must have a process method. The rest is up to the developer.
+A Processor is an implementation of the @Processor@ interface via the @AbstractProcessor@ class. It must have a constructor with an @AssetCompiler@ argument, and it must have a process method. The rest is up to the developer.
+The reason the AssetCompiler is passed is for giving the processor access to manipulate the precompiler phase. If a null precompiler is passed, than development mode is assumed and the processor can infer that. An example use case
+for this is the SassProcessor in the SASS/SCSS Asset Pipeline Plugin. Image sprite generation causes additional image files to be created that need added to the list of files to process.
 
 {code}
-class CoffeeScriptProcessor {
+class CoffeeScriptProcessor extends AbstractProcessor {
 
   Scriptable globalScope
   ClassLoader classLoader
-  def precompilerMode
 
-  CoffeeScriptProcessor(precompiler=false){
-    //some code excluded here for brevity
-    this.precompilerMode = precompiler
+  CoffeeScriptProcessor(AssetCompiler precompiler){
+    super(precompiler)
   }
 
   def process(input, assetFile) {

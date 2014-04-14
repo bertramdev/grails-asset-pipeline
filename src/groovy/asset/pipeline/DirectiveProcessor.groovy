@@ -16,19 +16,19 @@
 
 package asset.pipeline
 
-import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import groovy.util.logging.Log4j
 
+@Log4j
 class DirectiveProcessor {
 
     static DIRECTIVES = [require_self: "requireSelfDirective" ,require_tree: "requireTreeDirective", require_full_tree: "requireFullTreeDirective" , require: "requireFileDirective", encoding: "encodingTypeDirective"]
 
     def contentType
-    def precompiler
+    AssetCompiler precompiler
     def files = []
     def baseFile
-    def servletContext = ServletContextHolder.getServletContext()
 
-    DirectiveProcessor(contentType, precompiler=false) {
+    DirectiveProcessor(contentType, precompiler=null) {
         this.contentType = contentType
         this.precompiler = precompiler
     }
@@ -227,6 +227,8 @@ class DirectiveProcessor {
         } else if(!fileName.startsWith(AssetHelper.DIRECTIVE_FILE_SEPARATOR)) {
             command[1] = AssetHelper.DIRECTIVE_FILE_SEPARATOR + command[1]
             requireFileDirective(command,file,tree)
+        } else {
+            log.warn("Unable to Locate Asset: ${command[1]}")
         }
     }
 

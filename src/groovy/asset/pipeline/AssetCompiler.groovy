@@ -13,7 +13,7 @@ class AssetCompiler {
 	def filesToProcess = []
 	Properties manifestProperties
 
-	AssetCompiler(options=[:], eventListener) {
+	AssetCompiler(options=[:], eventListener = null) {
 		this.eventListener = eventListener
 		this.options = options
 		if(!options.compileDir) {

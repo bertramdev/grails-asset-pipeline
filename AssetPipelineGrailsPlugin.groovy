@@ -15,10 +15,12 @@
  */
 import grails.util.Environment
 import grails.plugin.webxml.FilterManager
+import asset.pipeline.grails.LinkGenerator
+import asset.pipeline.grails.CachingLinkGenerator
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "1.7.6"
+    def version         = "1.8.0"
     def grailsVersion   = "2.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -34,7 +36,7 @@ class AssetPipelineGrailsPlugin {
         "test/dummy/**"
     ]
     def developers      = [ [name: 'Brian Wheeler'] ]
-
+    def loadAfter = ['url-mappings']
     def doWithSpring = {
         def manifestProps = new Properties()
         def manifestFile
@@ -56,6 +58,19 @@ class AssetPipelineGrailsPlugin {
         if(!application.config.grails.assets.containsKey("precompiled")) {
             application.config.grails.assets.precompiled = !Environment.isDevelopmentMode() || application.warDeployed
         }
+
+        // Register Link Generator
+        String serverURL = application.config?.grails?.serverURL ?: null
+        def cacheUrls = application.config?.grails.web?.linkGenerator?.useCache
+        if(!(cacheUrls instanceof Boolean)) {
+            cacheUrls = true
+        }
+
+
+        grailsLinkGenerator(cacheUrls ? CachingLinkGenerator : LinkGenerator, serverURL) { bean ->
+            bean.autowire = true
+        }
+
     }
 
     def getWebXmlFilterOrder() {

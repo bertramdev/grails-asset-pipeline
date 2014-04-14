@@ -18,11 +18,16 @@ package asset.pipeline.processors
 import asset.pipeline.*
 import java.net.URL
 
-class CssProcessor {
-    def precompilerMode
+/**
+* This Processor iterates over relative image paths in a CSS file and 
+* recalculates their path relative to the base file. In precompiler mode
+* the image urls are also cache digested.
+* @author David Estes
+*/
+class CssProcessor extends AbstractProcessor {
 
-    CssProcessor(precompiler=false) {
-        this.precompilerMode = precompiler ? true : false
+    CssProcessor(AssetCompiler precompiler) {
+        super(precompiler)
     }
 
     def process(inputText, assetFile) {
@@ -37,7 +42,7 @@ class CssProcessor {
 
                 def cssFile = AssetHelper.fileForFullName(relativeFileName)
                 if(cssFile) {
-                    replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile.file, this.precompilerMode)
+                    replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile.file, this.precompiler ? true : false)
                     if(urlRep.query != null) {
                         replacementPath += "?${urlRep.query}"
                     }
@@ -84,7 +89,7 @@ class CssProcessor {
             def assetFile = AssetHelper.assetForFile(file)
             def digestName
             if(assetFile != file) {
-                def directiveProcessor = new DirectiveProcessor(assetFile.contentType, true)
+                def directiveProcessor = new DirectiveProcessor(assetFile.contentType, precompiler)
                 def fileData   = directiveProcessor.compile(assetFile)
                 digestName = AssetHelper.getByteDigest(fileData.bytes)
             }

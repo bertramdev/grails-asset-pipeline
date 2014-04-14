@@ -24,7 +24,7 @@ class CssProcessorSpec extends IntegrationSpec {
     def "replaces image urls with relative paths"() {
         given: "some css and a CssProcessor"
             
-            def cssProcessor = new CssProcessor(false)
+            def cssProcessor = new CssProcessor(null)
             def file = new File("grails-app/assets/stylesheets/asset-pipeline/test/test.css")
             def assetFile    = new CssAssetFile(file: file)
         when:
@@ -36,7 +36,7 @@ class CssProcessorSpec extends IntegrationSpec {
     def "replaces image urls with relative paths and cache digest names in precompiler mode"() {
         given: "some css and a CssProcessor"
             
-            def cssProcessor = new CssProcessor(true)
+            def cssProcessor = new CssProcessor(new AssetCompiler())
             def file = new File("grails-app/assets/stylesheets/asset-pipeline/test/test.css")
             def assetFile    = new CssAssetFile(file: file)
             Holders.metaClass.static.getConfig = { ->

@@ -147,7 +147,7 @@ class AssetsTagLibSpec extends Specification {
       Properties manifestProperties = new Properties()
       manifestProperties.setProperty(fileUri,fileUri)
 
-      grailsApplication.config.grails.assets.precompiled = false
+      grailsApplication.config.grails.assets.precompiled = true
       grailsApplication.config.grails.assets.manifest = manifestProperties
     expect:
       tagLib.assetPathExists([src: fileUri])
