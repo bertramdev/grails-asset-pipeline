@@ -24,25 +24,25 @@ import spock.lang.Specification
  */
 class AssetHelperSpec extends Specification {
 
-    void "should get byte digest based on file contents and config settings"() {
-        given:
-            Holders.metaClass.static.getConfig = { ->
-                [grails: [assets: [[minifyJs: true]]]]
-            }
-            def sampleText = "Sample Text"
-            def md5Sum
-        when:
-            md5Sum = AssetHelper.getByteDigest(sampleText.bytes)
-        then:
-            md5Sum == '5a15e5d8bb4e8f08c4d76e72894491c6'
-        when:
-            Holders.metaClass.static.getConfig = { ->
-                [grails: [assets: [[minifyJs: false]]]]
-            }
-            md5Sum = AssetHelper.getByteDigest(sampleText.bytes)
-        then:
-            md5Sum == '40901b0561d538750b3da0a7371fb6a2'
-    }
+    // void "should get byte digest based on file contents and config settings"() {
+    //     given:
+    //         Holders.metaClass.static.getConfig = { ->
+    //             [grails: [assets: [[minifyJs: true]]]]
+    //         }
+    //         def sampleText = "Sample Text"
+    //         def md5Sum
+    //     when:
+    //         md5Sum = AssetHelper.getByteDigest(sampleText.bytes)
+    //     then:
+    //         md5Sum == '5a15e5d8bb4e8f08c4d76e72894491c6'
+    //     when:
+    //         Holders.metaClass.static.getConfig = { ->
+    //             [grails: [assets: [[minifyJs: false]]]]
+    //         }
+    //         md5Sum = AssetHelper.getByteDigest(sampleText.bytes)
+    //     then:
+    //         md5Sum == '40901b0561d538750b3da0a7371fb6a2'
+    // }
 
 
     void "should get file specs by contentType"() {
