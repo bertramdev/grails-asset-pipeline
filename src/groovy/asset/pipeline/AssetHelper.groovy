@@ -273,8 +273,7 @@ class AssetHelper {
     static getByteDigest(byte[] fileBytes) {
         // Generate Checksum based on the file contents and the configuration settings
         MessageDigest md = MessageDigest.getInstance("MD5")
-        byte[] configBytes = Holders.config.grails.assets.toString().bytes
-        md.update(concat(fileBytes, configBytes))
+        md.update(fileBytes)
         def checksum = md.digest()
         return checksum.encodeHex().toString()
     }

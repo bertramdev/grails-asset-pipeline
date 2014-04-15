@@ -20,7 +20,7 @@ import asset.pipeline.grails.CachingLinkGenerator
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "1.8.0"
+    def version         = "1.8.1"
     def grailsVersion   = "2.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
