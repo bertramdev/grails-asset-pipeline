@@ -45,6 +45,6 @@ class CssProcessorSpec extends IntegrationSpec {
         when:
             def processedCss = cssProcessor.process(assetFile.file.text, assetFile)
         then:
-            processedCss.contains("url('../../grails_logo-544aa48b9c2f9b532fe57ed0451c9e6e.png')")
+            processedCss.contains("url('../../grails_logo-eabe4af98753b0163266d7e68bbd32e3.png')")
     }
 }
