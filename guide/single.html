@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Asset Pipeline Plugin 1.8.0</title>
+        <title>Asset Pipeline Plugin 1.8.3</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -58,7 +58,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>Asset Pipeline Plugin - Reference Documentation</h1>
                             <p><strong>Authors:</strong> David Estes</p>
-                            <p><strong>Version:</strong> 1.8.0</p>
+                            <p><strong>Version:</strong> 1.8.3</p>
                             
                         </div>
 
@@ -217,7 +217,14 @@ Asset Pipeline adds a few new taglibs to properly reference your assets. These t
   &#60;asset:stylesheet src=<span class="java&#45;quote">"application.css"</span>/&#62;
 &#60;/head&#62;</pre></div><p class="paragraph"/>The primary include tags, as show above, are quite useful for including your relevant javascript or stylesheet files. Notice that you do not have to prefix with '/assets' as this is handled automatically by the tag.<p class="paragraph"/>In GSP views you can also reference images included in the asset-pipeline with the following tag:<p class="paragraph"/><div class="code"><pre>&#60;asset:image src=<span class="java&#45;quote">"logo.png"</span> width=<span class="java&#45;quote">"200"</span> height=<span class="java&#45;quote">"200"</span>/&#62;</pre></div><p class="paragraph"/>Assets can also be referenced within subdirectories if required and simply require the use of the relative path.<p class="paragraph"/><div class="code"><pre>&#60;asset:image src=<span class="java&#45;quote">"icons/delete.png"</span>/&#62;</pre></div><p class="paragraph"/>It is also possible to return an assetPath as a string for injection in your own tags:<p class="paragraph"/><div class="code"><pre>&#60;link href=<span class="java&#45;quote">"$&#123;assetPath(src: 'manifest.json')&#125;"</span>/&#62;</pre></div><p class="paragraph"/>It is also possible to execute a code section only if an asset exists or to simply test for existence<p class="paragraph"/><div class="code"><pre>&#60;asset:assetPathExists src=<span class="java&#45;quote">"test.js"</span>&#62;
 This will only be displayed <span class="java&#45;keyword">if</span> the asset exists
-&#60;/asset:assetPathExists&#62;</pre></div><p class="paragraph"/>or<p class="paragraph"/><div class="code"><pre>asset.assetPathExists(src: 'test.js') //returns <span class="java&#45;keyword">true</span> or <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/><h4>Deferred Scripts</h4><p class="paragraph"/>Asset-Pipeline provides a set of tags that can be used to ensure script blocks are deferred to the end of your page. This is not recommended as its not very unobtrusive, but has been added to help newcomers upgrade existing apps from resources.<p class="paragraph"/><div class="code"><pre>&#60;asset:script type=<span class="java&#45;quote">"text/javascript"</span>&#62;
+&#60;/asset:assetPathExists&#62;</pre></div><p class="paragraph"/>or<p class="paragraph"/><div class="code"><pre>asset.assetPathExists(src: 'test.js') //returns <span class="java&#45;keyword">true</span> or <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/>
+<h3>Getting Resource</h3>
+As of version 0.8.2 a new bean exists called <code>assetResourceLocator</code> This can be used to find assets by URI in both development and production mode.<p class="paragraph"/><div class="code"><pre>class exampleService &#123;
+  def assetResourceLocator<p class="paragraph"/>  def someMethod() &#123;
+    Resource myResource = assetResourceLocator.findAssetForURI('test.css')
+  &#125;
+&#125;</pre></div><p class="paragraph"/>
+<h3>Deferred Scripts</h3><p class="paragraph"/>Asset-Pipeline provides a set of tags that can be used to ensure script blocks are deferred to the end of your page. This is not recommended as its not very unobtrusive, but has been added to help newcomers upgrade existing apps from resources.<p class="paragraph"/><div class="code"><pre>&#60;asset:script type=<span class="java&#45;quote">"text/javascript"</span>&#62;
   console.log(<span class="java&#45;quote">"Hello World"</span>);
 &#60;/asset:script&#62;
 &#60;asset:script type=<span class="java&#45;quote">"text/javascript"</span>&#62;
