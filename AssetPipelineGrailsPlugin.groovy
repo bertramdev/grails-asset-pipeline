@@ -17,10 +17,11 @@ import grails.util.Environment
 import grails.plugin.webxml.FilterManager
 import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.CachingLinkGenerator
+import asset.pipeline.grails.AssetResourceLocator
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "1.8.1"
+    def version         = "1.8.2"
     def grailsVersion   = "2.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -69,6 +70,10 @@ class AssetPipelineGrailsPlugin {
 
         grailsLinkGenerator(cacheUrls ? CachingLinkGenerator : LinkGenerator, serverURL) { bean ->
             bean.autowire = true
+        }
+
+        assetResourceLocator(AssetResourceLocator) { bean ->
+            bean.parent = "abstractGrailsResourceLocator"
         }
 
     }

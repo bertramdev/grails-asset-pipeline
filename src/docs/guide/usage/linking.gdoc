@@ -43,7 +43,22 @@ or
 asset.assetPathExists(src: 'test.js') //returns true or false
 {code}
 
-h4. Deferred Scripts
+
+h3. Getting Resource
+As of version 0.8.2 a new bean exists called @assetResourceLocator@ This can be used to find assets by URI in both development and production mode.
+
+{code}
+class exampleService {
+  def assetResourceLocator
+
+  def someMethod() {
+    Resource myResource = assetResourceLocator.findAssetForURI('test.css')
+  }
+}
+{code}
+
+
+h3. Deferred Scripts
 
 Asset-Pipeline provides a set of tags that can be used to ensure script blocks are deferred to the end of your page. This is not recommended as its not very unobtrusive, but has been added to help newcomers upgrade existing apps from resources.
 

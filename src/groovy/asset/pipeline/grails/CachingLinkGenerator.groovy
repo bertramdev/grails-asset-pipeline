@@ -31,10 +31,10 @@ class CachingLinkGenerator extends CachingLinkGenerator implements GrailsApplica
 	*/
 	String asset(Map attrs) {
 		def absolutePath = handleAbsolute(attrs)
-		
+
 		def absolute = attrs[CachingLinkGenerator.ATTRIBUTE_ABSOLUTE]
 		def conf = grailsApplication.config.grails.assets
-		def url  = attrs.file
+		def url  = attrs.file ?: attrs.src
 		def assetFound = false
 
 		if(url) {
@@ -52,7 +52,7 @@ class CachingLinkGenerator extends CachingLinkGenerator implements GrailsApplica
 				}
 			}
 		}
-		
+
 		if(!assetFound) {
 			return null
 		} else {
@@ -68,7 +68,7 @@ class CachingLinkGenerator extends CachingLinkGenerator implements GrailsApplica
 				}
 				url = (absolutePath?:'') + (url ?: '')
 			}
-			return url	
+			return url
 		}
 	}
 
@@ -82,5 +82,5 @@ class CachingLinkGenerator extends CachingLinkGenerator implements GrailsApplica
 			return conf.url ?: "/$mapping/"
 		}
 	}
-	
+
 }

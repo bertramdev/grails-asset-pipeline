@@ -10,7 +10,6 @@ class AssetMethodTagLib {
 	def grailsApplication
 	def assetProcessorService
 
-
 	def assetPath = { attrs ->
 		def src
 		def ignorePrefix = false
@@ -42,8 +41,8 @@ class AssetMethodTagLib {
 		if(conf.url && conf.url instanceof Closure) {
 			return conf.url.call(request)
 		} else {
-			return conf.url ?: (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )		
+			return conf.url ?: (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
 		}
-		
+
 	}
 }

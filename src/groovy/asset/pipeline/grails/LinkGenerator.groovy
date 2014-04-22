@@ -16,7 +16,6 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 	}
 
 	String resource(Map attrs) {
-		println "Checking Assets"
 		def url = asset(attrs)
 
 		if(!url) {
@@ -34,32 +33,28 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 	*/
 	String asset(Map attrs) {
 		def absolutePath = handleAbsolute(attrs)
-		
+
 		def absolute = attrs[DefaultLinkGenerator.ATTRIBUTE_ABSOLUTE]
 		def conf = grailsApplication.config.grails.assets
-		def url  = attrs.file
+		def url  = attrs.file ?: attrs.src
 		def assetFound = false
 
 		if(url) {
-			println "Url Detected"
 			if(conf.precompiled) {
-				println "Precompiler Mode Detected"
 				def realPath = conf.manifest.getProperty(url)
 				if(realPath) {
 					url = assetUriRootPath() + realPath
 					assetFound = true
 				}
 			} else {
-				println "Looking for file ${url}"
 				def assetFile = AssetHelper.fileForFullName(url)
 				if(assetFile != null) {
-					println "Found it!"
 					url = assetUriRootPath() + url
 					assetFound = true
 				}
 			}
 		}
-		
+
 		if(!assetFound) {
 			return null
 		} else {
@@ -75,7 +70,7 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 				}
 				url = (absolutePath?:'') + (url ?: '')
 			}
-			return url	
+			return url
 		}
 	}
 
@@ -89,5 +84,5 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 			return conf.url ?: "/$mapping/"
 		}
 	}
-	
+
 }

@@ -4,6 +4,11 @@ class AssetProcessorService {
     static transactional = false
     def grailsApplication
 
+
+    /**
+    * Used for serving assets in development mode via the AssetController
+    * This method is NOT recommended for public use as behavior changes in production mode.
+    */
     byte[] serveAsset(uri, contentType = null, extension = null, encoding = null) {
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
 
@@ -25,6 +30,11 @@ class AssetProcessorService {
         return null
     }
 
+
+    /**
+    * Used for serving assets in development mode via the AssetController
+    * This method is NOT recommended for public use as behavior changes in production mode.
+    */
     def getDependencyList(uri, contentType = null, extension = null) {
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
         def directiveProcessor = new DirectiveProcessor(contentType)
@@ -34,6 +44,11 @@ class AssetProcessorService {
         return null
     }
 
+    
+    /**
+    * Used for serving assets in development mode via the AssetController
+    * This method is NOT recommended for public use as behavior changes in production mode.
+    */
     byte[] serveUncompiledAsset(uri, contentType, extension = null,encoding=null) {
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
 
