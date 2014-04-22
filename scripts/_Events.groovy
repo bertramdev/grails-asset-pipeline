@@ -1,7 +1,7 @@
-includeTargets << new File(assetPipelinePluginDir, "scripts/_AssetCompile.groovy")
+
 
 eventCreateWarStart = {warName, stagingDir ->
-
+	includeTargets << new File(assetPipelinePluginDir, "scripts/_AssetCompile.groovy")
 	assetCompile()
 
 	def assetCompileDir = new File(basedir, "target/assets")
