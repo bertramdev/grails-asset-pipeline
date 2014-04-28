@@ -7,7 +7,7 @@ import asset.pipeline.AssetHelper
 import groovy.util.logging.Log4j
 
 @Log4j
-class CachingLinkGenerator extends CachingLinkGenerator implements GrailsApplicationAware {
+class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.CachingLinkGenerator implements GrailsApplicationAware {
 	GrailsApplication grailsApplication
 	def assetProcessorService
 
