@@ -1,6 +1,5 @@
 package asset.pipeline.grails
 
-import org.codehaus.groovy.grails.web.mapping.CachingLinkGenerator
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import asset.pipeline.AssetHelper
