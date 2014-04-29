@@ -34,5 +34,14 @@ class AssetResourceLocatorSpec extends IntegrationSpec {
 			resource.inputStream.text.contains("This is File A")
 	}
 
+	def "finds asset of image type when calling for resource in dev mode"() {
+		given: "An AssetResourceLocator"
+			def filePath = "grails_logo.png"
+		when:
+			def resource = assetResourceLocator.findResourceForURI(filePath)
+		then:
+			resource?.exists() == true
+	}
+
 
 }

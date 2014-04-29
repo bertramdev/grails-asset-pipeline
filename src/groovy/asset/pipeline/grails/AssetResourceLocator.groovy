@@ -27,7 +27,11 @@ class AssetResourceLocator extends DefaultResourceLocator {
 			}
 		} else {
 			def contentTypes = AssetHelper.assetMimeTypeForURI(uri)
-			def contentType  = contentTypes[0]
+			def contentType
+			if(contentTypes) {
+				contentType = contentTypes[0]
+			}
+
 			def extension    = AssetHelper.extensionFromURI(uri)
 			def name         = AssetHelper.nameWithoutExtension(uri)
 			def assetFile    = AssetHelper.fileForUri(name,contentType,extension)
