@@ -12,7 +12,8 @@ http://bertramdev.github.io/asset-pipeline
 
 Things to be Done
 -----------------
-* Increase Test Coverage.
+* Decoupling
+
 
 Contributions
 -------------
@@ -27,4 +28,3 @@ Additional Resources
 * [Handlebars Asset-Pipeline Plugin](http://github.com/bertramdev/handlebars-grails-asset-pipeline)
 * [Ember Asset-Pipeline Plugin](http://github.com/bertramdev/ember-grails-asset-pipeline)
 * [Rails Asset Pipeline Guide](http://guides.rubyonrails.org/asset_pipeline.html)
-
