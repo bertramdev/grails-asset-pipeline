@@ -22,6 +22,13 @@ h3. Additional Information
 * [Rails Asset Pipeline Guide|http://guides.rubyonrails.org/asset_pipeline.html]
 
 h3. Release History
+* April 30, 2014
+** 1.8.7 Release -- ETag Header Support and Vary: Accept-Encoding
+* April 29, 2014
+** 1.8.6 Release -- AssetResourceLocator fix
+* April 28, 2014
+** 1.8.5 Release -- GGTS and STS Eclipse Groovy Compiler Fixes
+** 1.8.4 Release -- GGTS and STS Eclipse Groovy Compiler Fixes
 * October 13, 2013
 ** 1.0.1 release
 * October 28, 2013
