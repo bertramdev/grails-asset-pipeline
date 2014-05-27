@@ -210,25 +210,37 @@ class DirectiveProcessor {
 
     def requireFileDirective(command, file, tree) {
         def fileName = command[1]
-        def newFile
-        if(fileName.startsWith(AssetHelper.DIRECTIVE_FILE_SEPARATOR)) {
-            newFile = AssetHelper.fileForUri(fileName, this.contentType, null, this.baseFile)
-        } else {
-            def relativeFileName = [relativePath(file.file),fileName].join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
-            // println "Including Relative File: ${relativeFileName} - ${fileName}"
-            newFile = AssetHelper.fileForUri(relativeFileName, this.contentType, null, this.baseFile)
-        }
 
-        if(newFile) {
-            if(!isFileInTree(newFile,tree)) {
-                // println("Inserting File")
-                tree.tree << getDependencyTree(newFile)
+        List fileNameList = fileName.tokenize(',')
+        if( fileNameList.size() > 1 ) {
+            fileNameList.each{ thisListItem ->
+                requireFileDirective( [ command[0], thisListItem ], file, tree )
             }
-        } else if(!fileName.startsWith(AssetHelper.DIRECTIVE_FILE_SEPARATOR)) {
-            command[1] = AssetHelper.DIRECTIVE_FILE_SEPARATOR + command[1]
-            requireFileDirective(command,file,tree)
-        } else {
-            log.warn("Unable to Locate Asset: ${command[1]}")
+        }
+        else {
+            def newFile
+            if( fileName.startsWith( AssetHelper.DIRECTIVE_FILE_SEPARATOR ) ) {
+                newFile = AssetHelper.fileForUri( fileName, this.contentType, null, this.baseFile )
+            }
+            else {
+                def relativeFileName = [ relativePath( file.file ), fileName ].join( AssetHelper.DIRECTIVE_FILE_SEPARATOR )
+                // println "Including Relative File: ${relativeFileName} - ${fileName}"
+                newFile = AssetHelper.fileForUri( relativeFileName, this.contentType, null, this.baseFile )
+            }
+
+            if( newFile ) {
+                if( !isFileInTree( newFile, tree ) ) {
+                    // println("Inserting File")
+                    tree.tree << getDependencyTree( newFile )
+                }
+            }
+            else if( !fileName.startsWith( AssetHelper.DIRECTIVE_FILE_SEPARATOR ) ) {
+                command[ 1 ] = AssetHelper.DIRECTIVE_FILE_SEPARATOR + command[ 1 ]
+                requireFileDirective( command, file, tree )
+            }
+            else {
+                log.warn( "Unable to Locate Asset: ${ command[ 1 ] }" )
+            }
         }
     }
 

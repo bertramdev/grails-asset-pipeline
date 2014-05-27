@@ -86,4 +86,19 @@ class DirectiveProcessorSpec extends IntegrationSpec {
         then:
             dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_c.js" } < dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_b.js"}
     }
+
+    def "gets dependency list order correct when multiple dependencies are defined in one directive"() {
+        given: "A uri and file extension with require directives defining multiple dependencies in one directive"
+            def uri                = "asset-pipeline/test/test_multiple_file_directive.js"
+            def fileExtension      = "js"
+            def contentType        = "application/javascript"
+            def file               = AssetHelper.fileForUri(uri, contentType, fileExtension)
+            def directiveProcessor = new DirectiveProcessor(contentType)
+        when:
+            def dependencyList = directiveProcessor.getFlattenedRequireList(file)
+        then:
+            dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_a.js" } < dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/subset/subset_a.js"}
+            dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/subset/subset_a.js" } < dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_b.js"}
+            dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_c.js" } < dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_b.js"}
+    }
 }
