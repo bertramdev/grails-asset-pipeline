@@ -199,7 +199,7 @@ class DirectiveProcessor {
             realFile = file.file
         }
         def result = files.find { it ->
-        return (it.class.name == 'java.io.File' && it.getAbsolutePath() == realFile.getAbsolutePath()) || it.file.getAbsolutePath() == realFile.getAbsolutePath()
+        return (it.class.name == 'java.io.File' && it.getCanonicalPath() == realFile.getCanonicalPath()) || it.file.getCanonicalPath() == realFile.getCanonicalPath()
         }
         if(result) {
             return true
