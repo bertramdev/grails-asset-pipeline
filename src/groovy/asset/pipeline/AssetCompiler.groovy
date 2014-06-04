@@ -204,7 +204,7 @@ class AssetCompiler {
 	}
 
 	def getExcludesForPathKey(String key) {
-		def excludes = ["**/.*","**/.DS_Store", 'WEB-INF/**/*', '**/META-INF/*', '**/_*.*']
+		def excludes = ["**/.*","**/.DS_Store", 'WEB-INF/**/*', '**/META-INF/*', '**/_*.*','**/.svn/**']
 		def defaultExcludes = excludeRules.default
 		if(defaultExcludes) {
 			excludes += defaultExcludes

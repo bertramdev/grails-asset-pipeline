@@ -21,7 +21,7 @@ import asset.pipeline.grails.AssetResourceLocator
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "1.8.9"
+    def version         = "1.8.10"
     def grailsVersion   = "2.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
