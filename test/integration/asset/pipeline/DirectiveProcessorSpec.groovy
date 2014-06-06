@@ -101,4 +101,32 @@ class DirectiveProcessorSpec extends IntegrationSpec {
             dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/subset/subset_a.js" } < dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_b.js"}
             dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_c.js" } < dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_b.js"}
     }
+
+    def "gets dependency list where relative paths don't exist but absolute paths do in tree directive"() {
+        given: "A uri and file extension with an absolute path tree require directive"
+            def uri                = "asset-pipeline/test/absolute-path/test/test_tree.js"
+            def fileExtension      = "js"
+            def contentType        = "application/javascript"
+            def file               = AssetHelper.fileForUri(uri, contentType, fileExtension)
+            def directiveProcessor = new DirectiveProcessor(contentType)
+        when:
+            def dependencyList = directiveProcessor.getFlattenedRequireList(file)
+        then:
+            dependencyList.size() == 2
+    }
+
+    def "gets dependency list where relative paths don't exist but absolute paths do in full_tree directive"() {
+        given: "A uri and file extension with an absolute path full_tree require directive"
+            def uri                = "asset-pipeline/test/absolute-path/test/test_full_tree.js"
+            def fileExtension      = "js"
+            def contentType        = "application/javascript"
+            def file               = AssetHelper.fileForUri(uri, contentType, fileExtension)
+            def directiveProcessor = new DirectiveProcessor(contentType)
+        when:
+            def dependencyList = directiveProcessor.getFlattenedRequireList(file)
+        then:
+            dependencyList.size() == 2
+    }
+
+
 }
