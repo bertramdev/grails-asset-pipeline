@@ -1,0 +1,1 @@
+//= require_full_tree asset-pipeline/test/absolute-path/full-tree

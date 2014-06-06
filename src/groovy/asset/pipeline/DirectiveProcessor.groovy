@@ -152,28 +152,53 @@ class DirectiveProcessor {
     }
 
     def requireTreeDirective(command, fileSpec, tree) {
+        String directivePath = command[1]
+
         def parentFile
-        if(!command[1] || command[1] == '.') {
+        if(!directivePath || directivePath == '.') {
             parentFile = new File(fileSpec.file.getParent())
         } else {
-            parentFile = new File([fileSpec.file.getParent(),command[1]].join(File.separator))
+            parentFile = new File([fileSpec.file.getParent(),directivePath].join(File.separator))
         }
-        recursiveTreeAppend(parentFile,tree)
+
+        if(parentFile.exists() && parentFile.isDirectory()) {
+            recursiveTreeAppend(parentFile, tree)
+        }
+        else {
+            def rootPaths = AssetHelper.scopedDirectoryPaths(new File("grails-app/assets").getAbsolutePath())
+
+            rootPaths.each { path ->
+                def absolutePath = new File(path, directivePath)
+
+                if (absolutePath.exists() && absolutePath.isDirectory()) {
+                    recursiveTreeAppend(absolutePath, tree)
+                }
+            }
+        }
     }
 
     def requireFullTreeDirective(command, fileSpec, tree) {
+        String directivePath = command[1]
+
         def parentFile
-        if(!command[1] || command[1] == '.') {
+        if(!directivePath || directivePath == '.') {
             parentFile = new File(fileSpec.file.getParent())
         } else {
-            parentFile = new File([fileSpec.file.getParent(),command[1]].join(File.separator))
+            parentFile = new File([fileSpec.file.getParent(),directivePath].join(File.separator))
         }
+
         def relativeParent = relativePath(parentFile,true)
 
         AssetHelper.getAssetPaths().each { path ->
+
             def parentFileScoped = new File(path, relativeParent)
+            def absolutePath = new File(path, directivePath)
+
             if(parentFileScoped.exists() && parentFileScoped.isDirectory()) {
                 recursiveTreeAppend(parentFileScoped, tree)
+            }
+            else if (absolutePath.exists() && absolutePath.isDirectory()) {
+                recursiveTreeAppend(absolutePath, tree)
             }
         }
     }
