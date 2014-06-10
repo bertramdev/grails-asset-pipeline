@@ -45,7 +45,7 @@ class AssetMethodTagLib {
 		if(conf.url && conf.url instanceof Closure) {
 			return conf.url.call(request)
 		} else {
-            if(absolute){
+            if(absolute && !conf.url){
                 return grailsApplication.config.grails.serverURL + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/"
             }
             String relativePathToResource = (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
