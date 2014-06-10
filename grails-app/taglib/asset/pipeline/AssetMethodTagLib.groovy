@@ -12,17 +12,21 @@ class AssetMethodTagLib {
 
 	def assetPath = { attrs ->
 		def src
+        //unused
 		def ignorePrefix = false
+        def absoluteUrl = false
 		if (attrs instanceof Map) {
 			src = attrs.src
+            //unused
 			ignorePrefix = attrs.containsKey('ignorePrefix')? attrs.ignorePrefix : false
+            absoluteUrl = attrs.containsKey('absoluteUrl') ? attrs.absoluteUrl : false
 		} else {
 			src = attrs
 		}
 
 		def conf = grailsApplication.config.grails.assets
 
-		def assetUrl = assetUriRootPath(grailsApplication, request)
+		def assetUrl = assetUriRootPath(grailsApplication, request, absoluteUrl)
 
 		if(conf.precompiled) {
 			def realPath = conf.manifest.getProperty(src)
@@ -34,14 +38,18 @@ class AssetMethodTagLib {
 	}
 
 
-	private assetUriRootPath(grailsApplication, request) {
-		def context = grailsApplication.mainContext
+	private assetUriRootPath(grailsApplication, request, absoluteUrl=false) {
+		def context = grailsApplication.mainContext //unused
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = assetProcessorService.assetMapping
 		if(conf.url && conf.url instanceof Closure) {
 			return conf.url.call(request)
 		} else {
-			return conf.url ?: (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
+            if(absoluteUrl){
+                return grailsApplication.config.grails.serverURL + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/"
+            }
+            String relativePathToResource = (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
+            return conf.url ?: relativePathToResource
 		}
 
 	}

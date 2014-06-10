@@ -89,7 +89,8 @@ class AssetsTagLib {
 
 	def image = { attrs ->
 		def src = attrs.remove('src')
-		out << "<img src=\"${assetPath(src:src)}\" ${paramsToHtmlAttr(attrs)}/>"
+        def absoluteUrl = attrs.remove('absoluteUrl')
+		out << "<img src=\"${assetPath(src:src, absoluteUrl: absoluteUrl)}\" ${paramsToHtmlAttr(attrs)}/>"
 	}
 
 
