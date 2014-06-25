@@ -37,6 +37,16 @@ class AssetsControllerSpec extends Specification {
       controller.response.status == 404
   }
 
+  void "index() should return 404 for non-existent top level file starting with a dot"() {
+    given:
+      request.forwardURI = "/assets/.bash_history"
+      params.id = ".bash_history"
+    when:
+      controller.index()
+    then:
+      controller.response.status == 404
+  }
+
   void "index() should return file contents when file found"() {
     given: 
       request.forwardURI = "/assets/asset-pipeline/test/test.css"
