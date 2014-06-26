@@ -16,7 +16,9 @@ class AssetsController {
         }
 
         if(extension && uri.endsWith(".${extension}")) {
-            uri = params.id[0..(-extension.size()-2)]
+            int posBeforeExtension = extension.size() + 2
+            int endPos = posBeforeExtension > params.id.size() ? 0 : -posBeforeExtension
+            uri = params.id[0..endPos]
         }
 
         def assetFile
