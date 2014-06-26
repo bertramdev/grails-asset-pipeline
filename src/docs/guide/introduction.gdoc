@@ -4,7 +4,7 @@ This guide documents the configuration needed to setup the plugin and provides s
 
 h3. Relation to Resources Plugin
 
-Asset-Pipeline is intended to replace the defacto Grails equivalent [resources-plugin|http://grails.org/plugin/resources] with a more efficient, developer friendly architecture (similar to [Rails Asset Pipeline|http://guides.rubyonrails.org/asset_pipeline.html]). The Asset-Pipeline levereges the latest in minification (UglifyJS) to reduce your asset sizes as much as possible. A few differences between the resources plugin and asset-pipeline include:
+Asset-Pipeline is intended to replace the de facto Grails equivalent [resources-plugin|http://grails.org/plugin/resources] with a more efficient, developer friendly architecture (similar to [Rails Asset Pipeline|http://guides.rubyonrails.org/asset_pipeline.html]). The Asset-Pipeline leverages the latest in minification (UglifyJS) to reduce your asset sizes as much as possible. A few differences between the resources plugin and asset-pipeline include:
 
 * On the fly processing - No more waiting for your assets to reload after making a change
 * Compiled assets on war create - No more hanging up application boot times while processing files. @grails war@
@@ -14,8 +14,8 @@ Asset-Pipeline is intended to replace the defacto Grails equivalent [resources-p
 
 h3. Additional Information
 
-* [Coffeescript Asset-Pipeline Plugin|https://github.com/bertramdev/coffee-grails-asset-pipeline]
-* [LESS Css Asset-Pipeline Plugin|https://github.com/bertramdev/less-grails-asset-pipeline]
+* [CoffeeScript Asset-Pipeline Plugin|https://github.com/bertramdev/coffee-grails-asset-pipeline]
+* [LESS CSS Asset-Pipeline Plugin|https://github.com/bertramdev/less-grails-asset-pipeline]
 * [SASS/SCSS Compass Asset-Pipeline Plugin|https://github.com/bertramdev/sass-grails-asset-pipeline]
 * [Handlebars Asset-Pipeline Plugin|https://github.com/bertramdev/handlebars-grails-asset-pipeline]
 * [Ember Asset-Pipeline Plugin|https://github.com/bertramdev/ember-grails-asset-pipeline]
@@ -23,7 +23,7 @@ h3. Additional Information
 
 h3. Release History
 * June 6, 2014
-** 1.8.11 Release - require_tree directive now fallsback to absolute references if path doesnt exist relatively
+** 1.8.11 Release - require_tree directive now falls back to absolute references if path doesn't exist relatively
 * June 1, 2014
 ** 1.8.10 Release - Added Support for comma delimited require lists
 * April 30, 2014
