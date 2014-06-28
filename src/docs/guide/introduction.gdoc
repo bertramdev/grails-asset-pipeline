@@ -22,6 +22,7 @@ h3. Additional Information
 * [Rails Asset Pipeline Guide|http://guides.rubyonrails.org/asset_pipeline.html]
 
 h3. Release History
+
 * June 28, 2014
 ** 1.9.0 Release - Added Absolute Image Support, Various bug fixes. Documentation Improvements.
 * June 6, 2014
