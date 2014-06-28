@@ -19,10 +19,10 @@ package asset.pipeline
 class CacheManager {
 	static cache = [:]
 
-	static def findCache(fileName, md5) {
+	static def findCache(fileName, md5, modifierKey = null) {
 		def cacheRecord = CacheManager.cache[fileName]
 
-		if(cacheRecord && cacheRecord.md5 == md5) {
+		if(cacheRecord && cacheRecord.md5 == md5 && cacheRecord.modifierKey == modifierKey) {
 			def cacheFiles = cacheRecord.dependencies.keySet()
 			def expiredCacheFound = cacheFiles.find { cacheFileName ->
 				def cacheFile = new File(cacheFileName)
@@ -46,16 +46,18 @@ class CacheManager {
 		}
 	}
 
-	static def createCache(fileName, md5Hash, processedFileText) {
+	static def createCache(fileName, md5Hash, processedFileText, modifierKey=null) {
 		def cacheRecord = CacheManager.cache[fileName]
 		if(cacheRecord) {
 			CacheManager.cache[fileName] = cacheRecord + [
 				md5: md5Hash,
+				modifierKey: modifierKey,
 				processedFileText: processedFileText
 			]
 		} else {
 			CacheManager.cache[fileName] = [
 				md5: md5Hash,
+				modifierKey: modifierKey,
 				processedFileText: processedFileText,
 				dependencies: [:]
 			]

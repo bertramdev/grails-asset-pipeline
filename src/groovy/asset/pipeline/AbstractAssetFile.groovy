@@ -8,7 +8,7 @@ abstract class AbstractAssetFile implements AssetFile {
 	String processedStream(precompiler) {
 		def fileText
 		def skipCache = precompiler ?: (!processors || processors.size() == 0)
-
+		def cacheKey
 		if(baseFile?.encoding || encoding) {
 			fileText = file?.getText(baseFile?.encoding ? baseFile.encoding : encoding)
 		} else {
@@ -17,7 +17,7 @@ abstract class AbstractAssetFile implements AssetFile {
 
 		def md5 = AssetHelper.getByteDigest(fileText.bytes)
 		if(!skipCache) {
-			def cache = CacheManager.findCache(file.canonicalPath, md5)
+			def cache = CacheManager.findCache(file.canonicalPath, md5,baseFile?.canonicalPath)
 			if(cache) {
 				return cache
 			}
@@ -28,7 +28,7 @@ abstract class AbstractAssetFile implements AssetFile {
 		}
 
 		if(!skipCache) {
-			CacheManager.createCache(file.canonicalPath,md5,fileText)
+			CacheManager.createCache(file.canonicalPath,md5,fileText, baseFile?.canonicalPath)
 		}
 
 		return fileText
