@@ -19,10 +19,10 @@ package asset.pipeline
 class CacheManager {
 	static cache = [:]
 
-	static def findCache(fileName, md5, modifierKey = null) {
+	static def findCache(fileName, md5, originalFileName = null) {
 		def cacheRecord = CacheManager.cache[fileName]
 
-		if(cacheRecord && cacheRecord.md5 == md5 && cacheRecord.modifierKey == modifierKey) {
+		if(cacheRecord && cacheRecord.md5 == md5 && cacheRecord.originalFileName == originalFileName) {
 			def cacheFiles = cacheRecord.dependencies.keySet()
 			def expiredCacheFound = cacheFiles.find { cacheFileName ->
 				def cacheFile = new File(cacheFileName)
@@ -40,24 +40,24 @@ class CacheManager {
 				return null
 			}
 			return cacheRecord.processedFileText
-		} else {
+		} else if (cacheRecord) {
 			CacheManager.cache.remove(fileName)
 			return null
 		}
 	}
 
-	static def createCache(fileName, md5Hash, processedFileText, modifierKey=null) {
+	static def createCache(fileName, md5Hash, processedFileText, originalFileName = null) {
 		def cacheRecord = CacheManager.cache[fileName]
 		if(cacheRecord) {
 			CacheManager.cache[fileName] = cacheRecord + [
 				md5: md5Hash,
-				modifierKey: modifierKey,
+				originalFileName: originalFileName,
 				processedFileText: processedFileText
 			]
 		} else {
 			CacheManager.cache[fileName] = [
 				md5: md5Hash,
-				modifierKey: modifierKey,
+				originalFileName: originalFileName,
 				processedFileText: processedFileText,
 				dependencies: [:]
 			]
@@ -66,7 +66,6 @@ class CacheManager {
 	}
 
 	static def addCacheDependency(fileName, dependentFile) {
-
 		def cacheRecord = CacheManager.cache[fileName]
 		if(!cacheRecord) {
 			CacheManager.createCache(fileName, null, null)
