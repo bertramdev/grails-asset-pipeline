@@ -1,4 +1,4 @@
-Asset Pipeline adds a few new taglibs to properly reference your assets. These taglibs automatically handle swapout of cache digest names during production use as well as any custom url mapping changes.
+Asset Pipeline adds a few new taglibs to properly reference your assets. These taglibs automatically handle swapout of cache digest names during production use as well as any custom URL mapping changes.
 
 h3. Views
 
@@ -9,9 +9,9 @@ h3. Views
 </head>
 {code}
 
-The primary include tags, as show above, are quite useful for including your relevant javascript or stylesheet files. Notice that you do not have to prefix with '/assets' as this is handled automatically by the tag.
+The primary include tags, as shown above, are quite useful for including your relevant JavaScript or stylesheet files. Notice that you do not have to prefix with '/assets', as this is handled automatically by the tag.
 
-In GSP views you can also reference images included in the asset-pipeline with the following tag:
+In GSP views, you can also reference images included in the asset-pipeline with the following tag:
 
 {code}
 <asset:image src="logo.png" width="200" height="200"/>
@@ -79,8 +79,8 @@ Now to render the output of these scripts simply use the following:
 
 h3. Stylesheet References
 
-Stylesheets commonly make reference to images and in some cases other css files using the '@import' directive. With the asset-pipeline in Grails, relative paths can be recalculated and automatically reference the proper file.
-For example, if you have a css file that looks like this:
+Stylesheets commonly make reference to images and in some cases other CSS files using the '@import' directive. With the asset-pipeline in Grails, relative paths can be recalculated and automatically reference the proper file.
+For example, if you have a CSS file that looks like this:
 
 {code}
 body {
@@ -96,7 +96,7 @@ body {
 }
 {code}
 
-But, if we use a relative path, the asset-pipeline understands this path and can recalculate a new relative path based on whatever root file may have required the css:
+But, if we use a relative path, the asset-pipeline understands this path and can recalculate a new relative path based on whatever root file may have required the CSS:
 
 {code}
 body {
@@ -113,5 +113,5 @@ body {
 {code}
 
 {note}
-In production mode your image references or css references will automatically get their cache-digested name appended to them when using relative paths. More on this later.
+In production mode, your image references or CSS references will automatically get their cache-digested name appended to them when using relative paths. More on this later.
 {note}
