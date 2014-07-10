@@ -2,9 +2,9 @@ Asset Pipeline controls asset depdencency by using a custom syntax with commands
 
 h3. Manifest Files
 
-In the grails asset pipeline, the concept of a manifest file exists. This is typically the root/parent javascript or css file which requires all of your application code. This file is then included into your application with a taglib.  Another comparison that can be made here is to the 'Resources Plugin' modules; The difference being, your manifest is kept within the source code of your javascript or css rather than within a seperate file you keep having to jump back to.
+In the Grails asset pipeline, the concept of a manifest file exists. This is typically the root/parent JavaScript or CSS file which requires all of your application code. This file is then included into your application with a taglib.  Another comparison that can be made here is to the 'Resources Plugin' modules; the difference being, your manifest is kept within the source code of your JavaScript or CSS rather than within a separate file you keep having to jump back to.
 
-An example javascript manifest called 'application.js' might look like this:
+An example JavaScript manifest called 'application.js' might look like this:
 
 {code}
 //= require jquery/jquery
@@ -37,14 +37,14 @@ require_full_tree | Include files from all plugins that contain the relative bas
 encoding | Set the processor encoding for this bundle (i.e. UTF-8 or ANSI or Latin1)
 {table}
 
-In javascript files, the directive begins with '//='. These directives tell us which files should be injected into this javascript file and in what order.
+In JavaScript files, the directive begins with '//='. These directives tell us which files should be injected into this JavaScript file and in what order.
 
-The @require_tree@ directive will tell asset-pipeline to recursively include all javascript in the specified directory. This will include javascript sorted in alphabetical order, but the ordering of this type of require should not be relied upon. You can adjust the require order of the @require_tree@ directive by using directives within any sub-javascript file. For example, lets say we have a folder called 'models' with a Book and an Author. Lets go further and say we want to ensure the Book model requires author first in a require_tree. This can be done by simply adding "//=require author" at the top of book.js file.
+The @require_tree@ directive will tell asset-pipeline to recursively include all JavaScript in the specified directory. This will include JavaScript sorted in alphabetical order, but the ordering of this type of require should not be relied upon. You can adjust the require order of the @require_tree@ directive by using directives within any sub-JavaScript file. For example, lets say we have a folder called 'models' with a Book and an Author. Let's go further and say we want to ensure the Book model requires author first in a require_tree. This can be done by simply adding "//=require author" at the top of book.js file.
 
 The @require_full_tree@ directive is an additional directive similar to @require_tree@ except that it will include files from all plugins that contain the relative base path. This is helpful when developing an application that is split into multiple plugins.
 
 The @require_self@ directive allows you to control where in the manifest the contents of the current file should reside. If the @require_self@ directive is not specified, the contents of the current file are appended to the end of the manifest.
 
 {note}
-In the examples above, 2 different directive prefixes were shown, one for css, and one for javascript. It is important to note that the syntax of these directives can vary based on the file type and preprocessor definition. For example, coffeescript files begin with "#=".
+In the examples above, 2 different directive prefixes were shown, one for CSS, and one for JavaScript. It is important to note that the syntax of these directives can vary based on the file type and preprocessor definition. For example, CoffeeScript files begin with "#=".
 {note}

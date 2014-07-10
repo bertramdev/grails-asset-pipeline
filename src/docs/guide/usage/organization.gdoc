@@ -14,8 +14,8 @@ grails-app/assets/stylesheets
 grails-app/assets/images
 {code}
 
-The first level deep within the assets folder is simply used for organization purposes and can contain folders of any name you wish. File types also dont need to be in any specific folder.
-These folders are omitted from the url mappings and relative path calculations. For example, if I had "grails-app/assets/stylesheets/application.css" and "grails-app/assets/images/logo.png" I would include this in my css by the following means:
+The first level deep within the assets folder is simply used for organization purposes and can contain folders of any name you wish. File types also don't need to be in any specific folder.
+These folders are omitted from the URL mappings and relative path calculations. For example, if I had "grails-app/assets/stylesheets/application.css" and "grails-app/assets/images/logo.png", I would include this in my CSS by the following means:
 
 {code}
 #logo {
@@ -23,7 +23,7 @@ These folders are omitted from the url mappings and relative path calculations. 
 }
 {code}
 
-You can also directly reference it to better help with support for prebuilt third party css libraries like so:
+You can also directly reference it to better help with support for prebuilt third party CSS libraries like so:
 
 {code}
 #logo {
@@ -35,11 +35,11 @@ You can also directly reference it to better help with support for prebuilt thir
 The above path will automatically be processed and converted to "logo.png" assuming the file exists.
 {note}
 
-A common folder that gets added to this set of organization is a "lib" folder. This folder can be useful in organizing third party libraries like jquery, or bootstrap.
+A common folder that gets added to this set of organization is a "lib" folder. This folder can be useful in organizing third party libraries like jQuery, or Bootstrap.
 
 h4. Plugins
 
-Plugins also can have the same "grails-app/assets" folder and their url mapping is also the same. This means it can be more important to ensure unique naming / path mapping between plugins. This is also powerful in the sense that a plugin can add helper manifests to be used within your apps like jquery, bootstrap, font-awesome, and more.
+Plugins also can have the same "grails-app/assets" folder and their URL mapping is also the same. This means it can be more important to ensure unique naming / path mapping between plugins. This is also powerful in the sense that a plugin can add helper manifests to be used within your apps like jquery, bootstrap, font-awesome, and more.
 
 These plugins also differ in the fact that the assets within their web-app directory also become available under a similar structure
 
@@ -70,10 +70,10 @@ First it tries to find the file relative to the manifest including it. For examp
 
 The first place we will look is within "grails-app/assets/javascripts/admin/*" We will proceed to do this within all of the asset sub folders across plugins after the main application is searched.
 
-The next place we will look is the root of all grails-app/assets sub folders (i.e. "grails-app/assets/*/table.js", and "web-app/*/table.js" for plugins).
+The next place we will look is the root of all grails-app/assets sub folders (e.g. "grails-app/assets/*/table.js", and "web-app/*/table.js" for plugins).
 
-In all cases the applications assets folder takes precedence between the 2 search paths, but plugins get scanned as well.
+In all cases, the applications assets folder takes precedence between the two search paths, but plugins get scanned as well.
 
 {note}
-These same conditions should be implemented on any preprocessor extension plugin, i.e. LESS-asset-pipeline follows the same scan for @import directives.
+These same conditions should be implemented on any preprocessor extension plugin, e.g. LESS-asset-pipeline follows the same scan for @import directives.
 {note}

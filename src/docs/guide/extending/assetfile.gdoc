@@ -31,7 +31,7 @@ An @assetFile@ can specify a REGEXP pattern for require directives. These direct
   }
 {code}
 
-The example above shows a match pattern for css files. This allows it to match require directives for the following example:
+The example above shows a match pattern for CSS files. This allows it to match require directives for the following example:
 
 {code}
 /*
@@ -45,9 +45,9 @@ body {
 }
 {code}
 
-h4. Processing Data streams
+h4. Processing Data Streams
 
-Processors are used to precompile certain assets, and/or adjust the file path contents. The Processor class itself will get a more in depth explanation in the next section. For now the part we want to look at is the processedStream function.
+Processors are used to precompile certain assets, and/or adjust the file path contents. The Processor class itself will get a more in depth explanation in the next section. For now, the part we want to look at is the processedStream function.
 
 {code}
 String processedStream(Boolean precompiler) {
@@ -84,7 +84,7 @@ The example above iterates over all of the processor classes defined in our stat
 
 h4. Adding the Asset definiton to the list of AssetFiles
 
-Originally, asset-pipeline took advantage of the Artefact syntax to generate this class list. However, this became problematic as it added a great deal of overhead to precompilation during War creation. To solve this, an @asset.pipeline.AssetHelper.assetSpecs@ static array was used instead. This array is used by both development mode runtime and war creation so it has to be added in 2 places. If you are creating a plugin to facilitate your added functionality, you will want to use the @doWithDynamicMethods@ to add your asset file.
+Originally, asset-pipeline took advantage of the Artefact syntax to generate this class list. However, this became problematic as it added a great deal of overhead to precompilation during WAR creation. To solve this, an @asset.pipeline.AssetHelper.assetSpecs@ static array was used instead. This array is used by both development mode runtime and war creation so it has to be added in 2 places. If you are creating a plugin to facilitate your added functionality, you will want to use the @doWithDynamicMethods@ to add your asset file.
 
 {code}
 AssetHelper.assetSpecs << LessAssetFile

@@ -6,14 +6,14 @@ grails-app/assets/images
 grails-app/assets/stylesheets
 {code}
 
-Place your static assets in those directories and simply include them into your layouts. 
+Place your static assets in those directories and simply include them in your layouts. 
 
 h3. Setting up Manifests
 
 Example @grails-app/assets/javascripts/application.js@:
 
 {code}
-//This is a javascript file with its top level require directives
+//This is a JavaScript file with its top level require directives
 //= require jquery
 //= require app/models.js
 //= require_tree views
@@ -25,10 +25,10 @@ console.log("This is my javascript manifest");
 The above is an example of some of the require directives that can be used. Custom directives can be created and overridden into the @DirectiveProcessor@ class. 
 
 {note}
-Make sure an empty line does not exist between the top of the file and your require directives, these requires will be ignored!
+Make sure an empty line does not exist between the top of the file and your require directives, or else these requires will be ignored!
 {note}
 
-Optionally, assets can be excluded from processing if included by your require tree. This can dramatically reduce compile time for your assets. To do so simply leverage the excludes configuration option:
+Optionally, assets can be excluded from processing if included by your require tree. This can dramatically reduce compile time for your assets. To do so, simply leverage the excludes configuration option:
 
 {code}
 grails.assets.excludes = ["tiny_mce/src/*.js"]
@@ -45,7 +45,7 @@ The above will tell asset-pipeline not to precompile less files individually wit
 
 h3. Including Assets in Views
 
-Asset pipeline provides several new tag libs for including javascript and css into your gsp files. For example:
+Asset pipeline provides several new tag libs for including JavaScript and CSS into your GSP files. For example:
 
 {code}
 <head>
@@ -58,22 +58,22 @@ Asset pipeline provides several new tag libs for including javascript and css in
 These helpers will automatically adjust to point to the cache-digested versions of the files when running in a non-development environment.
 
 {note}
-In development mode your stylesheets and javascripts will be included as individual script tags. This is intended to make it easier for debugging. Bundling is enabled in all other environments and can be forced in development mode by adding @grails.assets.bundle=true@ to your @Config.groovy@.
+In development mode your stylesheets and scripts will be included as individual script tags. This is intended to make it easier for debugging. Bundling is enabled in all other environments and can be forced in development mode by adding @grails.assets.bundle=true@ to your @Config.groovy@.
 {note}
 
 h3. Using with Plugins
 
-Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The @grails-app/assets@, and @web-app@ (for legacy plugin support) folders from all plugins are considered include paths. Essentially, when a file is requested (i.e. @jquery.js@) The Asset-Pipeline first will check the local applications assets folder. If not found there, it will scan through all the installed plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of a JavaScript file in your local project.
+Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The @grails-app/assets@, and @web-app@ (for legacy plugin support) folders from all plugins are considered include paths. Essentially, when a file is requested (e.g. @jquery.js@), the Asset-Pipeline first will check the local applications assets folder. If not found there, it will scan through all the installed plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of a JavaScript file in your local project.
 
 h3. Using with Stylesheets
 
-Asset Pipeline now automatically tries to convert relative urls specified in your CSS files to absolute paths. This makes it easier to use third party libraries within the Asset-Pipeline stack.
+Asset Pipeline now automatically tries to convert relative URLs specified in your CSS files to absolute paths. This makes it easier to use third party libraries within the Asset-Pipeline stack.
 
 h3. Precompiling for Production
 
-Assets are now automatically precompiled into @target/assets@ when you create a war file. This should further simplify the deployment process. During a war create, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run @grails asset-clean@.
+Assets are now automatically precompiled into @target/assets@ when you create a war file. This should further simplify the deployment process. During WAR creation, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run @grails asset-clean@.
 
-During war build your assets are also minified using UglifierJs. To disable this feature you can add the following option to your config:
+During WAR build your assets are also minified using UglifierJs. To disable this feature, you can add the following option to your config:
 
 {code}
 grails.assets.minifyJs = false
@@ -81,7 +81,7 @@ grails.assets.minifyJs = false
 
 h3. Serving Assets from External Storage Directory
 
-Asset Pipeline can be configured to copy your assets files out into an external storage path. This can be useful for setting up your web server (i.e. Nginx) to directly server your static assets. To do so, simply define a config variable in your @Config.groovy@ environment block.
+Asset Pipeline can be configured to copy your assets files out to an external storage path. This can be useful for setting up your web server (e.g. nginx) to directly serve your static assets. To do so, simply define a config variable in your @Config.groovy@ environment block.
 
 {code}
 environments {
@@ -91,7 +91,7 @@ environments {
 }
 {code}
 
-It is also possible to configure a custom CDN asset url for serving this assets:	
+It is also possible to configure a custom CDN asset URL for serving these assets:	
 
 {code}
 environments {
