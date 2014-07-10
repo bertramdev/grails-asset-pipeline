@@ -17,6 +17,7 @@ grails.project.dependency.resolution = {
 
     dependencies {
         runtime 'org.mozilla:rhino:1.7R4'
+        runtime 'commons-io:commons-io:2.2'
     }
 
     plugins {
