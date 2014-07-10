@@ -17,7 +17,7 @@ abstract class AbstractAssetFile implements AssetFile {
 
 		def md5 = AssetHelper.getByteDigest(fileText.bytes)
 		if(!skipCache) {
-			def cache = CacheManager.findCache(file.canonicalPath, md5,baseFile?.canonicalPath)
+			def cache = CacheManager.findCache(file.canonicalPath, md5, baseFile?.file?.canonicalPath)
 			if(cache) {
 				return cache
 			}
@@ -28,7 +28,7 @@ abstract class AbstractAssetFile implements AssetFile {
 		}
 
 		if(!skipCache) {
-			CacheManager.createCache(file.canonicalPath,md5,fileText, baseFile?.canonicalPath)
+			CacheManager.createCache(file.canonicalPath, md5, fileText, baseFile?.file?.canonicalPath)
 		}
 
 		return fileText

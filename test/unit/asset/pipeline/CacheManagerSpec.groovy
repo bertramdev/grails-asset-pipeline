@@ -87,4 +87,25 @@ class CacheManagerSpec extends Specification {
         then:
             cacheContent == null
     }
+
+    void "changing original file should be a cache miss and remove cached item from cache"() {
+        given:
+            def testFile = new File('grails-app/assets/stylesheets/asset-pipeline/test/test.css')
+            def testFileName = testFile.name
+            def testMd5 = AssetHelper.getByteDigest(testFile.bytes)
+
+        when:
+            CacheManager.createCache(testFileName, testMd5, testFile.text, testFile.canonicalPath)
+
+        then:
+            CacheManager.findCache(testFileName, testMd5, testFile.canonicalPath) != null
+            CacheManager.cache[testFileName] != null
+
+        when:
+            boolean cacheMiss = CacheManager.findCache(testFileName, testMd5, "not the same file path") == null
+
+        then:
+            assert cacheMiss
+            CacheManager.cache[testFileName] == null
+    }
 }
