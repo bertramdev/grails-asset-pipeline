@@ -13,3 +13,4 @@ cobertura.ser
 *.iml
 *.ipr
 *.iws
+test/dummy/target
