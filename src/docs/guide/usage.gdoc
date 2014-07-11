@@ -43,6 +43,15 @@ grails.assets.plugin."twitter-bootstrap".includes = ["bootstrap.less"]
 
 The above will tell asset-pipeline not to precompile less files individually within the twitter-bootstrap plugin, but will compile bootstrap.less.
 
+h4. Partials
+
+Another piece of information to know is that files that are prefixed with @_@ Are not compiled individually by the asset-pipeline. These files are considered partials and should be required into another manifest file for compilation.
+If, in the event, you need to add these files back to the precompile phase you can define a global includes property like so.
+
+{code}
+grails.assets.includes = ["**/_*.*"]
+{code}
+
 h3. Including Assets in Views
 
 Asset pipeline provides several new tag libs for including JavaScript and CSS into your GSP files. For example:

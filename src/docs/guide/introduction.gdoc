@@ -23,6 +23,8 @@ h3. Additional Information
 
 h3. Release History
 
+* July 11, 2014
+** 1.9.3 Release - Fixed ETag Headers for non-digested files, and updated project docs.
 * July 10, 2014
 ** 1.9.2 Release - Fixed bug in cache manager, updated docs.
 ** 1.9.1 Release - Added commons-io dependency for more recent versions of grails.
