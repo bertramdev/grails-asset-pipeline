@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1 Introduction 1.9.0</title>
+    <title>1 Introduction 1.9.3</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -72,7 +72,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 1.9.0</p>
+                    <p><strong>Version:</strong> 1.9.3</p>
 
                     
                 </div>
@@ -82,7 +82,7 @@ function addJsClass() {
                 
 
 <h1 id="introduction">1 Introduction</h1>
-The Grails Asset-Pipeline is a plugin used for managing and processing static assets in <a href="http://grails.org" target="blank">Grails</a> applications. Asset-Pipeline functions include processing and minification of both CSS and JavaScript files. It is also capable of being extended to compile custom static assets, such as CoffeeScript or LESS.<p class="paragraph"/>This guide documents the configuration needed to setup the plugin and provides sample code on how to use it.<p class="paragraph"/><h3>Relation to Resources Plugin</h3><p class="paragraph"/>Asset-Pipeline is intended to replace the defacto Grails equivalent <a href="http://grails.org/plugin/resources" target="blank">resources-plugin</a> with a more efficient, developer friendly architecture (similar to <a href="http://guides.rubyonrails.org/asset_pipeline.html" target="blank">Rails Asset Pipeline</a>). The Asset-Pipeline levereges the latest in minification (UglifyJS) to reduce your asset sizes as much as possible. A few differences between the resources plugin and asset-pipeline include:
+The Grails Asset-Pipeline is a plugin used for managing and processing static assets in <a href="http://grails.org" target="blank">Grails</a> applications. Asset-Pipeline functions include processing and minification of both CSS and JavaScript files. It is also capable of being extended to compile custom static assets, such as CoffeeScript or LESS.<p class="paragraph"/>This guide documents the configuration needed to setup the plugin and provides sample code on how to use it.<p class="paragraph"/><h3>Relation to Resources Plugin</h3><p class="paragraph"/>Asset-Pipeline is intended to replace the de facto Grails equivalent <a href="http://grails.org/plugin/resources" target="blank">resources-plugin</a> with a more efficient, developer friendly architecture (similar to <a href="http://guides.rubyonrails.org/asset_pipeline.html" target="blank">Rails Asset Pipeline</a>). The Asset-Pipeline leverages the latest in minification (UglifyJS) to reduce your asset sizes as much as possible. A few differences between the resources plugin and asset-pipeline include:
 <ul class="star">
 <li>On the fly processing - No more waiting for your assets to reload after making a change</li>
 <li>Compiled assets on war create - No more hanging up application boot times while processing files. <code>grails war</code></li>
@@ -91,21 +91,30 @@ The Grails Asset-Pipeline is a plugin used for managing and processing static as
 <li>Simpler manifests and taglibs - Read on for more information.</li>
 </ul><p class="paragraph"/><h3>Additional Information</h3>
 <ul class="star">
-<li><a href="https://github.com/bertramdev/coffee-grails-asset-pipeline" target="blank">Coffeescript Asset-Pipeline Plugin</a></li>
-<li><a href="https://github.com/bertramdev/less-grails-asset-pipeline" target="blank">LESS Css Asset-Pipeline Plugin</a></li>
+<li><a href="https://github.com/bertramdev/coffee-grails-asset-pipeline" target="blank">CoffeeScript Asset-Pipeline Plugin</a></li>
+<li><a href="https://github.com/bertramdev/less-grails-asset-pipeline" target="blank">LESS CSS Asset-Pipeline Plugin</a></li>
 <li><a href="https://github.com/bertramdev/sass-grails-asset-pipeline" target="blank">SASS/SCSS Compass Asset-Pipeline Plugin</a></li>
 <li><a href="https://github.com/bertramdev/handlebars-grails-asset-pipeline" target="blank">Handlebars Asset-Pipeline Plugin</a></li>
 <li><a href="https://github.com/bertramdev/ember-grails-asset-pipeline" target="blank">Ember Asset-Pipeline Plugin</a></li>
 <li><a href="http://guides.rubyonrails.org/asset_pipeline.html" target="blank">Rails Asset Pipeline Guide</a></li>
 </ul><p class="paragraph"/><h3>Release History</h3>
 <ul class="star">
+<li>July 11, 2014</li>
+<ul class="star">
+<li>1.9.3 Release - Fixed ETag Headers for non-digested files, and updated project docs.</li>
+</ul>
+<li>July 10, 2014</li>
+<ul class="star">
+<li>1.9.2 Release - Fixed bug in cache manager, updated docs.</li>
+<li>1.9.1 Release - Added commons-io dependency for more recent versions of grails.</li>
+</ul>
 <li>June 28, 2014</li>
 <ul class="star">
 <li>1.9.0 Release - Added Absolute Image Support, Various bug fixes. Documentation Improvements.</li>
 </ul>
 <li>June 6, 2014</li>
 <ul class="star">
-<li>1.8.11 Release - require_tree directive now fallsback to absolute references if path doesnt exist relatively</li>
+<li>1.8.11 Release - require_tree directive now falls back to absolute references if path doesn't exist relatively</li>
 </ul>
 <li>June 1, 2014</li>
 <ul class="star">
