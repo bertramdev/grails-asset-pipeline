@@ -21,7 +21,7 @@ import asset.pipeline.grails.AssetResourceLocator
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "1.9.2"
+    def version         = "1.9.3"
     def grailsVersion   = "2.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -44,7 +44,7 @@ class AssetPipelineGrailsPlugin {
         try {
             manifestFile = application.getParentContext().getResource("assets/manifest.properties")
         } catch(e) {
-            //Silent fail
+            println "Unable to find asset-pipeline manifest, etags will not be properly generated"
         }
         if(manifestFile?.exists()) {
             try {

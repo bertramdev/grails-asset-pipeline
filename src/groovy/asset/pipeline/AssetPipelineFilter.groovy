@@ -2,7 +2,6 @@ package asset.pipeline
 
 import javax.servlet.*
 import org.springframework.web.context.support.WebApplicationContextUtils
-import grails.util.Environment
 import groovy.util.logging.Log4j
 
 @Log4j
@@ -66,22 +65,11 @@ class AssetPipelineFilter implements Filter {
     /**
     * Here we check if the request is contingent upon an ETag and if not, we append the ETag to the header key.
     * This ETag is essentially the digested file name as it is unique unless the file changes.
-    * @return Wether processing should continue or not
+    * @return Whether processing should continue or not
     */
     Boolean checkETag(ServletRequest request, ServletResponse response, fileUri) {
-        def manifestPath = fileUri
-        if(fileUri.startsWith('/')) {
-            manifestPath = fileUri.substring(1) //Omit forward slash
-        }
+        String etagName = getCurrentETag(fileUri)
 
-        def etagName = manifestPath
-        def manifest = applicationContext.grailsApplication.config.grails.assets.manifest
-        if(manifest) {
-            def digestedName = manifest.getProperty(manifestPath)
-            if(digestedName) {
-                etagName = manifestPath
-            }
-        }
         def ifNoneMatchHeader = request.getHeader('If-None-Match')
         if(ifNoneMatchHeader && ifNoneMatchHeader == etagName) {
             response.status = 304
@@ -92,4 +80,14 @@ class AssetPipelineFilter implements Filter {
         return true
     }
 
+    String getCurrentETag(String fileUri) {
+        def manifestPath = fileUri
+        if(fileUri.startsWith('/')) {
+            manifestPath = fileUri.substring(1) //Omit forward slash
+        }
+
+        def manifest = applicationContext.grailsApplication.config.grails.assets.manifest
+
+        return manifest?.getProperty(manifestPath) ?: manifestPath
+    }
 }
