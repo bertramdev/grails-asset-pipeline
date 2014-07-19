@@ -64,7 +64,7 @@ class AssetsTagLibSpec extends Specification {
 
     then:
       1 * assetProcessorServiceMock.getDependencyList('asset-pipeline/test/test', 'application/javascript', 'js') >> { [[path: "asset-pipeline/test/test.js"],[path:"asset-pipeline/test/test2.js"]] }
-      output == '<script src="/assets/asset-pipeline/test/test.js?compile=false" type="text/javascript" ></script><script src="/assets/asset-pipeline/test/test2.js?compile=false" type="text/javascript" ></script>'
+      output == '<script src="/assets/asset-pipeline/test/test.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/test2.js?compile=false" type="text/javascript" ></script>\n'
     
   }
 
