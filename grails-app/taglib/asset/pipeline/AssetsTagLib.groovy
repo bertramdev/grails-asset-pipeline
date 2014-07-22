@@ -42,7 +42,7 @@ class AssetsTagLib {
 			}
 			list.each { dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<script src=\"${depAssetPath}?${modifierParams.join("&")}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
+				out << "<script src=\"${depAssetPath}?${modifierParams.join("&")}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>\n"
 			}
 			// println "Fetching Dev Mode Dependency List Time ${new Date().time - startTime}"
 		}
