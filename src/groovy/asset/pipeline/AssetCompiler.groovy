@@ -212,7 +212,6 @@ class AssetCompiler {
 		if(excludeRules[key]) {
 			excludes += excludeRules[key]
 		}
-		println "Getting Excludes for Path ${key} - ${excludes}"
 
 		return excludes.unique()
 	}
@@ -228,13 +227,10 @@ class AssetCompiler {
 			scanner.setExcludes(getExcludesForPathKey(key) as String[])
 			scanner.setIncludes(["**/*"] as String[])
 			for(path in value) {
-			scanner.setBasedir(path)
-			scanner.setCaseSensitive(false)
-			scanner.scan()
-			filesToProcess += scanner.getIncludedFiles().flatten()
-				if(key == 'twitter-bootstrap') {
-					println "Found Files in twitter: ${scanner.getIncludedFiles().flatten()}"
-				}
+				scanner.setBasedir(path)
+				scanner.setCaseSensitive(false)
+				scanner.scan()
+				filesToProcess += scanner.getIncludedFiles().flatten()
 			}
 
 			scanner.setExcludes([] as String[])
@@ -252,7 +248,6 @@ class AssetCompiler {
 		}
 
 		filesToProcess.unique()
-		println "Files to Process\n===========================\n\n${filesToProcess}"
 		return filesToProcess //Make sure we have a unique set
 	}
 
