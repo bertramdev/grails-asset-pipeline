@@ -39,7 +39,7 @@ class CssProcessor extends AbstractProcessor {
                 replacementPath = cachedPaths[assetPath]
             } else if(isRelativePath(assetPath)) {
                 def urlRep = new URL("http://hostname/${assetPath}") //Split out subcomponents
-                def relativeFileName = [relativePath(assetFile.file),urlRep.path].join(File.separator)
+                def relativeFileName = [relativePath(assetFile.file),urlRep.path].join("/")
                 def normalizedFileName = new URI(relativeFileName).normalize().getPath()
                 
                 def cssFile = AssetHelper.fileForFullName(relativeFileName)

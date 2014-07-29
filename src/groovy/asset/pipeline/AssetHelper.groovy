@@ -94,7 +94,6 @@ class AssetHelper {
     }
 
     static assetForFileName(filename) {
-        def grailsApplication = Holders.getGrailsApplication()
         return AssetHelper.assetFileClasses().find{ fileClass ->
             fileClass.extensions.find { filename.endsWith(".${it}") }
         }

@@ -23,6 +23,8 @@ h3. Additional Information
 
 h3. Release History
 
+* July 29, 2014
+** 1.9.5 Release - Fixed Windows Platform Bug in CSS. Upgraded to UglifyJS2.0
 * July 11, 2014
 ** 1.9.3 Release - Fixed ETag Headers for non-digested files, and updated project docs.
 * July 10, 2014
