@@ -107,7 +107,7 @@ class UglifyJsProcessor {
         options.each{ it ->
             if(it.key == 'strictSemicolons') {
                 // jsOptions.put('strict_semicolons', scope, it.value)
-                jsOptions.defilneProperty("strict_semicolons",it.value, NativeObject.READONLY)
+                jsOptions.defineProperty("strict_semicolons",it.value, NativeObject.READONLY)
             } else if(it.key == 'mangleOptions' || it.key == 'genOptions') {
                 def nestedMap = new NativeObject()
                 def key = (it.key == 'mangleOptions' ? 'mangle_options' : 'gen_options')
