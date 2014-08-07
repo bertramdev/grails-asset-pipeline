@@ -102,29 +102,29 @@ class DirectiveProcessorSpec extends IntegrationSpec {
             dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_c.js" } < dependencyList.findIndexOf{ it.path == "asset-pipeline/test/libs/file_b.js"}
     }
 
-    def "gets dependency list where relative paths don't exist but absolute paths do in tree directive"() {
-        given: "A uri and file extension with an absolute path tree require directive"
+    def "gets dependency list with tree directive that has an absolute and relative path"() {
+        given: "A uri and file extension with a relative and absolute path tree require directive"
             def uri                = "asset-pipeline/test/absolute-path/test/test_tree.js"
             def fileExtension      = "js"
             def contentType        = "application/javascript"
             def file               = AssetHelper.fileForUri(uri, contentType, fileExtension)
             def directiveProcessor = new DirectiveProcessor(contentType)
-        when:
+        when: "we get the dependency list"
             def dependencyList = directiveProcessor.getFlattenedRequireList(file)
-        then:
+        then: "the list should include contents of tree folder but not the not-included folder"
             dependencyList.size() == 2
     }
 
-    def "gets dependency list where relative paths don't exist but absolute paths do in full_tree directive"() {
-        given: "A uri and file extension with an absolute path full_tree require directive"
+    def "gets dependency list with full_tree directive that has an absolute and relative path"() {
+        given: "A uri and file extension with a relative and absolute path full_tree require directive"
             def uri                = "asset-pipeline/test/absolute-path/test/test_full_tree.js"
             def fileExtension      = "js"
             def contentType        = "application/javascript"
             def file               = AssetHelper.fileForUri(uri, contentType, fileExtension)
             def directiveProcessor = new DirectiveProcessor(contentType)
-        when:
+        when: "we get the dependency list"
             def dependencyList = directiveProcessor.getFlattenedRequireList(file)
-        then:
+        then: "the list should include contents of full-tree folder but not the not-included folder"
             dependencyList.size() == 2
     }
 
