@@ -161,10 +161,7 @@ class DirectiveProcessor {
             parentFile = new File([fileSpec.file.getParent(),directivePath].join(File.separator))
         }
 
-        if(parentFile.exists() && parentFile.isDirectory()) {
-            recursiveTreeAppend(parentFile, tree)
-        }
-        else {
+        if (directivePath.startsWith('/')) {
             def rootPaths = AssetHelper.scopedDirectoryPaths(new File("grails-app/assets").getAbsolutePath())
 
             rootPaths.each { path ->
@@ -174,6 +171,9 @@ class DirectiveProcessor {
                     recursiveTreeAppend(absolutePath, tree)
                 }
             }
+        }
+        else if(parentFile.exists() && parentFile.isDirectory()){
+            recursiveTreeAppend(parentFile, tree)
         }
     }
 
@@ -194,11 +194,11 @@ class DirectiveProcessor {
             def parentFileScoped = new File(path, relativeParent)
             def absolutePath = new File(path, directivePath)
 
-            if(parentFileScoped.exists() && parentFileScoped.isDirectory()) {
-                recursiveTreeAppend(parentFileScoped, tree)
-            }
-            else if (absolutePath.exists() && absolutePath.isDirectory()) {
+            if (directivePath.startsWith('/') && absolutePath.exists() && absolutePath.isDirectory()) {
                 recursiveTreeAppend(absolutePath, tree)
+            }
+            else if (parentFileScoped.exists() && parentFileScoped.isDirectory()) {
+                recursiveTreeAppend(parentFileScoped, tree)
             }
         }
     }
