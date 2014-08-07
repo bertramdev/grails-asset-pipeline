@@ -282,7 +282,7 @@ class AssetCompiler {
 		def proc = "${command} ${outputFile.getAbsolutePath()}".execute()
 		proc.waitFor()
 		log.debug "Custom compression command stdout: ${proc.in.text}"
-		log.debug "Custom compression command stdout: ${proc.err.text}"
+		log.debug "Custom compression command stderr: ${proc.err.text}"
 		AssetHelper.copyFile(zipFile, zipFileDigest)
 	}
 
