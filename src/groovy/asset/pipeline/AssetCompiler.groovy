@@ -3,7 +3,10 @@ import org.apache.tools.ant.DirectoryScanner
 import groovy.util.logging.Log4j
 import asset.pipeline.processors.UglifyJsProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
+import groovy.transform.InheritConstructors
 @Log4j
+@InheritConstructors
+class CompressionCommandExecutionException extends Exception {}
 class AssetCompiler {
 	def includeRules = [:]
 	def excludeRules = [:]
@@ -143,12 +146,19 @@ class AssetCompiler {
 							// Zip it Good!
 							if(!options.excludesGzip.find{ it.toLowerCase() == extension.toLowerCase()}) {
 								eventListener?.triggerEvent("StatusUpdate","Compressing File ${index+1} of ${filesToProcess.size()} - ${fileName}")
-								createCompressedFiles(outputFile, digestedFile)
+								if(options.customGzipCommand) {
+									createCompressedFilesUsingCustomCommand(options.customGzipCommand, outputFile, digestedFile)
+								} else {
+									createCompressedFiles(outputFile, digestedFile)
+								}
 							}
 
 
 						} catch(ex) {
 							log.error("Error Compiling File ${fileName}.${extension}",ex)
+							if(ex instanceof CompressionCommandExecutionException) {
+								throw ex
+							}
 						}
 					}
 				}
@@ -271,6 +281,19 @@ class AssetCompiler {
 		zipFile.bytes = targetStream.toByteArray()
 		AssetHelper.copyFile(zipFile, zipFileDigest)
 		targetStream.close()
+	}
+
+	private createCompressedFilesUsingCustomCommand(command, outputFile, digestedFile) {
+		try {
+			log.debug "Executing custom compression command: ${command} ${outputFile.getAbsolutePath()}"
+			def proc = "${command} ${outputFile.getAbsolutePath()}".execute([], outputFile.getParentFile())
+			proc.waitFor()
+			log.debug "Custom compression command stdout: ${proc.in.text}"
+			log.debug "Custom compression command stderr: ${proc.err.text}"
+			AssetHelper.copyFile(new File("${outputFile.getAbsolutePath()}.gz"), new File("${digestedFile.getAbsolutePath()}.gz"))
+		} catch(ex) {
+			throw new CompressionCommandExecutionException("Failed while executing compression command: '${command} ${outputFile.getAbsolutePath()}'" as String, ex)
+		}
 	}
 
 	private removeDeletedFiles(filesToProcess) {
