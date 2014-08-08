@@ -143,7 +143,11 @@ class AssetCompiler {
 							// Zip it Good!
 							if(!options.excludesGzip.find{ it.toLowerCase() == extension.toLowerCase()}) {
 								eventListener?.triggerEvent("StatusUpdate","Compressing File ${index+1} of ${filesToProcess.size()} - ${fileName}")
-								createCompressedFiles(outputFile, digestedFile)
+								if(options.customGzipCommand) {
+									createCompressedFilesUsingCustomCommand(options.customGzipCommand, outputFile, digestedFile)
+								} else {
+									createCompressedFiles(outputFile, digestedFile)
+								}
 							}
 
 
@@ -271,6 +275,15 @@ class AssetCompiler {
 		zipFile.bytes = targetStream.toByteArray()
 		AssetHelper.copyFile(zipFile, zipFileDigest)
 		targetStream.close()
+	}
+
+	private createCompressedFilesUsingCustomCommand(command, outputFile, digestedFile) {
+		log.debug "Executing custom compression command: ${command} ${outputFile.getAbsolutePath()}"
+		def proc = "${command} ${outputFile.getAbsolutePath()}".execute()
+		proc.waitFor()
+		log.debug "Custom compression command stdout: ${proc.in.text}"
+		log.debug "Custom compression command stderr: ${proc.err.text}"
+		AssetHelper.copyFile(zipFile, zipFileDigest)
 	}
 
 	private removeDeletedFiles(filesToProcess) {
