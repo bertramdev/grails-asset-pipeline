@@ -292,7 +292,7 @@ class AssetCompiler {
 			log.debug "Custom compression command stderr: ${proc.err.text}"
 			AssetHelper.copyFile(zipFile, zipFileDigest)
 		} catch(ex) {
-			throw new CompressionCommandExecutionException("Failed executing compression command: '${command} ${outputFile.getAbsolutePath()}'" as String, ex)
+			throw new CompressionCommandExecutionException("Failed while executing compression command: '${command} ${outputFile.getAbsolutePath()}'" as String, ex)
 		}
 	}
 
