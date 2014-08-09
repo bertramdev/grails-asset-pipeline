@@ -3,7 +3,10 @@ import org.apache.tools.ant.DirectoryScanner
 import groovy.util.logging.Log4j
 import asset.pipeline.processors.UglifyJsProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
+import groovy.transform.InheritConstructors
 @Log4j
+@InheritConstructors
+class CompressionCommandExecutionException extends Exception {}
 class AssetCompiler {
 	def includeRules = [:]
 	def excludeRules = [:]
@@ -153,6 +156,9 @@ class AssetCompiler {
 
 						} catch(ex) {
 							log.error("Error Compiling File ${fileName}.${extension}",ex)
+							if(ex instanceof CompressionCommandExecutionException) {
+								throw ex
+							}
 						}
 					}
 				}
@@ -278,12 +284,16 @@ class AssetCompiler {
 	}
 
 	private createCompressedFilesUsingCustomCommand(command, outputFile, digestedFile) {
-		log.debug "Executing custom compression command: ${command} ${outputFile.getAbsolutePath()}"
-		def proc = "${command} ${outputFile.getAbsolutePath()}".execute()
-		proc.waitFor()
-		log.debug "Custom compression command stdout: ${proc.in.text}"
-		log.debug "Custom compression command stderr: ${proc.err.text}"
-		AssetHelper.copyFile(zipFile, zipFileDigest)
+		try {
+			log.debug "Executing custom compression command: ${command} ${outputFile.getAbsolutePath()}"
+			def proc = "${command} ${outputFile.getAbsolutePath()}".execute()
+			proc.waitFor()
+			log.debug "Custom compression command stdout: ${proc.in.text}"
+			log.debug "Custom compression command stderr: ${proc.err.text}"
+			AssetHelper.copyFile(zipFile, zipFileDigest)
+		} catch(ex) {
+			throw new CompressionCommandExecutionException("Failed executing compression command: '${command} ${outputFile.getAbsolutePath()}'" as String, ex)
+		}
 	}
 
 	private removeDeletedFiles(filesToProcess) {
