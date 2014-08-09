@@ -286,7 +286,7 @@ class AssetCompiler {
 	private createCompressedFilesUsingCustomCommand(command, outputFile, digestedFile) {
 		try {
 			log.debug "Executing custom compression command: ${command} ${outputFile.getAbsolutePath()}"
-			def proc = "${command} ${outputFile.getAbsolutePath()}".execute()
+			def proc = "${command} ${outputFile.getAbsolutePath()}".execute([], outputFile.getParentFile())
 			proc.waitFor()
 			log.debug "Custom compression command stdout: ${proc.in.text}"
 			log.debug "Custom compression command stderr: ${proc.err.text}"
