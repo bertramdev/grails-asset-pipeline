@@ -18,9 +18,10 @@ package asset.pipeline.processors
 import asset.pipeline.*
 import java.net.URL
 import java.net.URI
+import org.apache.commons.codec.net.URLCodec
 
 /**
-* This Processor iterates over relative image paths in a CSS file and 
+* This Processor iterates over relative image paths in a CSS file and
 * recalculates their path relative to the base file. In precompiler mode
 * the image urls are also cache digested.
 * @author David Estes
@@ -40,11 +41,13 @@ class CssProcessor extends AbstractProcessor {
             } else if(isRelativePath(assetPath)) {
                 def urlRep = new URL("http://hostname/${assetPath}") //Split out subcomponents
                 def relativeFileName = [relativePath(assetFile.file),urlRep.path].join("/")
-                def normalizedFileName = new URI(relativeFileName).normalize().getPath()
-                
+                def encodedFileName = new URLCodec().encode(relativeFileName)
+                def normalizedFileName = new URI(encodedFileName).normalize().getPath()
+                normalizedFileName = new URLCodec().decode(normalizedFileName)
+
                 def cssFile = AssetHelper.fileForFullName(relativeFileName)
                 if(!cssFile) {
-                    cssFile = AssetHelper.fileForFullName(normalizedFileName)    
+                    cssFile = AssetHelper.fileForFullName(normalizedFileName)
                 }
                 if(cssFile) {
                     replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile.file, this.precompiler ? true : false)
