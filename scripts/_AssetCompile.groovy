@@ -26,6 +26,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
   assetConfig.minifyOptions = config.grails.assets.minifyOptions
   assetConfig.compileDir = "target/assets"
   assetConfig.excludesGzip = config.grails.assets.excludesGzip
+  assetConfig.customGzipCommand = config.grails.assets.customGzipCommand
 
 
   event("StatusUpdate",["Precompiling Assets!"])
