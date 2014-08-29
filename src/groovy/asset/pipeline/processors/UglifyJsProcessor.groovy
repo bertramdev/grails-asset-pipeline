@@ -36,9 +36,9 @@ class UglifyJsProcessor {
         URL uglifyJs = classLoader.getResource('uglifyjs/uglify-js.js')
         Context cx = Context.enter()
         cx.optimizationLevel = 9
-        Global global = new Global()
-        global.init cx
-        scope = cx.initStandardObjects(global)
+        // Global global = new Global()
+        // global.init cx
+        scope = cx.initStandardObjects()
         cx.evaluateString scope, uglifyJs.text, uglifyJs.file, 1, null
         cx.evaluateString scope, parserLib.text, parserLib.file, 1, null
         cx.evaluateString scope, processLib.text, processLib.file, 1, null
