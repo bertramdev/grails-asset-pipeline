@@ -19,7 +19,6 @@ package asset.pipeline.processors
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.Scriptable
-import org.mozilla.javascript.ScriptableObject
 import org.mozilla.javascript.tools.shell.Global
 import org.mozilla.javascript.NativeObject
 
@@ -30,71 +29,26 @@ class UglifyJsProcessor {
 
     UglifyJsProcessor() {
         ClassLoader classLoader = getClass().classLoader
-        URL uglifyLib = classLoader.getResource('uglifyjs/tools/node.js')
-
-        def uglifyLibs = [
-            "lib/utils.js",
-            "lib/ast.js",
-            "lib/parse.js",
-            "lib/transform.js",
-            "lib/scope.js",
-            "lib/output.js",
-            "lib/compress.js",
-            "lib/sourcemap.js",
-            "lib/mozilla-ast.js"
-        ]
-        // URL sourceMapLib = classLoader.getResource('uglifyjs/sourcemap.js')
-        URL compressLib = classLoader.getResource('uglifyjs/compress.js')
-        
+        URL parserLib = classLoader.getResource('uglifyjs/lib/parse-js.js')
+        URL processLib = classLoader.getResource('uglifyjs/lib/process.js')
+        URL consolidatorLib = classLoader.getResource('uglifyjs/lib/consolidator.js')
+        URL squeezeLib = classLoader.getResource('uglifyjs/lib/squeeze-more.js')
+        URL uglifyJs = classLoader.getResource('uglifyjs/uglify-js.js')
         Context cx = Context.enter()
         cx.optimizationLevel = 9
         Global global = new Global()
         global.init cx
-        // scope = cx.initStandardObjects(global)
-        Scriptable sharedScope = cx.initStandardObjects(global)
-        Scriptable uglifyJsScope = cx.newObject(sharedScope)
-        sharedScope.defineProperty('UglifyJS',uglifyJsScope,ScriptableObject.DONTENUM)
-
-        scope = cx.newObject(sharedScope);
-        scope.setPrototype(sharedScope);
-        scope.setParentScope(null);
-        Scriptable argsObj = cx.newArray(sharedScope, [] as Object[]);
-        sharedScope.defineProperty("arguments", argsObj, ScriptableObject.DONTENUM);
-
-        requireJs(cx,sharedScope, 'MOZ_SourceMap', 'uglifyjs/source-map.js')
-
-        uglifyLibs.each { libPath ->
-            loadIntoContext(cx, uglifyJsScope, "uglifyjs/${libPath}")
-        }
-        
-
-        cx.evaluateString sharedScope, uglifyLib.text, uglifyLib.file, 1 , null
-        cx.evaluateString scope, compressLib.text, compressLib.file, 1 , null
-        
-
-        uglify = scope.get("compress", scope)
+        scope = cx.initStandardObjects(global)
+        cx.evaluateString scope, uglifyJs.text, uglifyJs.file, 1, null
+        cx.evaluateString scope, parserLib.text, parserLib.file, 1, null
+        cx.evaluateString scope, processLib.text, processLib.file, 1, null
+        cx.evaluateString scope, consolidatorLib.text, consolidatorLib.file, 1, null
+        cx.evaluateString scope, squeezeLib.text, squeezeLib.file, 1, null
+        uglify = scope.get("uglify", scope)
         Context.exit()
     }
 
 
-    def loadIntoContext(cx, scope, filePath) {
-        ClassLoader classLoader = getClass().classLoader
-        URL scriptToLoad = classLoader.getResource(filePath)
-
-        cx.evaluateString scope, scriptToLoad.text, scriptToLoad.file, 1, null
-    }
-
-    def requireJs(cx,scope, propertyName ,filePath) {
-        ClassLoader classLoader = getClass().classLoader
-        Scriptable requireScope = cx.newObject(scope)
-        Scriptable exportScope = cx.newObject(requireScope)
-        URL scriptToLoad = classLoader.getResource(filePath)
-        requireScope.defineProperty('exports',exportScope,ScriptableObject.DONTENUM)
-
-        cx.evaluateString requireScope, scriptToLoad.text, scriptToLoad.file, 1, null
-
-        scope.defineProperty(propertyName,exportScope,ScriptableObject.DONTENUM)
-    }
 
     def process(inputText, options = [:]) {
         call uglify, inputText, parseOptions(options)
