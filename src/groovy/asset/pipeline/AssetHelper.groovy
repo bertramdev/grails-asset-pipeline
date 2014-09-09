@@ -29,26 +29,13 @@ class AssetHelper {
     static DIRECTIVE_FILE_SEPARATOR = '/'
 
     static fileForUri(uri, contentType=null,ext=null, baseFile=null) {
-
-        def grailsApplication = Holders.getGrailsApplication()
-
-        if(contentType) {
-
-            def possibleFileSpecs = AssetHelper.getPossibleFileSpecs(contentType)
-            if(possibleFileSpecs) {
-                    def file =  AssetHelper.fileForUriIfHasAnyAssetType(uri, possibleFileSpecs, baseFile)
-                    if(file) return file
+        def file
+        for(resolver in AssetPipelineConfigHolder.resolvers) {
+            file = resolver.getAsset(uri,contentType,ext,baseFile)
+            if(file) {
+                return file
             }
-            else {
-                def assetFile = AssetHelper.fileForFullName(uri + "." + ext)
-                if(assetFile) {
-                    return assetFile
-                }
-            }
-        } else {
-            return AssetHelper.getAssetFileWithExtension(uri, ext)
         }
-
         return null
     }
 
@@ -100,12 +87,11 @@ class AssetHelper {
     }
 
     static fileForFullName(uri) {
-        def assetPaths = AssetHelper.getAssetPaths()
-        for(assetPath in assetPaths) {
-            def path = [assetPath, uri].join(File.separator)
-            def fileDescriptor = new File(path)
-            if(fileDescriptor.exists() && fileDescriptor.file) {
-                return fileDescriptor
+        println "Checking AssetPipelineConfigHolder ${ AssetPipelineConfigHolder.resolvers}"
+        for(resolver in AssetPipelineConfigHolder.resolvers) {
+            def file = resolver.getAsset(uri)
+            if(file) {
+                return file
             }
         }
         return null

@@ -15,9 +15,14 @@
  */
 import grails.util.Environment
 import grails.plugin.webxml.FilterManager
+import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
+
 import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.CachingLinkGenerator
 import asset.pipeline.grails.AssetResourceLocator
+import asset.pipeline.fs.*
+import asset.pipeline.AssetPipelineConfigHolder
+
 
 
 class AssetPipelineGrailsPlugin {
@@ -52,7 +57,7 @@ class AssetPipelineGrailsPlugin {
             try {
                 manifestProps.load(manifestFile.inputStream)
                 application.config.grails.assets.manifest = manifestProps
-
+                AssetPipelineConfigHolder.manifest = manifestProps
             } catch(e) {
                 log.warn "Failed to load Manifest"
             }
@@ -60,6 +65,19 @@ class AssetPipelineGrailsPlugin {
 
         if(!application.config.grails.assets.containsKey("precompiled")) {
             application.config.grails.assets.precompiled = !Environment.isDevelopmentMode() || application.warDeployed
+        }
+
+
+        AssetPipelineConfigHolder.config = application.config.grails.assets
+
+        //Register Plugin Paths
+        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
+
+        for(plugin in GrailsPluginUtils.pluginInfos) {
+            def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
+            def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
+            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))
+            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,fallbackPath,false))
         }
 
         // Register Link Generator

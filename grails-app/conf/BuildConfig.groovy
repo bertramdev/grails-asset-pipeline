@@ -8,7 +8,7 @@ grails.project.dependency.resolution = {
 
     inherits 'global'
     log 'warn'
-    
+
     repositories {
         grailsCentral()
         mavenLocal()
@@ -22,10 +22,11 @@ grails.project.dependency.resolution = {
         compile("cglib:cglib-nodep:2.2.2") {
             export = false
         }
+        // compile 'org.clojure:google-closure-library:0.0-20140718-946a7d39'
     }
 
     plugins {
-        compile(":webxml:1.4.1") 
+        compile(":webxml:1.4.1")
 
         build ':release:3.0.1', ':rest-client-builder:2.0.1', {
             export = false

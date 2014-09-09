@@ -28,7 +28,7 @@ class HelperGetsJavascriptAssetSpec extends IntegrationSpec{
             def file = AssetHelper.fileForUri(uri)
 
         then:
-            file instanceof File
+            file instanceof GenericAssetFile
     }
 
     def "gets a javascript file given a uri and content type application/javascript"() {

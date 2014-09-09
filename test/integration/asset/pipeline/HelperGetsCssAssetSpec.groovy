@@ -28,7 +28,7 @@ class HelperGetsCssAssetSpec extends IntegrationSpec {
             def file = AssetHelper.fileForUri(uri)
 
         then:
-            file instanceof File
+            file instanceof GenericAssetFile
     }
 
     def "gets a css asset given its uri and contentType"() {

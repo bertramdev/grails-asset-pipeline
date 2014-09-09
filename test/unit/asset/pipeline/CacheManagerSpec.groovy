@@ -24,7 +24,6 @@ import spock.lang.Specification
  */
 
 class CacheManagerSpec extends Specification {
-
     void "should createCache by filename and md5"() {
         given:
             def testFile = new File('grails-app/assets/stylesheets/asset-pipeline/test/test.css')
@@ -34,7 +33,7 @@ class CacheManagerSpec extends Specification {
         when:
             CacheManager.createCache(testFileName, testMd5, testFile.text)
             cacheContent = CacheManager.findCache(testFileName, testMd5)
-        then: 
+        then:
             cacheContent == testFile.text
     }
 
