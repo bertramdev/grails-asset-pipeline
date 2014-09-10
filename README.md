@@ -12,7 +12,9 @@ http://bertramdev.github.io/asset-pipeline
 
 Things to be Done
 -----------------
-* Decoupling
+* Remove commons-io
+* Implement Globbing support to the AssetResolver implementation for file scans
+* Pull in abstracted means for setting response headers in production
 
 
 Contributions

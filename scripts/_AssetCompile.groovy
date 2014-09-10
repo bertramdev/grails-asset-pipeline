@@ -57,5 +57,5 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			assetCompiler.includeRules[pluginName] = value.includes
 		}
 	}
-	assetCompiler.compile()
+	assetCompiler.compile([compileDir: 'target/assets'])
 }
