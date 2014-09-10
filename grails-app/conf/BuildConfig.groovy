@@ -22,7 +22,6 @@ grails.project.dependency.resolution = {
         compile("cglib:cglib-nodep:2.2.2") {
             export = false
         }
-        // compile 'org.clojure:google-closure-library:0.0-20140718-946a7d39'
     }
 
     plugins {

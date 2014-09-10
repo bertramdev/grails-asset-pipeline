@@ -1,3 +1,19 @@
+/*
+* Copyright 2014 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 package asset.pipeline.fs
 
 import asset.pipeline.*
@@ -37,7 +53,7 @@ class FileSystemAssetResolver extends AbstractAssetResolver {
 		if(!relativePath) {
 			return null
 		}
-
+		relativePath = relativePath.replace(QUOTED_FILE_SEPARATOR,DIRECTIVE_FILE_SEPARATOR)
 		def specs
 		if(contentType) {
 			specs = AssetHelper.getPossibleFileSpecs(contentType)
@@ -81,19 +97,17 @@ class FileSystemAssetResolver extends AbstractAssetResolver {
 	/**
 	* Implementation Requirements
 	* Should be able to take a relative to baseFile scenario
-	* FIXME: Make sure they cannot traverse up levels too far
 	*/
 	public def getAssets(String basePath, String contentType = null, String extension = null,  Boolean recursive = true, AssetFile relativeFile=null, AssetFile baseFile = null) {
 		//We are going absolute
 		def fileList = []
 
 		if(!basePath.startsWith('/') && relativeFile != null) {
-			def pathArgs = relativeFile.path.split(DIRECTIVE_FILE_SEPARATOR) //(path should be relative not canonical)
+			def pathArgs = relativeFile.parentPath ? relativeFile.parentPath.split(DIRECTIVE_FILE_SEPARATOR) : [] //(path should be relative not canonical)
 			def basePathArgs = basePath.split(DIRECTIVE_FILE_SEPARATOR)
-			def parentPathArgs = pathArgs[0..(pathArgs.size() - 2)]
+			def parentPathArgs = pathArgs ? pathArgs[0..(pathArgs.size() - 2)] : []
 			parentPathArgs.addAll(basePathArgs)
 			basePath = (parentPathArgs).join(File.separator)
-			println "Scanning with new Base Path: ${basePath}"
 		}
 
 		for(directoryPath in scanDirectories) {
@@ -124,7 +138,7 @@ class FileSystemAssetResolver extends AbstractAssetResolver {
 		}
 
 		if(contentType == null) {
-			return new GenericAssetFile(inputStreamSource: { file.newInputStream() }, path: file.canonicalPath)
+			return new GenericAssetFile(inputStreamSource: { file.newInputStream() }, path: relativePathToResolver(file,sourceDirectory))
 		}
 
 		def possibleFileSpecs = AssetHelper.getPossibleFileSpecs(contentType)

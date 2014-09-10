@@ -13,6 +13,22 @@ eventCreateWarStart = {warName, stagingDir ->
 	}
 }
 
+eventCreatePluginArchiveStart = { stagingDir ->
+	event("StatusUpdate",["Packaging Assets into Binary!"])
+
+	def assetDirs = new File(basedir, "grails-app/assets")
+	def assetPathDir = new File(stagingDir, 'META-INF/assets')
+	assetPathDir.mkdirs()
+	assetDirs.listFiles().each { file ->
+		if(file.isDirectory()) {
+			println "Copying Files From ${file.path}"
+			ant.copy(todir: assetPathDir.path, verbose: true) {
+				fileset dir: file
+			}
+		}
+	}
+}
+
 eventCleanStart = {
     Ant.delete('dir':'target/assets')
 }

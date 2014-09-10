@@ -26,7 +26,7 @@ import asset.pipeline.AssetPipelineConfigHolder
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "1.9.8"
+    def version         = "1.10.0"
     def grailsVersion   = "2.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -43,6 +43,27 @@ class AssetPipelineGrailsPlugin {
     ]
     def developers      = [ [name: 'Brian Wheeler'] ]
     def loadAfter = ['url-mappings']
+
+    def doWithApplicationContext = { ctx ->
+        //Register Plugin Paths
+        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
+        def pluginManager = ctx.pluginManager
+        for(plugin in pluginManager.getAllPlugins()) {
+            if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
+                def descriptorURI = plugin.binaryDescriptor.resource.URI
+                descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
+
+                AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/assets'))
+                AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/static'))
+            } else {
+                def assetPath = [plugin.pluginPath, "grails-app", "assets"].join(File.separator)
+                def fallbackPath = [plugin.pluginPath, "web-app"].join(File.separator)
+                AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))
+                AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,fallbackPath,false))
+            }
+
+        }
+    }
     def doWithSpring = {
         def manifestProps = new Properties()
         def manifestFile
@@ -69,16 +90,6 @@ class AssetPipelineGrailsPlugin {
 
 
         AssetPipelineConfigHolder.config = application.config.grails.assets
-
-        //Register Plugin Paths
-        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
-
-        for(plugin in GrailsPluginUtils.pluginInfos) {
-            def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
-            def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
-            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))
-            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,fallbackPath,false))
-        }
 
         // Register Link Generator
         String serverURL = application.config?.grails?.serverURL ?: null

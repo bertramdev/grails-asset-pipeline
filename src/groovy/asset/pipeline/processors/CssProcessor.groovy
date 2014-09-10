@@ -44,15 +44,13 @@ class CssProcessor extends AbstractProcessor {
                 def encodedFileName = new URLCodec().encode(relativeFileName)
                 def normalizedFileName = new URI(encodedFileName).normalize().getPath()
                 normalizedFileName = new URLCodec().decode(normalizedFileName)
-                println "Looking for Relative File ${relativeFileName}"
-                println "Looking for NormalizedFileName ${normalizedFileName}"
+                
                 def cssFile = AssetHelper.fileForFullName(relativeFileName)
                 if(!cssFile) {
                     cssFile = AssetHelper.fileForFullName(normalizedFileName)
                 }
                 if(cssFile) {
                     replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile, this.precompiler ? true : false)
-                    println "ReplaceMent Path = ${replacementPath}"
                     if(urlRep.query != null) {
                         replacementPath += "?${urlRep.query}"
                     }
@@ -74,7 +72,6 @@ class CssProcessor extends AbstractProcessor {
     private relativePathToBaseFile(file, baseFile, useDigest=false) {
         def baseRelativePath = baseFile.parentPath ? baseFile.parentPath.split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll{it}.reverse() : []
         def currentRelativePath = file.parentPath ? file.parentPath.split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll({it}).reverse() : []
-        println "Checking Base Path ${baseRelativePath} against ${currentRelativePath}"
         def filePathIndex=currentRelativePath.size()- 1
         def baseFileIndex=baseRelativePath.size() - 1
 
