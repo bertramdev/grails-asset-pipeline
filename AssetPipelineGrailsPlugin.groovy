@@ -21,9 +21,7 @@ import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.CachingLinkGenerator
 import asset.pipeline.grails.AssetResourceLocator
 import asset.pipeline.fs.*
-import asset.pipeline.AssetPipelse {
-
-}ineConfigHolder
+import asset.pipeline.*
 
 
 
