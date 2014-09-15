@@ -18,35 +18,18 @@ package asset.pipeline
 
 import grails.util.Holders
 import spock.lang.Specification
-
+import asset.pipeline.fs.FileSystemAssetResolver
 /**
  * @author David Estes
  */
 class AssetHelperSpec extends Specification {
-
-    // void "should get byte digest based on file contents and config settings"() {
-    //     given:
-    //         Holders.metaClass.static.getConfig = { ->
-    //             [grails: [assets: [[minifyJs: true]]]]
-    //         }
-    //         def sampleText = "Sample Text"
-    //         def md5Sum
-    //     when:
-    //         md5Sum = AssetHelper.getByteDigest(sampleText.bytes)
-    //     then:
-    //         md5Sum == '5a15e5d8bb4e8f08c4d76e72894491c6'
-    //     when:
-    //         Holders.metaClass.static.getConfig = { ->
-    //             [grails: [assets: [[minifyJs: false]]]]
-    //         }
-    //         md5Sum = AssetHelper.getByteDigest(sampleText.bytes)
-    //     then:
-    //         md5Sum == '40901b0561d538750b3da0a7371fb6a2'
-    // }
+    def setup() {
+        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
+    }
 
 
     void "should get file specs by contentType"() {
-    	when:	
+    	when:
     		def assetHelper = AssetHelper
     	then:
 	    	fileSpecs as Set == assetHelper.getPossibleFileSpecs(contentType) as Set
@@ -60,23 +43,23 @@ class AssetHelperSpec extends Specification {
     }
 
     void "should get asset file object based on file name and extension" () {
-    	given: 
+    	given:
             def testFileName = 'asset-pipeline/test/test'
             def testFileExt = "css"
             def assetFile
-        when: 
+        when:
         	assetFile = AssetHelper.getAssetFileWithExtension(testFileName, testFileExt)
         then:
         	assetFile?.name == 'test.css'
-        
-        when: 
+
+        when:
 	        testFileName = 'asset-pipeline/test/test'
             testFileExt = "sass"
         	assetFile = AssetHelper.getAssetFileWithExtension(testFileName, testFileExt)
         then:
         	assetFile == null
 
-        when: 
+        when:
 	        testFileName = 'asset-pipeline/test/test.css'
 	        testFileExt = null
         	assetFile = AssetHelper.getAssetFileWithExtension(testFileName, testFileExt)
@@ -85,13 +68,13 @@ class AssetHelperSpec extends Specification {
     }
 
     void "should copy file"() {
-    	given: 
+    	given:
 	        def testFileName = 'grails-app/assets/stylesheets/asset-pipeline/test/test-copy.css'
 	        def destFileName = 'grails-app/assets/stylesheets/asset-pipeline/test/test-copy2.css'
 	        def testFile = new File(testFileName)
 	        testFile.text = "Testing123"
 	        def destFile = new File(destFileName)
-	    when: 
+	    when:
 	    	AssetHelper.copyFile(testFile, destFile)
 	    then:
 	    	destFile.text == testFile.text
@@ -101,7 +84,7 @@ class AssetHelperSpec extends Specification {
     }
 
     void "should provide file name without the extension"() {
-    	given: 
+    	given:
 	    	def testName = "test.min.js"
 	    	def nameWithoutExt
     	when:
@@ -111,7 +94,7 @@ class AssetHelperSpec extends Specification {
     }
 
     void "should extract extension from file name"() {
-    	given: 
+    	given:
 	    	def testName = "test.min.js"
 	    	def ext
     	when:

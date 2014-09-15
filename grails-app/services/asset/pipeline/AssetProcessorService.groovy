@@ -10,12 +10,13 @@ class AssetProcessorService {
     * This method is NOT recommended for public use as behavior changes in production mode.
     */
     byte[] serveAsset(uri, contentType = null, extension = null, encoding = null) {
+        
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
 
         def directiveProcessor = new DirectiveProcessor(contentType)
         if (assetFile) {
-            if(assetFile.class.name == 'java.io.File') {
-                return assetFile.bytes
+            if(assetFile instanceof GenericAssetFile) {
+                return assetFile.inputStream.bytes
             }
             def fileContents = directiveProcessor.compile(assetFile)
             encoding = encoding ?: assetFile.encoding
@@ -24,7 +25,7 @@ class AssetProcessorService {
             } else {
                 return fileContents.bytes
             }
-            
+
         }
 
         return null
@@ -44,7 +45,7 @@ class AssetProcessorService {
         return null
     }
 
-    
+
     /**
     * Used for serving assets in development mode via the AssetController
     * This method is NOT recommended for public use as behavior changes in production mode.
@@ -63,7 +64,7 @@ class AssetProcessorService {
             } else {
                 return directiveProcessor.fileContents(assetFile).bytes
             }
-            
+
         }
 
         return null

@@ -27,7 +27,7 @@ class AssetsTagLibSpec extends Specification {
   AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
 
   def setup() {
-
+    AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))      
     assetProcessorServiceMock.getAssetMapping() >> { "assets" }
     def assetMethodTagLibMock = mockTagLib(AssetMethodTagLib)
     tagLib.assetProcessorService = assetProcessorServiceMock
@@ -35,7 +35,7 @@ class AssetsTagLibSpec extends Specification {
   }
 
   void "should return assetPath"() {
-    given: 
+    given:
       def assetSrc = "asset-pipeline/test/test.css"
     expect:
       tagLib.assetPath(src: assetSrc) == '/assets/asset-pipeline/test/test.css'
@@ -55,7 +55,7 @@ class AssetsTagLibSpec extends Specification {
       grailsApplication.config.grails.assets.allowDebugParam = true
       params."_debugAssets" = "y"
       def stringWriter = new StringWriter()
-      
+
       def assetSrc = "asset-pipeline/test/test.js"
       def output
     when:
@@ -65,7 +65,7 @@ class AssetsTagLibSpec extends Specification {
     then:
       1 * assetProcessorServiceMock.getDependencyList('asset-pipeline/test/test', 'application/javascript', 'js') >> { [[path: "asset-pipeline/test/test.js"],[path:"asset-pipeline/test/test2.js"]] }
       output == '<script src="/assets/asset-pipeline/test/test.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/test2.js?compile=false" type="text/javascript" ></script>\n'
-    
+
   }
 
   void "should return stylesheet link tag when debugMode is off"() {
@@ -82,7 +82,7 @@ class AssetsTagLibSpec extends Specification {
       grailsApplication.config.grails.assets.allowDebugParam = true
       params."_debugAssets" = "y"
       def stringWriter = new StringWriter()
-      
+
       def assetSrc = "asset-pipeline/test/test.css"
       def output
     when:
@@ -92,7 +92,7 @@ class AssetsTagLibSpec extends Specification {
     then:
       1 * assetProcessorServiceMock.getDependencyList('asset-pipeline/test/test', 'text/css', 'css') >> { [[path: "asset-pipeline/test/test.css"],[path:"asset-pipeline/test/test2.css"]] }
       output == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css?compile=false"  /><link rel="stylesheet" href="/assets/asset-pipeline/test/test2.css?compile=false"  />'
-    
+
   }
 
   void "should return image tag"() {
@@ -101,7 +101,7 @@ class AssetsTagLibSpec extends Specification {
     expect:
       tagLib.image(src: assetSrc, width:'200',height:200) == '<img src="/assets/grails_logo.png" width="200" height="200"/>'
   }
-    
+
   void "should return link tag"() {
     given:
       def assetSrc = "grails_logo.png"
@@ -116,15 +116,15 @@ class AssetsTagLibSpec extends Specification {
     expect:
       tagLib.assetPathExists([src: fileUri])
   }
-  
+
   void "test if asset path is missing in dev mode"() {
     given:
       def fileUri = "asset-pipeline/test/missing.css"
       grailsApplication.config.grails.assets.precompiled = false
     expect:
-      !tagLib.assetPathExists([src: fileUri]) 
+      !tagLib.assetPathExists([src: fileUri])
   }
-  
+
   void "test if asset path exists in dev mode and closure renders the body"() {
     given:
       def fileUri = "asset-pipeline/test/test.css"
@@ -132,7 +132,7 @@ class AssetsTagLibSpec extends Specification {
     expect:
       applyTemplate( "<asset:assetPathExists src=\"$fileUri\">text to render</asset:assetPathExists>" ) == 'text to render'
   }
-  
+
   void "test if asset path is missing in dev mode and closure doesn't render the body"() {
     given:
       def fileUri = "asset-pipeline/test/missing.css"

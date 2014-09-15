@@ -16,8 +16,6 @@
 
 package asset.pipeline
 
-import grails.util.Holders
-import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 
 import java.util.regex.Pattern
 import java.security.MessageDigest
@@ -29,26 +27,13 @@ class AssetHelper {
     static DIRECTIVE_FILE_SEPARATOR = '/'
 
     static fileForUri(uri, contentType=null,ext=null, baseFile=null) {
-
-        def grailsApplication = Holders.getGrailsApplication()
-
-        if(contentType) {
-
-            def possibleFileSpecs = AssetHelper.getPossibleFileSpecs(contentType)
-            if(possibleFileSpecs) {
-                    def file =  AssetHelper.fileForUriIfHasAnyAssetType(uri, possibleFileSpecs, baseFile)
-                    if(file) return file
+        def file
+        for(resolver in AssetPipelineConfigHolder.resolvers) {
+            file = resolver.getAsset(uri,contentType,ext,baseFile)
+            if(file) {
+                return file
             }
-            else {
-                def assetFile = AssetHelper.fileForFullName(uri + "." + ext)
-                if(assetFile) {
-                    return assetFile
-                }
-            }
-        } else {
-            return AssetHelper.getAssetFileWithExtension(uri, ext)
         }
-
         return null
     }
 
@@ -61,7 +46,6 @@ class AssetHelper {
             return file
         }
 
-        def grailsApplication = Holders.getGrailsApplication()
         def possibleFileSpecs = AssetHelper.getPossibleFileSpecs(contentType)
         for(fileSpec in possibleFileSpecs) {
             for(extension in fileSpec.extensions) {
@@ -100,52 +84,13 @@ class AssetHelper {
     }
 
     static fileForFullName(uri) {
-        def assetPaths = AssetHelper.getAssetPaths()
-        for(assetPath in assetPaths) {
-            def path = [assetPath, uri].join(File.separator)
-            def fileDescriptor = new File(path)
-            if(fileDescriptor.exists() && fileDescriptor.file) {
-                return fileDescriptor
+        for(resolver in AssetPipelineConfigHolder.resolvers) {
+            def file = resolver.getAsset(uri)
+            if(file) {
+                return file
             }
         }
         return null
-    }
-
-    static getAssetPaths() {
-        def assetPaths = AssetHelper.getAssetPathsByPlugin().values().toList().flatten().unique()
-        return assetPaths
-    }
-
-    static getAssetPathsByPlugin(includeWebApp=true) {
-        def assetPaths = [:]
-        assetPaths.application = AssetHelper.scopedDirectoryPaths(new File("grails-app/assets").getAbsolutePath())
-        for(plugin in GrailsPluginUtils.pluginInfos) {
-            def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
-            def pluginAssetPaths = AssetHelper.scopedDirectoryPaths(assetPath)
-            if(includeWebApp) {
-                def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
-                pluginAssetPaths += AssetHelper.scopedDirectoryPaths(fallbackPath)
-            }
-            pluginAssetPaths.unique()
-
-            assetPaths[plugin.name] = pluginAssetPaths
-        }
-        return assetPaths
-    }
-
-    static scopedDirectoryPaths(assetPath) {
-        def assetPaths = []
-        def assetFile = new File(assetPath)
-        if(assetFile.exists()) {
-            def scopedDirectories = assetFile.listFiles()
-            for(scopedDirectory in scopedDirectories) {
-                if(scopedDirectory.isDirectory() && scopedDirectory.getName() != "WEB-INF" && scopedDirectory.getName() != 'META-INF') {
-                    assetPaths << scopedDirectory.getAbsolutePath()
-                }
-
-            }
-        }
-        return assetPaths
     }
 
     static extensionFromURI(uri) {
@@ -277,21 +222,4 @@ class AssetHelper {
         return checksum.encodeHex().toString()
     }
 
-    /**
-     * Concatenate multiple byte arrays
-     * @param arrays
-     * @return an array containing the values of all the arrays
-     */
-    static byte[] concat(byte[]... arrays) {
-        int totalLength = arrays.inject(0, { total, array  -> total + array.length }) as int
-        byte[] result = new byte[totalLength]
-
-        // copy the source arrays into the result array
-        arrays.inject(0, { int currentIndex, byte[] array ->
-            System.arraycopy(array, 0, result, currentIndex, array.length)
-            currentIndex + array.length
-        })
-
-        return result
-    }
 }

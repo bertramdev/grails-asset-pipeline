@@ -40,17 +40,17 @@ class CssProcessor extends AbstractProcessor {
                 replacementPath = cachedPaths[assetPath]
             } else if(isRelativePath(assetPath)) {
                 def urlRep = new URL("http://hostname/${assetPath}") //Split out subcomponents
-                def relativeFileName = [relativePath(assetFile.file),urlRep.path].join("/")
+                def relativeFileName = [assetFile.parentPath,urlRep.path].join("/")
                 def encodedFileName = new URLCodec().encode(relativeFileName)
                 def normalizedFileName = new URI(encodedFileName).normalize().getPath()
                 normalizedFileName = new URLCodec().decode(normalizedFileName)
-
+                
                 def cssFile = AssetHelper.fileForFullName(relativeFileName)
                 if(!cssFile) {
                     cssFile = AssetHelper.fileForFullName(normalizedFileName)
                 }
                 if(cssFile) {
-                    replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile.file, this.precompiler ? true : false)
+                    replacementPath = relativePathToBaseFile(cssFile, assetFile.baseFile ?: assetFile, this.precompiler ? true : false)
                     if(urlRep.query != null) {
                         replacementPath += "?${urlRep.query}"
                     }
@@ -70,9 +70,8 @@ class CssProcessor extends AbstractProcessor {
     }
 
     private relativePathToBaseFile(file, baseFile, useDigest=false) {
-        def baseRelativePath = relativePath(baseFile).split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll{it}.reverse()
-        def currentRelativePath = relativePath(file, false).split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll({it}).reverse()
-
+        def baseRelativePath = baseFile.parentPath ? baseFile.parentPath.split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll{it}.reverse() : []
+        def currentRelativePath = file.parentPath ? file.parentPath.split(AssetHelper.DIRECTIVE_FILE_SEPARATOR).findAll({it}).reverse() : []
         def filePathIndex=currentRelativePath.size()- 1
         def baseFileIndex=baseRelativePath.size() - 1
 
@@ -94,11 +93,11 @@ class CssProcessor extends AbstractProcessor {
         if(useDigest) {
             def extension = AssetHelper.extensionFromURI(file.getName())
             def fileName  = AssetHelper.nameWithoutExtension(file.getName())
-            def assetFile = AssetHelper.assetForFile(file)
+            // def assetFile = AssetHelper.assetForFile(file)
             def digestName
-            if(assetFile != file) {
+            if(!(file instanceof GenericAssetFile)) {
                 def directiveProcessor = new DirectiveProcessor(assetFile.contentType, precompiler)
-                def fileData   = directiveProcessor.compile(assetFile)
+                def fileData   = directiveProcessor.compile(file)
                 digestName = AssetHelper.getByteDigest(fileData.bytes)
             }
             else {

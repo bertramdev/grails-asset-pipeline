@@ -28,10 +28,11 @@ class AssetsControllerSpec extends Specification {
   AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
 
   def setup() {
+    AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))      
     controller.assetProcessorService = assetProcessorServiceMock
   }
   void "index() should return 404 when no file found"() {
-    given: 
+    given:
       controller.index()
     expect:
       controller.response.status == 404
@@ -48,7 +49,7 @@ class AssetsControllerSpec extends Specification {
   }
 
   void "index() should return file contents when file found"() {
-    given: 
+    given:
       request.forwardURI = "/assets/asset-pipeline/test/test.css"
       params.id = "asset-pipeline/test/test.css"
     when:
@@ -60,7 +61,7 @@ class AssetsControllerSpec extends Specification {
   }
 
   void "index() should serve uncompiled asset when compile is false"() {
-    given: 
+    given:
       request.forwardURI = "/assets/asset-pipeline/test/test.css"
       params.id = "asset-pipeline/test/test.css"
       params.compile = 'false'
@@ -74,7 +75,7 @@ class AssetsControllerSpec extends Specification {
 
 
   void "index() should pass along encoding for uncompiled asset"() {
-    given: 
+    given:
       request.forwardURI = "/assets/asset-pipeline/test/test.css"
       params.id = "asset-pipeline/test/test.css"
       params.compile = 'false'
@@ -86,5 +87,5 @@ class AssetsControllerSpec extends Specification {
       controller.response.status == 200
       controller.response.contentType == "text/css"
   }
-    
+
 }

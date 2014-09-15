@@ -7,10 +7,9 @@ interface AssetFile {
     static List processors
 
 
-    File getFile()
+
     AssetFile getBaseFile()
     String getEncoding()
-    void setFile(File file)
     void setEncoding(String encoding)
     void setBaseFile(AssetFile baseFile)
 

@@ -18,7 +18,7 @@ package asset.pipeline
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
-
+import asset.pipeline.fs.FileSystemAssetResolver
 /**
  * @author David Estes
  */
@@ -27,17 +27,20 @@ class AssetMethodTagLibSpec extends Specification {
   AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
 
   def setup() {
+
+    AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
+
     assetProcessorServiceMock.getAssetMapping() >> { "assets" }
     tagLib.assetProcessorService = assetProcessorServiceMock
   }
 
   void "should return assetPath"() {
-    given: 
+    given:
       def assetSrc = "asset-pipeline/test/test.css"
     expect:
       tagLib.assetPath(src: assetSrc) == '/assets/asset-pipeline/test/test.css'
   }
 
 
-    
+
 }

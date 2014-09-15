@@ -24,7 +24,9 @@ import spock.lang.Specification
  */
 @TestFor(AssetProcessorService)
 class AssetProcessorServiceSpec extends Specification {
-
+    def setup() {
+        AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))      
+    }
     void "asset mapping can be configured"() {
         given:
             def path
@@ -57,12 +59,12 @@ class AssetProcessorServiceSpec extends Specification {
     }
 
     void "can get flattened dependency list"() {
-        given: 
+        given:
             def fileUri = "asset-pipeline/test/test"
             def extension = "js"
             def contentType = "application/javascript"
             def depList
-        when: 
+        when:
             depList = service.getDependencyList(fileUri, contentType, extension)
         then:
             depList?.size() > 0
@@ -74,12 +76,12 @@ class AssetProcessorServiceSpec extends Specification {
     }
 
     void "can serve unprocessed asset for dev debug"() {
-        given: 
+        given:
             def fileUri = "asset-pipeline/test/test"
             def extension = "js"
             def contentType = "application/javascript"
             def uncompiledFile
-        when: 
+        when:
             uncompiledFile = service.serveUncompiledAsset(fileUri, contentType, extension)
         then:
             !(new String(uncompiledFile)).contains("This is File A")
@@ -90,12 +92,12 @@ class AssetProcessorServiceSpec extends Specification {
     }
 
     void "can serve compiled assets"() {
-        given: 
+        given:
             def fileUri = "asset-pipeline/test/test"
             def extension = "js"
             def contentType = "application/javascript"
             def uncompiledFile
-        when: 
+        when:
             uncompiledFile = service.serveAsset(fileUri, contentType, extension)
         then:
             (new String(uncompiledFile)).contains("This is File A")

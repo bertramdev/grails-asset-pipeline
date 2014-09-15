@@ -18,32 +18,33 @@ package asset.pipeline.processors
 
 import grails.test.spock.IntegrationSpec
 import asset.pipeline.*
+import asset.pipeline.fs.*
 import grails.util.Holders
 
 class CssProcessorSpec extends IntegrationSpec {
     def "replaces image urls with relative paths"() {
         given: "some css and a CssProcessor"
-            
             def cssProcessor = new CssProcessor(null)
-            def file = new File("grails-app/assets/stylesheets/asset-pipeline/test/test.css")
-            def assetFile    = new CssAssetFile(file: file)
+            def resolver = new FileSystemAssetResolver('application','grails-app/assets')
+            def assetFile = resolver.getAsset('asset-pipeline/test/test.css','text/css')
+
         when:
-            def processedCss = cssProcessor.process(assetFile.file.text, assetFile)
+            def processedCss = cssProcessor.process(assetFile.inputStream.text, assetFile)
         then:
             processedCss.contains("url('../../grails_logo.png')")
     }
 
     def "replaces image urls with relative paths and cache digest names in precompiler mode"() {
         given: "some css and a CssProcessor"
-            
+
             def cssProcessor = new CssProcessor(new AssetCompiler())
-            def file = new File("grails-app/assets/stylesheets/asset-pipeline/test/test.css")
-            def assetFile    = new CssAssetFile(file: file)
+            def resolver = new FileSystemAssetResolver('application','grails-app/assets')
+            def assetFile = resolver.getAsset('asset-pipeline/test/test.css','text/css')
             Holders.metaClass.static.getConfig = { ->
                 [grails: [assets: [[minifyJs: true]]]]
             }
         when:
-            def processedCss = cssProcessor.process(assetFile.file.text, assetFile)
+            def processedCss = cssProcessor.process(assetFile.inputStream.text, assetFile)
         then:
             processedCss.contains("url('../../grails_logo-eabe4af98753b0163266d7e68bbd32e3.png')")
     }

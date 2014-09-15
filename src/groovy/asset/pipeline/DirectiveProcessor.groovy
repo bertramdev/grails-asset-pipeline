@@ -34,7 +34,7 @@ class DirectiveProcessor {
     }
 
     def compile(file) {
-        if(file.class.name == 'java.io.File') {
+        if(file instanceof GenericAssetFile) {
             return file.getBytes()
         }
         this.baseFile = file
@@ -47,8 +47,8 @@ class DirectiveProcessor {
     }
 
     def getFlattenedRequireList(file) {
-        if(file.class.name == 'java.io.File') {
-            return [path: relativePath(file), encoding: null]
+        if(file instanceof GenericAssetFile) {
+            return [path: file.path, encoding: null]
         }
         def flattenedList = []
         def tree = getDependencyTree(file)
@@ -62,7 +62,7 @@ class DirectiveProcessor {
         for(childTree in treeSet.tree) {
             if(childTree == "self") {
                 def extension = treeSet.file.compiledExtension
-                def fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(relativePath(treeSet.file.file, true),treeSet.file)
+                def fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(treeSet.file.path,treeSet.file)
                 flattenedList << [path: "${fileName}.${extension}", encoding: treeSet.file.encoding]
                 selfLoaded = true
             } else {
@@ -72,7 +72,7 @@ class DirectiveProcessor {
 
         if(!selfLoaded) {
             def extension = treeSet.file.compiledExtension
-            def fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(relativePath(treeSet.file.file, true),treeSet.file)
+            def fileName = AssetHelper.fileNameWithoutExtensionFromArtefact(treeSet.file.path,treeSet.file)
             flattenedList << [path: "${fileName}.${extension}", encoding: treeSet.file.encoding]
         }
         return flattenedList
@@ -113,7 +113,7 @@ class DirectiveProcessor {
     }
 
     def findDirectives(fileSpec, tree) {
-        def lines = fileSpec.file.readLines()
+        def lines = fileSpec.inputStream.readLines()
         // def directiveFound = false
         def startTime = new Date().time
         lines.find { line ->
@@ -153,52 +153,24 @@ class DirectiveProcessor {
 
     def requireTreeDirective(command, fileSpec, tree) {
         String directivePath = command[1]
+        def resolver = fileSpec.sourceResolver
+        def files = resolver.getAssets(directivePath,contentType,null,true ,fileSpec,baseFile)
 
-        def parentFile
-        if(!directivePath || directivePath == '.') {
-            parentFile = new File(fileSpec.file.getParent())
-        } else {
-            parentFile = new File([fileSpec.file.getParent(),directivePath].join(File.separator))
-        }
-
-        if (directivePath.startsWith('/')) {
-            def rootPaths = AssetHelper.scopedDirectoryPaths(new File("grails-app/assets").getAbsolutePath())
-
-            rootPaths.each { path ->
-                def absolutePath = new File(path, directivePath)
-
-                if (absolutePath.exists() && absolutePath.isDirectory()) {
-                    recursiveTreeAppend(absolutePath, tree)
-                }
+        files.each { file ->
+            if(!isFileInTree(file,tree)) {
+                tree.tree << getDependencyTree(file)
             }
-        }
-        else if(parentFile.exists() && parentFile.isDirectory()){
-            recursiveTreeAppend(parentFile, tree)
         }
     }
 
     def requireFullTreeDirective(command, fileSpec, tree) {
         String directivePath = command[1]
-
-        def parentFile
-        if(!directivePath || directivePath == '.') {
-            parentFile = new File(fileSpec.file.getParent())
-        } else {
-            parentFile = new File([fileSpec.file.getParent(),directivePath].join(File.separator))
-        }
-
-        def relativeParent = relativePath(parentFile,true)
-
-        AssetHelper.getAssetPaths().each { path ->
-
-            def parentFileScoped = new File(path, relativeParent)
-            def absolutePath = new File(path, directivePath)
-
-            if (directivePath.startsWith('/') && absolutePath.exists() && absolutePath.isDirectory()) {
-                recursiveTreeAppend(absolutePath, tree)
-            }
-            else if (parentFileScoped.exists() && parentFileScoped.isDirectory()) {
-                recursiveTreeAppend(parentFileScoped, tree)
+        for(resolver in AssetPipelineConfigHolder.resolvers) {
+            def files = resolver.getAssets(directivePath,contentType,null,true ,fileSpec,baseFile)
+            files.each { file ->
+                if(!isFileInTree(file,tree)) {
+                    tree.tree << getDependencyTree(file)
+                }
             }
         }
     }
@@ -219,12 +191,8 @@ class DirectiveProcessor {
     }
 
     def isFileInTree(file,currentTree) {
-        def realFile = file
-        if(file.class.name != 'java.io.File') {
-            realFile = file.file
-        }
         def result = files.find { it ->
-        return (it.class.name == 'java.io.File' && it.getCanonicalPath() == realFile.getCanonicalPath()) || it.file.getCanonicalPath() == realFile.getCanonicalPath()
+            it.path == file.path
         }
         if(result) {
             return true
@@ -248,7 +216,7 @@ class DirectiveProcessor {
                 newFile = AssetHelper.fileForUri( fileName, this.contentType, null, this.baseFile )
             }
             else {
-                def relativeFileName = [ relativePath( file.file ), fileName ].join( AssetHelper.DIRECTIVE_FILE_SEPARATOR )
+                def relativeFileName = [ file.parentPath, fileName ].join( AssetHelper.DIRECTIVE_FILE_SEPARATOR )
                 // println "Including Relative File: ${relativeFileName} - ${fileName}"
                 newFile = AssetHelper.fileForUri( relativeFileName, this.contentType, null, this.baseFile )
             }
@@ -269,27 +237,27 @@ class DirectiveProcessor {
         }
     }
 
-    def relativePath(file, includeFileName=false) {
-        def path
-        if(includeFileName) {
-            path = file.class.name == 'java.io.File' ? file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR) : file.file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR)
-        } else {
-            path = file.getParent().split(AssetHelper.QUOTED_FILE_SEPARATOR)
-        }
-
-        def startPosition = path.findLastIndexOf{ it == "grails-app" }
-        if(startPosition == -1) {
-            startPosition = path.findLastIndexOf{ it == 'web-app' }
-            if(startPosition+2 >= path.length) {
-                return ""
-            }
-            path = path[(startPosition+2)..-1]
-        } else {
-            if(startPosition+3 >= path.length) {
-                return ""
-            }
-            path = path[(startPosition+3)..-1]
-        }
-        return path.join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
-    }
+    // def relativePath(file, includeFileName=false) {
+    //     def path
+    //     if(includeFileName) {
+    //         path = file.class.name == 'java.io.File' ? file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR) : file.file.getCanonicalPath().split(AssetHelper.QUOTED_FILE_SEPARATOR)
+    //     } else {
+    //         path = file.getParent().split(AssetHelper.QUOTED_FILE_SEPARATOR)
+    //     }
+    //
+    //     def startPosition = path.findLastIndexOf{ it == "grails-app" }
+    //     if(startPosition == -1) {
+    //         startPosition = path.findLastIndexOf{ it == 'web-app' }
+    //         if(startPosition+2 >= path.length) {
+    //             return ""
+    //         }
+    //         path = path[(startPosition+2)..-1]
+    //     } else {
+    //         if(startPosition+3 >= path.length) {
+    //             return ""
+    //         }
+    //         path = path[(startPosition+3)..-1]
+    //     }
+    //     return path.join(AssetHelper.DIRECTIVE_FILE_SEPARATOR)
+    // }
 }

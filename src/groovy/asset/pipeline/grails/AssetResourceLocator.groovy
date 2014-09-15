@@ -2,6 +2,7 @@ package asset.pipeline.grails
 
 import asset.pipeline.DirectiveProcessor
 import asset.pipeline.AssetHelper
+import asset.pipeline.GenericAssetFile
 import org.codehaus.groovy.grails.core.io.DefaultResourceLocator
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
@@ -36,7 +37,7 @@ class AssetResourceLocator extends DefaultResourceLocator {
 			def name         = AssetHelper.nameWithoutExtension(uri)
 			def assetFile    = AssetHelper.fileForUri(name,contentType,extension)
 			if(assetFile) {
-				if(assetFile.class.name == 'java.io.File') {
+				if(assetFile instanceof GenericAssetFile) {
 					resource = new ByteArrayResource(assetFile.bytes)
 				} else {
 					def directiveProcessor = new DirectiveProcessor(contentType)
