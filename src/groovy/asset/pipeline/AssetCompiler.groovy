@@ -288,6 +288,9 @@ class AssetCompiler {
 			log.debug "Executing custom compression command: ${command} ${outputFile.getAbsolutePath()}"
 			def proc = "${command} ${outputFile.getAbsolutePath()}".execute([], outputFile.getParentFile())
 			proc.waitFor()
+			if( proc.exitValue() != 0 ) {
+				throw new CompressionCommandExecutionException("The exit code of the compression command '${command} ${outputFile.getAbsolutePath()}' indicated a failure. The exit code was: ${proc.exitValue()}" as String)
+			}
 			log.debug "Custom compression command stdout: ${proc.in.text}"
 			log.debug "Custom compression command stderr: ${proc.err.text}"
 			AssetHelper.copyFile(new File("${outputFile.getAbsolutePath()}.gz"), new File("${digestedFile.getAbsolutePath()}.gz"))
