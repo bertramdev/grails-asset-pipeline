@@ -37,7 +37,9 @@ class AssetMethodTagLibSpec extends Specification {
     expect:
       tagLib.assetPath(src: assetSrc) == '/assets/asset-pipeline/test/test.css'
   }
-
-
+  
     
+  void "Test assetUriRootPath"(){
+      
+  }    
 }
