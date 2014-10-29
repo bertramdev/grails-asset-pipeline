@@ -13,10 +13,12 @@ grails.project.dependency.resolution = {
         grailsCentral()
         mavenLocal()
         mavenCentral()
+        mavenRepo "http://dl.bintray.com/bertramlabs/asset-pipeline"
     }
 
     dependencies {
         runtime 'org.mozilla:rhino:1.7R4'
+        compile "com.bertramlabs.plugins:asset-pipeline-core:2.0.0"
         runtime 'commons-io:commons-io:2.2'
         compile "com.bertramlabs.plugins:asset-pipeline-core:2.0.1"
 
