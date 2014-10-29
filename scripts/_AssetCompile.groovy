@@ -1,5 +1,5 @@
 import org.apache.tools.ant.DirectoryScanner
-
+import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 // import asset.pipeline.*
 includeTargets << grailsScript("_PackagePlugins")
 includeTargets << grailsScript("_GrailsBootstrap")
@@ -20,6 +20,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	def assetHelper                = classLoader.loadClass('asset.pipeline.AssetHelper')
 	def assetCompilerClass         = classLoader.loadClass('asset.pipeline.AssetCompiler')
 	def directiveProcessorClass    = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
+
 	def assetConfig                = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
 
 	event("AssetPrecompileStart", [assetConfig])
@@ -30,20 +31,19 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	assetConfig.excludesGzip = config.grails.assets.excludesGzip
 
 	//Add Resolvers for Grails
-	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('grails-app/assets'))
+	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application','grails-app/assets'))
 
 	for(plugin in GrailsPluginUtils.pluginInfos) {
 		def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
 		def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
-		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(assetPath))
-		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(fallbackPath,false))
+		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,assetPath))
+		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,fallbackPath,false))
 	}
 
 	event("StatusUpdate",["Precompiling Assets!"])
 
-	def assetCompiler = assetCompilerClass.newInstance(assetConfig, eventListener)
+	def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: 'target/assets'],  eventListener)
 
-	assetCompiler.assetPaths = assetHelper.getAssetPathsByPlugin()
 	assetCompiler.excludeRules.default = config.grails.assets.excludes
 	assetCompiler.includeRules.default = config.grails.assets.includes
 
@@ -57,5 +57,5 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			assetCompiler.includeRules[pluginName] = value.includes
 		}
 	}
-	assetCompiler.compile([compileDir: 'target/assets'])
+	assetCompiler.compile()
 }
