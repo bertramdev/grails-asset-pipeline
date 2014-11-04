@@ -1,3 +1,5 @@
+package asset.pipeline
+
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -14,14 +16,13 @@
  * limitations under the License.
  */
 import grails.util.Environment
-import grails.plugin.webxml.FilterManager
-import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
-
 import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.CachingLinkGenerator
 import asset.pipeline.grails.AssetResourceLocator
 import asset.pipeline.fs.*
 import asset.pipeline.*
+
+import org.springframework.boot.context.embedded.*
 
 
 
@@ -49,7 +50,7 @@ class AssetPipelineGrailsPlugin {
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
         def pluginManager = ctx.pluginManager
         for(plugin in pluginManager.getAllPlugins()) {
-            if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
+            if(plugin instanceof org.grails.plugins.BinaryGrailsPlugin) {
                 def descriptorURI = plugin.binaryDescriptor.resource.URI
                 descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
 
@@ -107,29 +108,10 @@ class AssetPipelineGrailsPlugin {
             bean.parent = "abstractGrailsResourceLocator"
         }
 
-    }
-
-    def getWebXmlFilterOrder() {
-        ["AssetPipelineFilter": FilterManager.GRAILS_WEB_REQUEST_POSITION - 120]
-    }
-
-    def doWithWebDescriptor = { xml ->
         def mapping = application.config?.grails?.assets?.mapping ?: "assets"
-        def filters = xml.filter[0]
-        filters + {
-            'filter' {
-                'filter-name'('AssetPipelineFilter')
-                'filter-class'('asset.pipeline.AssetPipelineFilter')
-            }
-        }
-
-        def mappings = xml.'filter-mapping'[0]
-        mappings + {
-            'filter-mapping' {
-                'filter-name'('AssetPipelineFilter')
-                'url-pattern'("/${mapping}/*")
-                dispatcher('REQUEST')
-            }
+        assetPipelineFilter(FilterRegistrationBean) {
+            filter = new asset.pipeline.AssetPipelineFilter()
+            urlPatterns = ["/${mapping}/*".toString()]
         }
     }
 

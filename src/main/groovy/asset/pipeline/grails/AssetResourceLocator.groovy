@@ -3,12 +3,12 @@ package asset.pipeline.grails
 import asset.pipeline.DirectiveProcessor
 import asset.pipeline.AssetHelper
 import asset.pipeline.GenericAssetFile
-import org.codehaus.groovy.grails.core.io.DefaultResourceLocator
+import org.grails.core.io.DefaultResourceLocator
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
-import groovy.util.logging.Log4j
+import groovy.util.logging.Commons
 
-@Log4j
+@Commons
 class AssetResourceLocator extends DefaultResourceLocator {
 	public Resource findResourceForURI(String uri) {
 		Resource resource = super.findResourceForURI(uri)

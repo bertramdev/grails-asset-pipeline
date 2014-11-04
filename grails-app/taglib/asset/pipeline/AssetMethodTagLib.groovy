@@ -1,13 +1,14 @@
 package asset.pipeline
 
 import grails.util.Environment
+import grails.core.*
 
 class AssetMethodTagLib {
 
     static namespace = "g"
     static returnObjectForTags = ['assetPath']
 
-    def grailsApplication
+    GrailsApplication grailsApplication
     def assetProcessorService
     def grailsLinkGenerator
 

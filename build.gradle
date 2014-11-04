@@ -1,0 +1,54 @@
+ext {
+  grailsVersion = "3.0.0.BUILD-SNAPSHOT"
+}
+
+buildscript {
+    ext {
+      grailsVersion = "3.0.0.BUILD-SNAPSHOT"
+    }  
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.spring.io/libs-release" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+    }
+}
+
+version "2.0.0-SNAPSHOT"
+group "org.grails.plugins"
+
+apply plugin: "grails-plugin"
+apply plugin: "maven"
+
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  jcenter()
+  maven { url "http://dl.bintray.com/bertramlabs/asset-pipeline" }
+}
+
+configurations {
+  provided
+}
+
+dependencies {
+  compile "org.grails:grails-dependencies:$grailsVersion"
+  runtime 'org.mozilla:rhino:1.7R4'
+  compile 'commons-io:commons-io:2.2'
+  compile "com.bertramlabs.plugins:asset-pipeline-core:2.0.2-SNAPSHOT"
+
+  provided 'javax.servlet:javax.servlet-api:3.1.0'
+}
+
+sourceSets {
+    main {
+        compileClasspath += files(configurations.provided)
+    }
+    test {
+        compileClasspath += files(configurations.provided)
+        runtimeClasspath += files(configurations.provided)
+    }
+}
