@@ -1,4 +1,8 @@
+package asset.pipeline
+
 import org.apache.commons.io.FileUtils
+
+
 
 class AssetPipelineBootStrap {
 

@@ -1,12 +1,12 @@
 package asset.pipeline.grails
 
-import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
-import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
-import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.grails.web.mapping.DefaultLinkGenerator
+import grails.core.support.GrailsApplicationAware
+import grails.core.GrailsApplication
 import asset.pipeline.AssetHelper
-import groovy.util.logging.Log4j
+import groovy.util.logging.Commons
 
-@Log4j
+@Commons
 class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAware {
 	GrailsApplication grailsApplication
 	def assetProcessorService
