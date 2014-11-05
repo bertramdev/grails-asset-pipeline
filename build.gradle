@@ -40,6 +40,7 @@ dependencies {
   compile 'commons-io:commons-io:2.2'
   compile "com.bertramlabs.plugins:asset-pipeline-core:2.0.2-SNAPSHOT"
 
+  testCompile "org.grails:grails-plugin-testing:$grailsVersion"
   provided 'javax.servlet:javax.servlet-api:3.1.0'
 }
 
