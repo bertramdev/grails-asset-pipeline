@@ -7,7 +7,8 @@ buildscript {
       grailsVersion = "3.0.0.BUILD-SNAPSHOT"
     }  
     repositories {
-        mavenLocal()        
+        mavenLocal()    
+        mavenCentral()    
         maven { url "http://repo.grails.org/grails/core" }
         maven { url "http://repo.spring.io/libs-release" }
     }
@@ -26,6 +27,7 @@ apply plugin: "maven"
 repositories {
   mavenLocal()
   jcenter()
+  mavenCentral()
   maven { url "http://dl.bintray.com/bertramlabs/asset-pipeline" }
   maven { url "http://repo.grails.org/grails/core" }
 }
