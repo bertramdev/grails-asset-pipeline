@@ -25,9 +25,9 @@ apply plugin: "maven"
 
 repositories {
   mavenLocal()
-  mavenCentral()
   jcenter()
   maven { url "http://dl.bintray.com/bertramlabs/asset-pipeline" }
+  maven { url "http://repo.grails.org/grails/core" }
 }
 
 configurations {
