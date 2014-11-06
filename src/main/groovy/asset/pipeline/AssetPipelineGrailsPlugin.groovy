@@ -1,5 +1,3 @@
-package asset.pipeline
-
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -15,6 +13,9 @@ package asset.pipeline
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package asset.pipeline
+
+
 import grails.util.Environment
 import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.CachingLinkGenerator
@@ -47,7 +48,14 @@ class AssetPipelineGrailsPlugin {
 
     def doWithApplicationContext = { ctx ->
         //Register Plugin Paths
-        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
+        def env = Environment.current
+        if(env.isDevelopmentMode()) {
+            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))    
+        }
+        else {
+            AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('spring', ctx, 'assets'))    
+        }
+        
         def pluginManager = ctx.pluginManager
         for(plugin in pluginManager.getAllPlugins()) {
             if(plugin instanceof org.grails.plugins.BinaryGrailsPlugin) {
