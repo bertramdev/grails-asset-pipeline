@@ -7,8 +7,8 @@ buildscript {
       grailsVersion = "3.0.0.BUILD-SNAPSHOT"
     }  
     repositories {
-        mavenLocal()
-        mavenCentral()
+        mavenLocal()        
+        maven { url "http://repo.grails.org/grails/core" }
         maven { url "http://repo.spring.io/libs-release" }
     }
     dependencies {
