@@ -22,6 +22,7 @@ group "org.grails.plugins"
 
 apply plugin: "grails-plugin"
 apply plugin: "maven"
+apply plugin: 'maven-publish'
 
 
 repositories {
@@ -53,5 +54,37 @@ sourceSets {
     test {
         compileClasspath += files(configurations.provided)
         runtimeClasspath += files(configurations.provided)
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId 'asset-pipeline'
+
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username project.properties.get('artifactoryPublishUsername')
+                password project.properties.get('artifactoryPublishPassword')
+            }
+            url "https://repo.grails.org/grails/libs-snapshots-local/"
+        }
     }
 }
