@@ -48,13 +48,7 @@ class AssetPipelineGrailsPlugin {
 
     def doWithApplicationContext = { ctx ->
         //Register Plugin Paths
-        def env = Environment.current
-        if(env.isDevelopmentMode()) {
-            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))    
-        }
-        else {
-            AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('spring', ctx, 'assets'))    
-        }
+        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))    
         
         def pluginManager = ctx.pluginManager
         for(plugin in pluginManager.getAllPlugins()) {
