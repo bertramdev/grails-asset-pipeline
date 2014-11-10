@@ -23,6 +23,8 @@ group "org.grails.plugins"
 apply plugin: "grails-plugin"
 apply plugin: "maven"
 apply plugin: 'maven-publish'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 
 repositories {
@@ -54,6 +56,18 @@ sourceSets {
     test {
         compileClasspath += files(configurations.provided)
         runtimeClasspath += files(configurations.provided)
+    }
+}
+
+eclipse {
+    classpath {
+        plusConfigurations += [configurations.provided]
+    }
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.provided]
     }
 }
 
