@@ -55,13 +55,14 @@ class AssetPipelineGrailsPlugin {
 
                 AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/assets'))
                 AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/static'))
-            } else {
-                def assetPath = [plugin.pluginPath, "grails-app", "assets"].join(File.separator)
-                def fallbackPath = [plugin.pluginPath, "web-app"].join(File.separator)
-                AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))
-                AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,fallbackPath,false))
             }
 
+        }
+        for(plugin in GrailsPluginUtils.pluginInfos) {
+            def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
+            def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
+            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))
+            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,fallbackPath,true))
         }
     }
     def doWithSpring = {

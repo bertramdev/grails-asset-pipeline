@@ -17,6 +17,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	depends(configureProxy,compile)
 	def assetPipelineConfigHolder  = classLoader.loadClass('asset.pipeline.AssetPipelineConfigHolder')
 	def fileSystemAssetResolver    = classLoader.loadClass('asset.pipeline.fs.FileSystemAssetResolver')
+	def jarAssetResolver           = classLoader.loadClass('asset.pipeline.fs.JarAssetResolver')
 	def assetHelper                = classLoader.loadClass('asset.pipeline.AssetHelper')
 	def assetCompilerClass         = classLoader.loadClass('asset.pipeline.AssetCompiler')
 	def directiveProcessorClass    = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
@@ -32,12 +33,21 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	//Add Resolvers for Grails
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application','grails-app/assets'))
+	for(plugin in pluginManager.getAllPlugins()) {
+		if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
+			def descriptorURI = plugin.binaryDescriptor.resource.URI
+			descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
 
+			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(plugin.name,descriptorURI,'META-INF/assets'))
+			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(plugin.name,descriptorURI,'META-INF/static'))
+		}
+
+	}
 	for(plugin in GrailsPluginUtils.pluginInfos) {
 		def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
 		def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,assetPath))
-		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,fallbackPath,false))
+		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,fallbackPath,true))
 	}
 
 	event("StatusUpdate",["Precompiling Assets!"])
