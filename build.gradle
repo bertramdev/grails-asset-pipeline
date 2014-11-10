@@ -5,10 +5,10 @@ ext {
 buildscript {
     ext {
       grailsVersion = "3.0.0.BUILD-SNAPSHOT"
-    }  
+    }
     repositories {
-        mavenLocal()    
-        mavenCentral()    
+        mavenLocal()
+        mavenCentral()
         maven { url "http://repo.grails.org/grails/core" }
         maven { url "http://repo.spring.io/libs-release" }
     }
@@ -42,7 +42,7 @@ dependencies {
   runtime 'org.mozilla:rhino:1.7R4'
   compile 'commons-io:commons-io:2.2'
   compile "com.bertramlabs.plugins:asset-pipeline-core:2.0.2-SNAPSHOT"
-
+  compile 'log4j:log4j:1.2.16'
   testCompile "org.grails:grails-plugin-testing:$grailsVersion"
   provided 'javax.servlet:javax.servlet-api:3.1.0'
 }
