@@ -16,3 +16,7 @@ cobertura.ser
 *.ipr
 *.iws
 test/dummy/target
+.classpath
+.project
+.settings/
+bin/
