@@ -29,4 +29,5 @@ Additional Resources
 * [SASS/SCSS Compass Asset-Pipeline Plugin](http://github.com/bertramdev/sass-grails-asset-pipeline)
 * [Handlebars Asset-Pipeline Plugin](http://github.com/bertramdev/handlebars-grails-asset-pipeline)
 * [Ember Asset-Pipeline Plugin](http://github.com/bertramdev/ember-grails-asset-pipeline)
+* [JSX Asset-Pipeline Plugin] (https://github.com/balsamiq/jsx-grails-asset-pipeline)
 * [Rails Asset Pipeline Guide](http://guides.rubyonrails.org/asset_pipeline.html)
