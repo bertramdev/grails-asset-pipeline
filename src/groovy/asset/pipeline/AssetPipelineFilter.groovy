@@ -46,7 +46,7 @@ class AssetPipelineFilter implements Filter {
                 response.setContentType(format)
                 response.setHeader('Vary', 'Accept-Encoding')
                 response.setHeader('Cache-Control','public, max-age=31536000')
-                response.setContentLength(file.contentLength())
+                response.setHeader('Content-Length', file.contentLength().toString())
 
                 try {
                     response.outputStream << file.inputStream.getBytes()
