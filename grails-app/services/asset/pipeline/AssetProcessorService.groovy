@@ -10,10 +10,10 @@ class AssetProcessorService {
     * This method is NOT recommended for public use as behavior changes in production mode.
     */
     byte[] serveAsset(uri, contentType = null, extension = null, encoding = null) {
-        
+
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
 
-        def directiveProcessor = new DirectiveProcessor(contentType)
+        def directiveProcessor = new DirectiveProcessor(contentType,null, this.class.classLoader)
         if (assetFile) {
             if(assetFile instanceof GenericAssetFile) {
                 return assetFile.inputStream.bytes
@@ -38,7 +38,7 @@ class AssetProcessorService {
     */
     def getDependencyList(uri, contentType = null, extension = null) {
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
-        def directiveProcessor = new DirectiveProcessor(contentType)
+        def directiveProcessor = new DirectiveProcessor(contentType,null, this.class.classLoader)
         if (assetFile) {
             return directiveProcessor.getFlattenedRequireList(assetFile)
         }
@@ -53,7 +53,7 @@ class AssetProcessorService {
     byte[] serveUncompiledAsset(uri, contentType, extension = null,encoding=null) {
         def assetFile = AssetHelper.fileForUri(uri, contentType, extension)
 
-        def directiveProcessor = new DirectiveProcessor(contentType)
+        def directiveProcessor = new DirectiveProcessor(contentType,null, this.class.classLoader)
         if (assetFile) {
             if(assetFile.class.name == "java.io.File") {
                 return directiveProcessor.fileContents(assetFile)

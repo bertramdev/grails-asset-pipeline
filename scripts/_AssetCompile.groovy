@@ -52,7 +52,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	event("StatusUpdate",["Precompiling Assets!"])
 
-	def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: 'target/assets'],  eventListener)
+	def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: 'target/assets', classLoader: classLoader],  eventListener)
 
 	assetCompiler.excludeRules.default = config.grails.assets.excludes
 	assetCompiler.includeRules.default = config.grails.assets.includes

@@ -40,7 +40,7 @@ class AssetResourceLocator extends DefaultResourceLocator {
 				if(assetFile instanceof GenericAssetFile) {
 					resource = new ByteArrayResource(assetFile.bytes)
 				} else {
-					def directiveProcessor = new DirectiveProcessor(contentType)
+					def directiveProcessor = new DirectiveProcessor(contentType, null, this.class.classLoader)
 					def fileContents = directiveProcessor.compile(assetFile)
 					def encoding = assetFile.encoding
 					if(encoding) {
