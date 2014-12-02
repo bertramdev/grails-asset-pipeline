@@ -23,6 +23,8 @@ h3. Additional Information
 
 h3. Release History
 
+* December 2, 2014
+** 2.0.8 Release - Moved to the new Asset-Pipeline-Core library with 2x faster compiling, binary plugin support, sourcemaps and more.
 * July 29, 2014
 ** 1.9.6 Release - Whoops I had a typo. Thanks Travis.ci
 * July 29, 2014
