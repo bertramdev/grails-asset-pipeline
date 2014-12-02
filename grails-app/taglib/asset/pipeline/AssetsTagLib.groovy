@@ -156,7 +156,7 @@ class AssetsTagLib {
 	}
 
 	private paramsToHtmlAttr(attrs) {
-		attrs.collect { key, value -> "${key}='${value.toString().replace('\'', '\\\'')}'" }?.join(" ")
+		attrs.collect { key, value -> "${key}=\"${value.toString().replace('"', '\\"')}\"" }?.join(" ")
 	}
 
 }
