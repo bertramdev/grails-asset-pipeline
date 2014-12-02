@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Asset Pipeline Plugin 1.9.3</title>
+        <title>Asset Pipeline Plugin 2.0.8</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -25,11 +25,13 @@ function addJsClass(el) {
                             
                             <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="#configuration"><strong>2</strong><span>Configuration</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="#releases"><strong>2</strong><span>Release Notes</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="#usage"><strong>3</strong><span>Usage</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="#configuration"><strong>3</strong><span>Configuration</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="#extending"><strong>4</strong><span>Extending Asset-Pipeline</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="#usage"><strong>4</strong><span>Usage</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#extending"><strong>5</strong><span>Extending Asset-Pipeline</span></a></div>
                             
                         </div>
                     </div>
@@ -58,7 +60,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>Asset Pipeline Plugin - Reference Documentation</h1>
                             <p><strong>Authors:</strong> David Estes</p>
-                            <p><strong>Version:</strong> 1.9.3</p>
+                            <p><strong>Version:</strong> 2.0.8</p>
                             
                         </div>
 
@@ -68,25 +70,29 @@ function addJsClass(el) {
                             
                             <div class="toc-item" style="margin-left:0px"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="#configuration"><strong>2</strong><span>Configuration</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#releases"><strong>2</strong><span>Release Notes</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="#usage"><strong>3</strong><span>Usage</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="#rel2"><strong>2.1</strong><span>2.0 Release</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="#directives"><strong>3.1</strong><span>Manifests and Directives</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#configuration"><strong>3</strong><span>Configuration</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="#organization"><strong>3.2</strong><span>Asset Organization</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#usage"><strong>4</strong><span>Usage</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="#linking"><strong>3.3</strong><span>Linking to Assets</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="#directives"><strong>4.1</strong><span>Manifests and Directives</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="#encoding"><strong>3.4</strong><span>Encoding</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="#organization"><strong>4.2</strong><span>Asset Organization</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="#extending"><strong>4</strong><span>Extending Asset-Pipeline</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="#linking"><strong>4.3</strong><span>Linking to Assets</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="#assetfile"><strong>4.1</strong><span>Asset File Definitions</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="#encoding"><strong>4.4</strong><span>Encoding</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="#processors"><strong>4.2</strong><span>Processors</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="#extending"><strong>5</strong><span>Extending Asset-Pipeline</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="#postprocessors"><strong>4.3</strong><span>Post-Processors</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="#assetfile"><strong>5.1</strong><span>Asset File Definitions</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#processors"><strong>5.2</strong><span>Processors</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#postprocessors"><strong>5.3</strong><span>Post-Processors</span></a></div>
                             
                             <div style="clear:both" ></div>
                         </div>
@@ -111,6 +117,18 @@ The Grails Asset-Pipeline is a plugin used for managing and processing static as
 <li><a href="http://guides.rubyonrails.org/asset_pipeline.html" target="blank">Rails Asset Pipeline Guide</a></li>
 </ul><p class="paragraph"/><h3>Release History</h3>
 <ul class="star">
+<li>December 2, 2014</li>
+<ul class="star">
+<li>2.0.8 Release - Moved to the new Asset-Pipeline-Core library with 2x faster compiling, binary plugin support, sourcemaps and more.</li>
+</ul>
+<li>July 29, 2014</li>
+<ul class="star">
+<li>1.9.6 Release - Whoops I had a typo. Thanks Travis.ci</li>
+</ul>
+<li>July 29, 2014</li>
+<ul class="star">
+<li>1.9.5 Release - Fixed Windows Platform Bug in CSS. Upgraded to UglifyJS2.0</li>
+</ul>
 <li>July 11, 2014</li>
 <ul class="star">
 <li>1.9.3 Release - Fixed ETag Headers for non-digested files, and updated project docs.</li>
@@ -160,12 +178,89 @@ The Grails Asset-Pipeline is a plugin used for managing and processing static as
 </ul></ul><p class="paragraph"/>
 
 
-<h1 id="configuration">2 Configuration</h1>
-Asset-Pipeline has several customizable options to tweak the compiler to suit your needs. Below is a list of the various configuration options and explanations for how to use them<p class="paragraph"/><h3>Excludes and Includes</h3><p class="paragraph"/>Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.excludes</td><td>&#91;"tiny_mce/src/&#42;.js"]</td></tr><tr class="table-even"><td>grails.assets.plugin."twitter-bootstrap".excludes</td><td>&#91;"&#42;&#42;/&#42;.less"]</td></tr><tr class="table-odd"><td>grails.assets.plugin."twitter-bootstrap".includes</td><td>&#91;"bootstrap.less"]</td></tr></table><p class="paragraph"/>Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the <code>bootstrap.less</code> file can be compiled from the <code>twitter-bootstrap plugin</code>.<p class="paragraph"/><h3>Minification</h3><p class="paragraph"/>The Asset-pipeline comes with the newer version of UglifyJs to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. UglifyJS can be enabled/disabled entirely as well as configured via various options.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.minifyJs</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyCss</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-odd"><td>grails.assets.minifyOptions</td><td><strong class="bold">Map</strong></td></tr></table><p class="paragraph"/><div class="code"><pre>grails.assets.minifyOptions = &#91;
-  strictSemicolons: <span class="java&#45;keyword">false</span>,
-  mangleOptions: &#91;mangle: <span class="java&#45;keyword">true</span>, toplevel: <span class="java&#45;keyword">false</span>, defines: <span class="java&#45;keyword">null</span>, except: <span class="java&#45;keyword">null</span>, no_functions:<span class="java&#45;keyword">false</span>&#93;,
-  genOptions: &#91;indent_start:0, indent_level:4, quote_keys: <span class="java&#45;keyword">false</span>, space_colon: <span class="java&#45;keyword">false</span>, beautify: <span class="java&#45;keyword">false</span>, ascii_only: <span class="java&#45;keyword">false</span>, inline_script:<span class="java&#45;keyword">false</span>&#93;
-&#93;</pre></div><p class="paragraph"/>Above are the default values for the majority of UglifyJS. For specifics on what these options do please refer to the documentation for UglifyJS. It is worth noting that <code>mangle: true</code> is what mangles variable names and may need to be turned off using this information.<p class="paragraph"/><h3>Mappings and Asset Taglib URLs</h3><p class="paragraph"/>In many cases you may want to change the URL for which to include your static assets. This can be useful when using a CDN or perhaps even using nginx to serve your static assets.<p class="paragraph"/>To change the URL for your taglibs use the following configuration option:<p class="paragraph"/><div class="code"><pre>grails.assets.url = <span class="java&#45;quote">"http://cdn.example.com/"</span></pre></div><p class="paragraph"/>Now your files are gonna reference the CDN when running in the production environment. To go with this feature, you can have your application automatically copy your asset files out of your base WAR file on startup of your application. Optionally the asset URL config can also be defined as a closure that takes a request argument.<p class="paragraph"/><div class="code"><pre>grails.assets.url = &#123; request &#45;&#62;
+<h1 id="releases">2 Release Notes</h1>
+<h3>Release Hitory</h3>
+<ul class="star">
+<li>December 2, 2014</li>
+<ul class="star">
+<li>2.0.8 Release - Moved to the new Asset-Pipeline-Core library with 2x faster compiling, binary plugin support, sourcemaps and more.</li>
+</ul>
+<li>July 29, 2014</li>
+<ul class="star">
+<li>1.9.6 Release - Whoops I had a typo. Thanks Travis.ci</li>
+</ul>
+<li>July 29, 2014</li>
+<ul class="star">
+<li>1.9.5 Release - Fixed Windows Platform Bug in CSS. Upgraded to UglifyJS2.0</li>
+</ul>
+<li>July 11, 2014</li>
+<ul class="star">
+<li>1.9.3 Release - Fixed ETag Headers for non-digested files, and updated project docs.</li>
+</ul>
+<li>July 10, 2014</li>
+<ul class="star">
+<li>1.9.2 Release - Fixed bug in cache manager, updated docs.</li>
+<li>1.9.1 Release - Added commons-io dependency for more recent versions of grails.</li>
+</ul>
+<li>June 28, 2014</li>
+<ul class="star">
+<li>1.9.0 Release - Added Absolute Image Support, Various bug fixes. Documentation Improvements.</li>
+</ul>
+<li>June 6, 2014</li>
+<ul class="star">
+<li>1.8.11 Release - require_tree directive now falls back to absolute references if path doesn't exist relatively</li>
+</ul>
+<li>June 1, 2014</li>
+<ul class="star">
+<li>1.8.10 Release - Added Support for comma delimited require lists</li>
+</ul>
+<li>April 30, 2014</li>
+<ul class="star">
+<li>1.8.7 Release - ETag Header Support and Vary: Accept-Encoding</li>
+</ul>
+<li>April 29, 2014</li>
+<ul class="star">
+<li>1.8.6 Release - AssetResourceLocator fix</li>
+</ul>
+<li>April 28, 2014</li>
+<ul class="star">
+<li>1.8.5 Release - GGTS and STS Eclipse Groovy Compiler Fixes</li>
+<li>1.8.4 Release - GGTS and STS Eclipse Groovy Compiler Fixes</li>
+</ul>
+<li>October 13, 2013</li>
+<ul class="star">
+<li>1.0.1 release</li>
+</ul>
+<li>October 28, 2013</li>
+<ul class="star">
+<li>1.0.2 release</li>
+</ul>
+<li>November 22, 2013</li>
+<ul class="star">
+<li>1.1.2 Release</li>
+<li>1.1.3 Release</li>
+</ul></ul><p class="paragraph"/>
+
+
+<h2 id="rel2">2.1 2.0 Release</h2>
+The new asset-pipeline brings with it a host of new features and improvements. The plugin is no longer restricted to the grails Framework but can be adapted and extended to work with any framework that runs on the JVM. This can provide a more consistent workspace for dealing with many applications on your stack.<p class="paragraph"/><h3>New Features</h3>
+<ul class="star">
+<li>UglifyJs Replaced by Closure Compiler</li>
+<li>Sourcemaps Generated on Minification of Js (Easier debugging in Production)</li>
+<li>Custom Asset Resolvers adds support for Binary Grails Plugins</li>
+<li>Up to 2x Compiling speed improvements</li>
+<li>Transpiling ES6 to ES5 support</li>
+<li>Cleaner Extensibility</li>
+</ul><p class="paragraph"/><h3>Upgrading to 2.0</h3><p class="paragraph"/>It is important to note that the asset-pipeline plugins that were created before 2.0 will not be immediately compatible. While the updates are minor, third party plugins will have to update to be compatible with 2.0. If possible they should publish gradle builds to maven central so their plugin works with more than just the Grails web stack.<p class="paragraph"/>Another important change is the backwards compatibility. Asset-Pipeline 2.0 is designed to support Grails all the way back to 2.2.0. Anything less than this will more than likely not work correctly. Also the asset-pipeline minimum JVM version has moved up to version 7. This had to be done to facilitate requirements for the new minification library as well as the java nio helpers for file pattern matching.<p class="paragraph"/>Some configuration syntax has changed with relation to minification. Please see the Configuration section of the docs for more information on this. The section on extending the asset-pipeline has also been updated to provide information on how this might be accomplished now. 
+
+
+
+<h1 id="configuration">3 Configuration</h1>
+Asset-Pipeline has several customizable options to tweak the compiler to suit your needs. Below is a list of the various configuration options and explanations for how to use them<p class="paragraph"/><h3>Excludes and Includes</h3><p class="paragraph"/>Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.excludes</td><td>&#91;"tiny_mce/src/&#42;.js"]</td></tr><tr class="table-even"><td>grails.assets.plugin."twitter-bootstrap".excludes</td><td>&#91;"&#42;&#42;/&#42;.less"]</td></tr><tr class="table-odd"><td>grails.assets.plugin."twitter-bootstrap".includes</td><td>&#91;"bootstrap.less"]</td></tr></table><p class="paragraph"/>Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the <code>bootstrap.less</code> file can be compiled from the <code>twitter-bootstrap plugin</code>.<p class="paragraph"/><h3>Minification</h3><p class="paragraph"/>The Asset-pipeline comes with the newer version of Closure Compiler to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. Closure can be enabled/disabled entirely as well as configured via various options.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.minifyJs</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyCss</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-odd"><td>grails.assets.enableSourceMaps</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyOptions</td><td><strong class="bold">Map</strong></td></tr></table><p class="paragraph"/><div class="code"><pre>grails.assets.minifyOptions = &#91;
+    languageMode: 'ES5',
+    targetLanguage: 'ES5', //Can go from ES6 to ES5 <span class="java&#45;keyword">for</span> those bleeding edgers
+    optimizationLevel: 'SIMPLE' //Or ADVANCED or WHITESPACE_ONLY
+&#93;</pre></div><p class="paragraph"/>Above are the default values for the majority of Closure Compiler. For specifics on what these options do please refer to the documentation for Closure Compiler.<p class="paragraph"/><h3>Mappings and Asset Taglib URLs</h3><p class="paragraph"/>In many cases you may want to change the URL for which to include your static assets. This can be useful when using a CDN or perhaps even using nginx to serve your static assets.<p class="paragraph"/>To change the URL for your taglibs use the following configuration option:<p class="paragraph"/><div class="code"><pre>grails.assets.url = <span class="java&#45;quote">"http://cdn.example.com/"</span></pre></div><p class="paragraph"/>Now your files are gonna reference the CDN when running in the production environment. To go with this feature, you can have your application automatically copy your asset files out of your base WAR file on startup of your application. Optionally the asset URL config can also be defined as a closure that takes a request argument.<p class="paragraph"/><div class="code"><pre>grails.assets.url = &#123; request &#45;&#62;
 	<span class="java&#45;keyword">if</span>(request.isSecure()) &#123;
 		<span class="java&#45;keyword">return</span> <span class="java&#45;quote">"https://cdn.example.com/"</span>
 	&#125; <span class="java&#45;keyword">else</span> &#123;
@@ -175,7 +270,7 @@ Asset-Pipeline has several customizable options to tweak the compiler to suit yo
 
 
 
-<h1 id="usage">3 Usage</h1>
+<h1 id="usage">4 Usage</h1>
 Asset-Pipeline automatically creates a series of folders within your <code>grails-app</code> directory:<p class="paragraph"/><div class="code"><pre>grails&#45;app/assets/javascripts
 grails&#45;app/assets/images
 grails&#45;app/assets/stylesheets</pre></div><p class="paragraph"/>Place your static assets in those directories and simply include them in your layouts.<p class="paragraph"/><h3>Setting up Manifests</h3><p class="paragraph"/>Example <code>grails-app/assets/javascripts/application.js</code>:<p class="paragraph"/><div class="code"><pre>//This is a JavaScript file with its top level require directives
@@ -192,7 +287,7 @@ If, in the event, you need to add these files back to the precompile phase you c
     &#60;asset:link rel=<span class="java&#45;quote">"shortcut icon"</span> href=<span class="java&#45;quote">"favicon.ico"</span> type=<span class="java&#45;quote">"image/x&#45;icon"</span>/&#62;
 &#60;/head&#62;</pre></div><p class="paragraph"/>These helpers will automatically adjust to point to the cache-digested versions of the files when running in a non-development environment.<p class="paragraph"/><blockquote class="note">
 In development mode your stylesheets and scripts will be included as individual script tags. This is intended to make it easier for debugging. Bundling is enabled in all other environments and can be forced in development mode by adding <code>grails.assets.bundle=true</code> to your <code>Config.groovy</code>.
-</blockquote><p class="paragraph"/><h3>Using with Plugins</h3><p class="paragraph"/>Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The <code>grails-app/assets</code>, and <code>web-app</code> (for legacy plugin support) folders from all plugins are considered include paths. Essentially, when a file is requested (e.g. <code>jquery.js</code>), the Asset-Pipeline first will check the local applications assets folder. If not found there, it will scan through all the installed plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of a JavaScript file in your local project.<p class="paragraph"/><h3>Using with Stylesheets</h3><p class="paragraph"/>Asset Pipeline now automatically tries to convert relative URLs specified in your CSS files to absolute paths. This makes it easier to use third party libraries within the Asset-Pipeline stack.<p class="paragraph"/><h3>Precompiling for Production</h3><p class="paragraph"/>Assets are now automatically precompiled into <code>target/assets</code> when you create a war file. This should further simplify the deployment process. During WAR creation, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run <code>grails asset-clean</code>.<p class="paragraph"/>During WAR build your assets are also minified using UglifierJs. To disable this feature, you can add the following option to your config:<p class="paragraph"/><div class="code"><pre>grails.assets.minifyJs = <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/><h3>Serving Assets from External Storage Directory</h3><p class="paragraph"/>Asset Pipeline can be configured to copy your assets files out to an external storage path. This can be useful for setting up your web server (e.g. nginx) to directly serve your static assets. To do so, simply define a config variable in your <code>Config.groovy</code> environment block.<p class="paragraph"/><div class="code"><pre>environments &#123;
+</blockquote><p class="paragraph"/><h3>Using with Plugins</h3><p class="paragraph"/>Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The <code>grails-app/assets</code>, and <code>web-app</code> (for legacy plugin support) folders from all plugins are considered include paths. Essentially, when a file is requested (e.g. <code>jquery.js</code>), the Asset-Pipeline first will check the local applications assets folder. If not found there, it will scan through all the installed plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of a JavaScript file in your local project.<p class="paragraph"/><h3>Using with Stylesheets</h3><p class="paragraph"/>Asset Pipeline now automatically tries to convert relative URLs specified in your CSS files to absolute paths. This makes it easier to use third party libraries within the Asset-Pipeline stack.<p class="paragraph"/><h3>Precompiling for Production</h3><p class="paragraph"/>Assets are now automatically precompiled into <code>target/assets</code> when you create a war file. This should further simplify the deployment process. During WAR creation, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run <code>grails asset-clean</code>.<p class="paragraph"/>During WAR build your assets are also minified using Closure Compiler. To disable this feature, you can add the following option to your config:<p class="paragraph"/><div class="code"><pre>grails.assets.minifyJs = <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/><h3>Serving Assets from External Storage Directory</h3><p class="paragraph"/>Asset Pipeline can be configured to copy your assets files out to an external storage path. This can be useful for setting up your web server (e.g. nginx) to directly serve your static assets. To do so, simply define a config variable in your <code>Config.groovy</code> environment block.<p class="paragraph"/><div class="code"><pre>environments &#123;
     production &#123;
         grails.assets.storagePath = <span class="java&#45;quote">"/full/path/to/storage"</span>
     &#125;
@@ -200,14 +295,11 @@ In development mode your stylesheets and scripts will be included as individual 
     production &#123;
         grails.assets.url = <span class="java&#45;quote">"http://s3.amazonaws.com/asset&#45;pipe/assets/"</span>
     &#125;
-&#125;</pre></div><p class="paragraph"/><h3>Custom Files</h3><p class="paragraph"/>Asset Pipeline uses classes of type <code>AssetFile</code>. By default, this plugin comes with a <code>JsAssetFile</code>, and <code>CssAssetFile</code>. These define the match pattern syntax for understanding requires directives, known extensions, processors, and content-type. The application bases its file look-up on content-type of the request rather than extension. This allows the user to maybe define a <code>CoffeeAssetFile</code> with the JavaScript content type and a request to <code>localhost/assets/app.js</code> would be able to find <code>assets/app.coffee</code>. To add custom file definitions you must add the definition in 2 locations:<p class="paragraph"/>Add the reference to your <code>AssetHelper.assetSpecs</code> static property in your plugins startup or Bootstrap:<p class="paragraph"/><div class="code"><pre>def doWithDynamicMethods = &#123; ctx &#45;&#62;
-    AssetHelper.assetSpecs &#60;&#60; HandlebarsAssetFile
-&#125;</pre></div><p class="paragraph"/>Add an <code>_Events.groovy</code> file and register an event listener for <code>eventAssetPrecompileStart</code>:<p class="paragraph"/><div class="code"><pre>eventAssetPrecompileStart = &#123; assetConfig &#45;&#62;
-    assetConfig.specs &#60;&#60; 'asset.pipeline.handlebars.HandlebarsAssetFile'
-&#125;</pre></div><p class="paragraph"/>We do this instead of Artefacts so that we do not have to load up the full application stack during precompile. This saves &#62; 30% of memory usage right off the bat and reduces compile time significantly.<p class="paragraph"/>
+&#125;</pre></div><p class="paragraph"/><h3>Custom Files</h3><p class="paragraph"/>Asset Pipeline uses classes of type <code>AssetFile</code>. By default, this plugin comes with a <code>JsAssetFile</code>, and <code>CssAssetFile</code>. These define the match pattern syntax for understanding requires directives, known extensions, processors, and content-type. The application bases its file look-up on content-type of the request rather than extension. This allows the user to maybe define a <code>CoffeeAssetFile</code> with the JavaScript content type and a request to <code>localhost/assets/app.js</code> would be able to find <code>assets/app.coffee</code>. To add custom file definitions you must add the definition in 2 locations:<p class="paragraph"/>Create a <code>META-INF/asset-pipeline/asset.specs</code> file with the name of your class file (line seperated) to be added to the list of valid implementations. For more information check out the section on extending the asset-pipeline.
 
 
-<h2 id="directives">3.1 Manifests and Directives</h2>
+
+<h2 id="directives">4.1 Manifests and Directives</h2>
 Asset Pipeline controls asset depdencency by using a custom syntax with commands called "directives". These directives give more fine grained control over what needs included as well as load order.<p class="paragraph"/><h3>Manifest Files</h3><p class="paragraph"/>In the Grails asset pipeline, the concept of a manifest file exists. This is typically the root/parent JavaScript or CSS file which requires all of your application code. This file is then included into your application with a taglib.  Another comparison that can be made here is to the 'Resources Plugin' modules; the difference being, your manifest is kept within the source code of your JavaScript or CSS rather than within a separate file you keep having to jump back to.<p class="paragraph"/>An example JavaScript manifest called 'application.js' might look like this:<p class="paragraph"/><div class="code"><pre>//= require jquery/jquery
 //= require_self
 //= require_tree .
@@ -224,7 +316,7 @@ In the examples above, 2 different directive prefixes were shown, one for CSS, a
 
 
 
-<h2 id="organization">3.2 Asset Organization</h2>
+<h2 id="organization">4.2 Asset Organization</h2>
 Asset pipeline organization occurs within the "grails-app/assets" folder. This folder can exist within both the main application as well as a plugin.<p class="paragraph"/><blockquote class="note">
 A plugin will also include its web-app directory to better deal with plugins that wish to support both the resources plugin as well as asset-pipeline.
 </blockquote><p class="paragraph"/><h3>Organization</h3><p class="paragraph"/>Within the "grails-app/assets" directory are several subfolders<p class="paragraph"/><div class="code"><pre>grails&#45;app/assets/javascripts
@@ -247,7 +339,7 @@ These same conditions should be implemented on any preprocessor extension plugin
 
 
 
-<h2 id="linking">3.3 Linking to Assets</h2>
+<h2 id="linking">4.3 Linking to Assets</h2>
 Asset Pipeline adds a few new taglibs to properly reference your assets. These taglibs automatically handle swapout of cache digest names during production use as well as any custom URL mapping changes.<p class="paragraph"/><h3>Views</h3><p class="paragraph"/><div class="code"><pre>&#60;head&#62;
   &#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span>/&#62;
   &#60;asset:stylesheet src=<span class="java&#45;quote">"application.css"</span>/&#62;
@@ -280,19 +372,19 @@ In production mode, your image references or CSS references will automatically g
 
 
 
-<h2 id="encoding">3.4 Encoding</h2>
+<h2 id="encoding">4.4 Encoding</h2>
 In some cases it may be necessary to specify an encoding for your assets. An example might be for Japanese characters in a JavaScript file. To do this, two things must be done. First, we simply set the charset attribute when we include are JavaScript file:<p class="paragraph"/><div class="code"><pre>&#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span> charset=<span class="java&#45;quote">"utf&#45;8"</span>/&#62;</pre></div><p class="paragraph"/>This should take care of testing in development mode and debugging. However, when we move to production/WAR mode the precompiler has no way to infer the desired encoding for compilation. To accomplish this, we have the <code>//= encoding</code> directive. This can be placed at the top of your <code>application.js</code> to define the desired compilation encoding.<p class="paragraph"/><div class="code"><pre>//=encoding UTF&#45;8
 //=require_self
 //=require_tree .</pre></div><p class="paragraph"/>That's all there is to it.
 
 
 
-<h1 id="extending">4 Extending Asset-Pipeline</h1>
+<h1 id="extending">5 Extending Asset-Pipeline</h1>
 The asset-pipeline is extremely extensible and easy to customize to suit one's needs. You might extend the asset-pipeline to handle a new type of asset that may need to be preprocessed before being served to the browser, or you may want to define a new custom directive. This guide will go over the basics of how to perform those tasks with ease.
 
 
 
-<h2 id="assetfile">4.1 Asset File Definitions</h2>
+<h2 id="assetfile">5.1 Asset File Definitions</h2>
 The <code>AssetFile</code> definition is where our journey begins. This is the defining file for various file types. Without this definition, the asset-pipeline will treat an unknown file type as a standard passthrough resource. As an example, lets first look at the <code>CssAssetFile</code> definition.<p class="paragraph"/><div class="code"><pre>class CssAssetFile <span class="java&#45;keyword">extends</span> AbstractAssetFile &#123;
   <span class="java&#45;keyword">static</span> <span class="java&#45;keyword">final</span> <span class="java&#45;object">String</span> contentType = 'text/css'
   <span class="java&#45;keyword">static</span> extensions = &#91;'css'&#93;
@@ -300,9 +392,7 @@ The <code>AssetFile</code> definition is where our journey begins. This is the d
   <span class="java&#45;keyword">static</span> processors = &#91;CssProcessor&#93;<p class="paragraph"/>  <span class="java&#45;object">String</span> directiveForLine(<span class="java&#45;object">String</span> line) &#123;
     line.find(/&#42;=(.&#42;)/) &#123; fullMatch, directive &#45;&#62; <span class="java&#45;keyword">return</span> directive &#125;
   &#125;
-&#125;</pre></div><p class="paragraph"/>This file definition is pretty short but allows us to define some very useful information. First, we look at the static definitions at the top of the class. These static definitions are fairly easy to meta-override with Groovy and add additional processors or adjust with added plugins.<p class="paragraph"/>The <code>contentType</code> property is used to match a file definition with an incoming file request. When the browser requests a <code>text/css</code> content-type file , this file is matched and files matching this definition are scanned. The <code>extensions</code> list tells asset-pipeline which file extensions to scan through and match. In this case it is just 'css', but in the case of LESS for example, we may be looking for extensions <code>less</code>, or <code>css.less</code>.<p class="paragraph"/>The <code>compiledExtension</code> property tells asset-pipelines precompiler what the final file extension should be.<p class="paragraph"/>Finally, the <code>processors</code> array determines the list of processors that need be run on the file contents before returning a result. This array is executed in order. In this case, we have the <code>CssProcessor</code> (a processor for converting the relative image paths and replacing with their cache digested version).<p class="paragraph"/><h4>Directive Definition</h4><p class="paragraph"/>An <code>assetFile</code> can specify a REGEXP pattern for require directives. These directives are used to bundle assets together. Some file types don't utilize these require directives and simply returning a null value will cancel directive processing.<p class="paragraph"/><div class="code"><pre>def directiveForLine(line) &#123;
-    line.find(/&#42;=(.&#42;)/) &#123; fullMatch, directive &#45;&#62; <span class="java&#45;keyword">return</span> directive &#125;
-  &#125;</pre></div><p class="paragraph"/>The example above shows a match pattern for CSS files. This allows it to match require directives for the following example:<p class="paragraph"/><div class="code"><pre>/&#42;
+&#125;</pre></div><p class="paragraph"/>This file definition is pretty short but allows us to define some very useful information. First, we look at the static definitions at the top of the class. These static definitions are fairly easy to meta-override with Groovy and add additional processors or adjust with added plugins.<p class="paragraph"/>The <code>contentType</code> property is used to match a file definition with an incoming file request. When the browser requests a <code>text/css</code> content-type file , this file is matched and files matching this definition are scanned. The <code>extensions</code> list tells asset-pipeline which file extensions to scan through and match. In this case it is just 'css', but in the case of LESS for example, we may be looking for extensions <code>less</code>, or <code>css.less</code>.<p class="paragraph"/>The <code>compiledExtension</code> property tells asset-pipelines precompiler what the final file extension should be.<p class="paragraph"/>Finally, the <code>processors</code> array determines the list of processors that need be run on the file contents before returning a result. This array is executed in order. In this case, we have the <code>CssProcessor</code> (a processor for converting the relative image paths and replacing with their cache digested version).<p class="paragraph"/><h4>Directive Definition</h4><p class="paragraph"/>An <code>assetFile</code> can specify a REGEXP pattern for require directives. These directives are used to bundle assets together. Some file types don't utilize these require directives and simply returning a null value will cancel directive processing.<p class="paragraph"/><div class="code"><pre>Pattern directivePattern = ~/(?m)&#42;=(.&#42;)/</pre></div><p class="paragraph"/>NOTE: Used to there was a <code>directiveForLine</code> that matched on each individual line. This was changed to support a multiline regex pattern for faster processing.<p class="paragraph"/>The example above shows a match pattern for CSS files. This allows it to match require directives for the following example:<p class="paragraph"/><div class="code"><pre>/&#42;
 &#42;= require_self
 &#42;= require_file example_b
 &#42;= require_tree .
@@ -327,19 +417,23 @@ The <code>AssetFile</code> definition is where our journey begins. This is the d
   &#125;<p class="paragraph"/>  <span class="java&#45;keyword">if</span>(!skipCache) &#123;
     CacheManager.createCache(file.canonicalPath,md5,fileText)
   &#125;<p class="paragraph"/>  <span class="java&#45;keyword">return</span> fileText
-&#125;</pre></div><p class="paragraph"/>The example above iterates over all of the processor classes defined in our static <code>processors</code> variable. This creates a new instance and informs the processor whether this is a developer mode request or being issued by the precompiler (useful for determining if file replacements need to be cache digested or not). The <code>processedStream</code> method is now a part of the <code>AbstractAssetFile</code> definition and handles cache management if there are processors.<p class="paragraph"/><h4>Adding the Asset definiton to the list of AssetFiles</h4><p class="paragraph"/>Originally, asset-pipeline took advantage of the Artefact syntax to generate this class list. However, this became problematic as it added a great deal of overhead to precompilation during WAR creation. To solve this, an <code>asset.pipeline.AssetHelper.assetSpecs</code> static array was used instead. This array is used by both development mode runtime and war creation so it has to be added in 2 places. If you are creating a plugin to facilitate your added functionality, you will want to use the <code>doWithDynamicMethods</code> to add your asset file.<p class="paragraph"/><div class="code"><pre>AssetHelper.assetSpecs &#60;&#60; LessAssetFile</pre></div><p class="paragraph"/>One other place we have to add this is in a <code>scripts/_Events.groovy</code> file. An example below is pulled from the LESS asset-pipeline plugin.<p class="paragraph"/><div class="code"><pre>eventAssetPrecompileStart = &#123; assetConfig &#45;&#62;
-  assetConfig.specs &#60;&#60; 'asset.pipeline.less.LessAssetFile'
-&#125;</pre></div><p class="paragraph"/>Notice on this one that the spec array is tied to <code>assetConfig</code> and that instead of providing the class object we provide the classpath as a string. This is necessary to allow the precompiler to facilitate proper class loading across plugins as the full Grails stack may not be available during a precompile. This results in a significantly reduced memory overhead during precompiling as the alternative to using Artefacts. Granted, it does require an extra step here, but well worth the cost.
+&#125;</pre></div><p class="paragraph"/>The example above iterates over all of the processor classes defined in our static <code>processors</code> variable. This creates a new instance and informs the processor whether this is a developer mode request or being issued by the precompiler (useful for determining if file replacements need to be cache digested or not). The <code>processedStream</code> method is now a part of the <code>AbstractAssetFile</code> definition and handles cache management if there are processors.<p class="paragraph"/><h4>Adding the Asset definiton to the list of AssetFiles</h4><p class="paragraph"/>Originally we had to add these classes on startup in both runtime and build phases to the <code>AssetHelper.assetSpecs</code> array. Thanks to contributions by Graeme Rocher we have been able to simplify this process.
+Simply adding a list file @META-INF/asset-pipeline/asset.specs to the classpath will automatically get scanned.<p class="paragraph"/>Example:
+<div class="code"><pre>asset.pipeline.HtmlAssetFile
+asset.pipeline.JsAssetFile
+asset.pipeline.CssAssetFile</pre></div><p class="paragraph"/>Another autoscanning file allows us to tack on Processors to already registered AssetFile specifications. This is called the <code>processor.specs</code> file and goes in the same <code>META-INF/asset-pipeline</code> folder.
+This is a Properties file with the key being the class path of the Processor and the value being a comma delimited list of <code>AssetFile</code> classes you want the processor added to.<p class="paragraph"/>Example:
+<div class="code"><pre>asset.pipeline.CssProcessor=asset.pipeline.CssAssetFile,asset.pipeline.LessAssetFile</pre></div>
 
 
 
-<h2 id="processors">4.2 Processors</h2>
+<h2 id="processors">5.2 Processors</h2>
 Processors are where the real power of asset-pipeline comes into play. These are the driving force behind making compileable assets such as LESS, and CoffeeScript first class citizens. Gone is the need to run a compiler on the side, and gone is the delay between making changes in development.<p class="paragraph"/>A Processor is an implementation of the <code>Processor</code> interface via the <code>AbstractProcessor</code> class. It must have a constructor with an <code>AssetCompiler</code> argument, and it must have a process method. The rest is up to the developer.
 The reason the AssetCompiler is passed is for giving the processor access to manipulate the precompiler phase. If a null precompiler is passed, than development mode is assumed and the processor can infer that. An example use case
 for this is the SassProcessor in the SASS/SCSS Asset Pipeline Plugin. Image sprite generation causes additional image files to be created that need added to the list of files to process.<p class="paragraph"/><div class="code"><pre>class CoffeeScriptProcessor <span class="java&#45;keyword">extends</span> AbstractProcessor &#123;<p class="paragraph"/>  Scriptable globalScope
   <span class="java&#45;object">ClassLoader</span> classLoader<p class="paragraph"/>  CoffeeScriptProcessor(AssetCompiler precompiler)&#123;
     <span class="java&#45;keyword">super</span>(precompiler)
-  &#125;<p class="paragraph"/>  def process(input, assetFile) &#123;
+  &#125;<p class="paragraph"/>  <span class="java&#45;object">String</span> process(<span class="java&#45;object">String</span> input, AssetFile assetFile) &#123;
     <span class="java&#45;keyword">try</span> &#123;
       def cx = Context.enter()
       def compileScope = cx.newObject(globalScope)
@@ -360,7 +454,7 @@ for this is the SassProcessor in the SASS/SCSS Asset Pipeline Plugin. Image spri
 
 
 
-<h2 id="postprocessors">4.3 Post-Processors</h2>
+<h2 id="postprocessors">5.3 Post-Processors</h2>
 Currently, PostProcessor extensibility is not available. This is currently a feature we are implementing to provide easier dropin for custom minifiers and compressors.
 
 

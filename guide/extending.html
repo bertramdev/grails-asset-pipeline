@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4 Extending Asset-Pipeline 1.9.3</title>
+    <title>5 Extending Asset-Pipeline 2.0.8</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -27,13 +27,16 @@ function addJsClass() {
                     <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>2</strong><span>Configuration</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/releases.html"><strong>2</strong><span>Release Notes</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>3</strong><span>Configuration</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/extending.html"><strong>4</strong><span>Extending Asset-Pipeline</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>4</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/extending.html"><strong>5</strong><span>Extending Asset-Pipeline</span></a>
                     </div>
                     
                 </div>
@@ -59,7 +62,7 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/usage.html">&lt;&lt; <strong>4</strong><span>Usage</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
@@ -68,11 +71,11 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>4 Extending Asset-Pipeline - Reference Documentation</h1>
+                    <h1>5 Extending Asset-Pipeline - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 1.9.3</p>
+                    <p><strong>Version:</strong> 2.0.8</p>
 
                     
                 </div>
@@ -81,13 +84,13 @@ function addJsClass() {
                 <div id="table-of-content">
                     <h2>Table of Contents</h2>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#assetfile"><strong>4.1</strong><span>Asset File Definitions</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#assetfile"><strong>5.1</strong><span>Asset File Definitions</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#processors"><strong>4.2</strong><span>Processors</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#processors"><strong>5.2</strong><span>Processors</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#postprocessors"><strong>4.3</strong><span>Post-Processors</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#postprocessors"><strong>5.3</strong><span>Post-Processors</span></a>
                     </div>
                     
                 </div>
@@ -95,12 +98,12 @@ function addJsClass() {
 
                 
 
-<h1 id="extending">4 Extending Asset-Pipeline</h1>
+<h1 id="extending">5 Extending Asset-Pipeline</h1>
 The asset-pipeline is extremely extensible and easy to customize to suit one's needs. You might extend the asset-pipeline to handle a new type of asset that may need to be preprocessed before being served to the browser, or you may want to define a new custom directive. This guide will go over the basics of how to perform those tasks with ease.
 
 
 
-<h2 id="assetfile">4.1 Asset File Definitions</h2>
+<h2 id="assetfile">5.1 Asset File Definitions</h2>
 The <code>AssetFile</code> definition is where our journey begins. This is the defining file for various file types. Without this definition, the asset-pipeline will treat an unknown file type as a standard passthrough resource. As an example, lets first look at the <code>CssAssetFile</code> definition.<p class="paragraph"/><div class="code"><pre>class CssAssetFile <span class="java&#45;keyword">extends</span> AbstractAssetFile &#123;
   <span class="java&#45;keyword">static</span> <span class="java&#45;keyword">final</span> <span class="java&#45;object">String</span> contentType = 'text/css'
   <span class="java&#45;keyword">static</span> extensions = &#91;'css'&#93;
@@ -108,9 +111,7 @@ The <code>AssetFile</code> definition is where our journey begins. This is the d
   <span class="java&#45;keyword">static</span> processors = &#91;CssProcessor&#93;<p class="paragraph"/>  <span class="java&#45;object">String</span> directiveForLine(<span class="java&#45;object">String</span> line) &#123;
     line.find(/&#42;=(.&#42;)/) &#123; fullMatch, directive &#45;&#62; <span class="java&#45;keyword">return</span> directive &#125;
   &#125;
-&#125;</pre></div><p class="paragraph"/>This file definition is pretty short but allows us to define some very useful information. First, we look at the static definitions at the top of the class. These static definitions are fairly easy to meta-override with Groovy and add additional processors or adjust with added plugins.<p class="paragraph"/>The <code>contentType</code> property is used to match a file definition with an incoming file request. When the browser requests a <code>text/css</code> content-type file , this file is matched and files matching this definition are scanned. The <code>extensions</code> list tells asset-pipeline which file extensions to scan through and match. In this case it is just 'css', but in the case of LESS for example, we may be looking for extensions <code>less</code>, or <code>css.less</code>.<p class="paragraph"/>The <code>compiledExtension</code> property tells asset-pipelines precompiler what the final file extension should be.<p class="paragraph"/>Finally, the <code>processors</code> array determines the list of processors that need be run on the file contents before returning a result. This array is executed in order. In this case, we have the <code>CssProcessor</code> (a processor for converting the relative image paths and replacing with their cache digested version).<p class="paragraph"/><h4>Directive Definition</h4><p class="paragraph"/>An <code>assetFile</code> can specify a REGEXP pattern for require directives. These directives are used to bundle assets together. Some file types don't utilize these require directives and simply returning a null value will cancel directive processing.<p class="paragraph"/><div class="code"><pre>def directiveForLine(line) &#123;
-    line.find(/&#42;=(.&#42;)/) &#123; fullMatch, directive &#45;&#62; <span class="java&#45;keyword">return</span> directive &#125;
-  &#125;</pre></div><p class="paragraph"/>The example above shows a match pattern for CSS files. This allows it to match require directives for the following example:<p class="paragraph"/><div class="code"><pre>/&#42;
+&#125;</pre></div><p class="paragraph"/>This file definition is pretty short but allows us to define some very useful information. First, we look at the static definitions at the top of the class. These static definitions are fairly easy to meta-override with Groovy and add additional processors or adjust with added plugins.<p class="paragraph"/>The <code>contentType</code> property is used to match a file definition with an incoming file request. When the browser requests a <code>text/css</code> content-type file , this file is matched and files matching this definition are scanned. The <code>extensions</code> list tells asset-pipeline which file extensions to scan through and match. In this case it is just 'css', but in the case of LESS for example, we may be looking for extensions <code>less</code>, or <code>css.less</code>.<p class="paragraph"/>The <code>compiledExtension</code> property tells asset-pipelines precompiler what the final file extension should be.<p class="paragraph"/>Finally, the <code>processors</code> array determines the list of processors that need be run on the file contents before returning a result. This array is executed in order. In this case, we have the <code>CssProcessor</code> (a processor for converting the relative image paths and replacing with their cache digested version).<p class="paragraph"/><h4>Directive Definition</h4><p class="paragraph"/>An <code>assetFile</code> can specify a REGEXP pattern for require directives. These directives are used to bundle assets together. Some file types don't utilize these require directives and simply returning a null value will cancel directive processing.<p class="paragraph"/><div class="code"><pre>Pattern directivePattern = ~/(?m)&#42;=(.&#42;)/</pre></div><p class="paragraph"/>NOTE: Used to there was a <code>directiveForLine</code> that matched on each individual line. This was changed to support a multiline regex pattern for faster processing.<p class="paragraph"/>The example above shows a match pattern for CSS files. This allows it to match require directives for the following example:<p class="paragraph"/><div class="code"><pre>/&#42;
 &#42;= require_self
 &#42;= require_file example_b
 &#42;= require_tree .
@@ -135,19 +136,23 @@ The <code>AssetFile</code> definition is where our journey begins. This is the d
   &#125;<p class="paragraph"/>  <span class="java&#45;keyword">if</span>(!skipCache) &#123;
     CacheManager.createCache(file.canonicalPath,md5,fileText)
   &#125;<p class="paragraph"/>  <span class="java&#45;keyword">return</span> fileText
-&#125;</pre></div><p class="paragraph"/>The example above iterates over all of the processor classes defined in our static <code>processors</code> variable. This creates a new instance and informs the processor whether this is a developer mode request or being issued by the precompiler (useful for determining if file replacements need to be cache digested or not). The <code>processedStream</code> method is now a part of the <code>AbstractAssetFile</code> definition and handles cache management if there are processors.<p class="paragraph"/><h4>Adding the Asset definiton to the list of AssetFiles</h4><p class="paragraph"/>Originally, asset-pipeline took advantage of the Artefact syntax to generate this class list. However, this became problematic as it added a great deal of overhead to precompilation during WAR creation. To solve this, an <code>asset.pipeline.AssetHelper.assetSpecs</code> static array was used instead. This array is used by both development mode runtime and war creation so it has to be added in 2 places. If you are creating a plugin to facilitate your added functionality, you will want to use the <code>doWithDynamicMethods</code> to add your asset file.<p class="paragraph"/><div class="code"><pre>AssetHelper.assetSpecs &#60;&#60; LessAssetFile</pre></div><p class="paragraph"/>One other place we have to add this is in a <code>scripts/_Events.groovy</code> file. An example below is pulled from the LESS asset-pipeline plugin.<p class="paragraph"/><div class="code"><pre>eventAssetPrecompileStart = &#123; assetConfig &#45;&#62;
-  assetConfig.specs &#60;&#60; 'asset.pipeline.less.LessAssetFile'
-&#125;</pre></div><p class="paragraph"/>Notice on this one that the spec array is tied to <code>assetConfig</code> and that instead of providing the class object we provide the classpath as a string. This is necessary to allow the precompiler to facilitate proper class loading across plugins as the full Grails stack may not be available during a precompile. This results in a significantly reduced memory overhead during precompiling as the alternative to using Artefacts. Granted, it does require an extra step here, but well worth the cost.
+&#125;</pre></div><p class="paragraph"/>The example above iterates over all of the processor classes defined in our static <code>processors</code> variable. This creates a new instance and informs the processor whether this is a developer mode request or being issued by the precompiler (useful for determining if file replacements need to be cache digested or not). The <code>processedStream</code> method is now a part of the <code>AbstractAssetFile</code> definition and handles cache management if there are processors.<p class="paragraph"/><h4>Adding the Asset definiton to the list of AssetFiles</h4><p class="paragraph"/>Originally we had to add these classes on startup in both runtime and build phases to the <code>AssetHelper.assetSpecs</code> array. Thanks to contributions by Graeme Rocher we have been able to simplify this process.
+Simply adding a list file @META-INF/asset-pipeline/asset.specs to the classpath will automatically get scanned.<p class="paragraph"/>Example:
+<div class="code"><pre>asset.pipeline.HtmlAssetFile
+asset.pipeline.JsAssetFile
+asset.pipeline.CssAssetFile</pre></div><p class="paragraph"/>Another autoscanning file allows us to tack on Processors to already registered AssetFile specifications. This is called the <code>processor.specs</code> file and goes in the same <code>META-INF/asset-pipeline</code> folder.
+This is a Properties file with the key being the class path of the Processor and the value being a comma delimited list of <code>AssetFile</code> classes you want the processor added to.<p class="paragraph"/>Example:
+<div class="code"><pre>asset.pipeline.CssProcessor=asset.pipeline.CssAssetFile,asset.pipeline.LessAssetFile</pre></div>
 
 
 
-<h2 id="processors">4.2 Processors</h2>
+<h2 id="processors">5.2 Processors</h2>
 Processors are where the real power of asset-pipeline comes into play. These are the driving force behind making compileable assets such as LESS, and CoffeeScript first class citizens. Gone is the need to run a compiler on the side, and gone is the delay between making changes in development.<p class="paragraph"/>A Processor is an implementation of the <code>Processor</code> interface via the <code>AbstractProcessor</code> class. It must have a constructor with an <code>AssetCompiler</code> argument, and it must have a process method. The rest is up to the developer.
 The reason the AssetCompiler is passed is for giving the processor access to manipulate the precompiler phase. If a null precompiler is passed, than development mode is assumed and the processor can infer that. An example use case
 for this is the SassProcessor in the SASS/SCSS Asset Pipeline Plugin. Image sprite generation causes additional image files to be created that need added to the list of files to process.<p class="paragraph"/><div class="code"><pre>class CoffeeScriptProcessor <span class="java&#45;keyword">extends</span> AbstractProcessor &#123;<p class="paragraph"/>  Scriptable globalScope
   <span class="java&#45;object">ClassLoader</span> classLoader<p class="paragraph"/>  CoffeeScriptProcessor(AssetCompiler precompiler)&#123;
     <span class="java&#45;keyword">super</span>(precompiler)
-  &#125;<p class="paragraph"/>  def process(input, assetFile) &#123;
+  &#125;<p class="paragraph"/>  <span class="java&#45;object">String</span> process(<span class="java&#45;object">String</span> input, AssetFile assetFile) &#123;
     <span class="java&#45;keyword">try</span> &#123;
       def cx = Context.enter()
       def compileScope = cx.newObject(globalScope)
@@ -168,14 +173,14 @@ for this is the SassProcessor in the SASS/SCSS Asset Pipeline Plugin. Image spri
 
 
 
-<h2 id="postprocessors">4.3 Post-Processors</h2>
+<h2 id="postprocessors">5.3 Post-Processors</h2>
 Currently, PostProcessor extensibility is not available. This is currently a feature we are implementing to provide easier dropin for custom minifiers and compressors.
 
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/usage.html">&lt;&lt; <strong>4</strong><span>Usage</span></a></div>
                 
                 <div style="clear:both"></div>
             </div>

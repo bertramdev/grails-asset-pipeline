@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2 Configuration 1.9.3</title>
+    <title>3 Configuration 2.0.8</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -27,13 +27,16 @@ function addJsClass() {
                     <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>2</strong><span>Configuration</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/releases.html"><strong>2</strong><span>Release Notes</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>3</strong><span>Configuration</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/extending.html"><strong>4</strong><span>Extending Asset-Pipeline</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>4</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/extending.html"><strong>5</strong><span>Extending Asset-Pipeline</span></a>
                     </div>
                     
                 </div>
@@ -59,22 +62,22 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/releases.html">&lt;&lt; <strong>2</strong><span>Release Notes</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>4</strong><span>Usage</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>2 Configuration - Reference Documentation</h1>
+                    <h1>3 Configuration - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 1.9.3</p>
+                    <p><strong>Version:</strong> 2.0.8</p>
 
                     
                 </div>
@@ -83,12 +86,12 @@ function addJsClass() {
 
                 
 
-<h1 id="configuration">2 Configuration</h1>
-Asset-Pipeline has several customizable options to tweak the compiler to suit your needs. Below is a list of the various configuration options and explanations for how to use them<p class="paragraph"/><h3>Excludes and Includes</h3><p class="paragraph"/>Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.excludes</td><td>&#91;"tiny_mce/src/&#42;.js"]</td></tr><tr class="table-even"><td>grails.assets.plugin."twitter-bootstrap".excludes</td><td>&#91;"&#42;&#42;/&#42;.less"]</td></tr><tr class="table-odd"><td>grails.assets.plugin."twitter-bootstrap".includes</td><td>&#91;"bootstrap.less"]</td></tr></table><p class="paragraph"/>Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the <code>bootstrap.less</code> file can be compiled from the <code>twitter-bootstrap plugin</code>.<p class="paragraph"/><h3>Minification</h3><p class="paragraph"/>The Asset-pipeline comes with the newer version of UglifyJs to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. UglifyJS can be enabled/disabled entirely as well as configured via various options.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.minifyJs</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyCss</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-odd"><td>grails.assets.minifyOptions</td><td><strong class="bold">Map</strong></td></tr></table><p class="paragraph"/><div class="code"><pre>grails.assets.minifyOptions = &#91;
-  strictSemicolons: <span class="java&#45;keyword">false</span>,
-  mangleOptions: &#91;mangle: <span class="java&#45;keyword">true</span>, toplevel: <span class="java&#45;keyword">false</span>, defines: <span class="java&#45;keyword">null</span>, except: <span class="java&#45;keyword">null</span>, no_functions:<span class="java&#45;keyword">false</span>&#93;,
-  genOptions: &#91;indent_start:0, indent_level:4, quote_keys: <span class="java&#45;keyword">false</span>, space_colon: <span class="java&#45;keyword">false</span>, beautify: <span class="java&#45;keyword">false</span>, ascii_only: <span class="java&#45;keyword">false</span>, inline_script:<span class="java&#45;keyword">false</span>&#93;
-&#93;</pre></div><p class="paragraph"/>Above are the default values for the majority of UglifyJS. For specifics on what these options do please refer to the documentation for UglifyJS. It is worth noting that <code>mangle: true</code> is what mangles variable names and may need to be turned off using this information.<p class="paragraph"/><h3>Mappings and Asset Taglib URLs</h3><p class="paragraph"/>In many cases you may want to change the URL for which to include your static assets. This can be useful when using a CDN or perhaps even using nginx to serve your static assets.<p class="paragraph"/>To change the URL for your taglibs use the following configuration option:<p class="paragraph"/><div class="code"><pre>grails.assets.url = <span class="java&#45;quote">"http://cdn.example.com/"</span></pre></div><p class="paragraph"/>Now your files are gonna reference the CDN when running in the production environment. To go with this feature, you can have your application automatically copy your asset files out of your base WAR file on startup of your application. Optionally the asset URL config can also be defined as a closure that takes a request argument.<p class="paragraph"/><div class="code"><pre>grails.assets.url = &#123; request &#45;&#62;
+<h1 id="configuration">3 Configuration</h1>
+Asset-Pipeline has several customizable options to tweak the compiler to suit your needs. Below is a list of the various configuration options and explanations for how to use them<p class="paragraph"/><h3>Excludes and Includes</h3><p class="paragraph"/>Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.excludes</td><td>&#91;"tiny_mce/src/&#42;.js"]</td></tr><tr class="table-even"><td>grails.assets.plugin."twitter-bootstrap".excludes</td><td>&#91;"&#42;&#42;/&#42;.less"]</td></tr><tr class="table-odd"><td>grails.assets.plugin."twitter-bootstrap".includes</td><td>&#91;"bootstrap.less"]</td></tr></table><p class="paragraph"/>Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the <code>bootstrap.less</code> file can be compiled from the <code>twitter-bootstrap plugin</code>.<p class="paragraph"/><h3>Minification</h3><p class="paragraph"/>The Asset-pipeline comes with the newer version of Closure Compiler to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. Closure can be enabled/disabled entirely as well as configured via various options.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.minifyJs</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyCss</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-odd"><td>grails.assets.enableSourceMaps</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyOptions</td><td><strong class="bold">Map</strong></td></tr></table><p class="paragraph"/><div class="code"><pre>grails.assets.minifyOptions = &#91;
+    languageMode: 'ES5',
+    targetLanguage: 'ES5', //Can go from ES6 to ES5 <span class="java&#45;keyword">for</span> those bleeding edgers
+    optimizationLevel: 'SIMPLE' //Or ADVANCED or WHITESPACE_ONLY
+&#93;</pre></div><p class="paragraph"/>Above are the default values for the majority of Closure Compiler. For specifics on what these options do please refer to the documentation for Closure Compiler.<p class="paragraph"/><h3>Mappings and Asset Taglib URLs</h3><p class="paragraph"/>In many cases you may want to change the URL for which to include your static assets. This can be useful when using a CDN or perhaps even using nginx to serve your static assets.<p class="paragraph"/>To change the URL for your taglibs use the following configuration option:<p class="paragraph"/><div class="code"><pre>grails.assets.url = <span class="java&#45;quote">"http://cdn.example.com/"</span></pre></div><p class="paragraph"/>Now your files are gonna reference the CDN when running in the production environment. To go with this feature, you can have your application automatically copy your asset files out of your base WAR file on startup of your application. Optionally the asset URL config can also be defined as a closure that takes a request argument.<p class="paragraph"/><div class="code"><pre>grails.assets.url = &#123; request &#45;&#62;
 	<span class="java&#45;keyword">if</span>(request.isSecure()) &#123;
 		<span class="java&#45;keyword">return</span> <span class="java&#45;quote">"https://cdn.example.com/"</span>
 	&#125; <span class="java&#45;keyword">else</span> &#123;
@@ -100,9 +103,9 @@ Asset-Pipeline has several customizable options to tweak the compiler to suit yo
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/releases.html">&lt;&lt; <strong>2</strong><span>Release Notes</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>4</strong><span>Usage</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

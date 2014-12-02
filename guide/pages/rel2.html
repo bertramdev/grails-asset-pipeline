@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4.4 Encoding 2.0.8</title>
+    <title>2.1 2.0 Release 2.0.8</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -62,18 +62,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../../guide/configuration.html">&lt;&lt; <strong>3</strong><span>Configuration</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../../guide/extending.html"><strong>5</strong><span>Extending Asset-Pipeline</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/configuration.html"><strong>3</strong><span>Configuration</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>4.4 Encoding - Reference Documentation</h1>
+                    <h1>2.1 2.0 Release - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> David Estes</p>
 
@@ -86,18 +86,24 @@ function addJsClass() {
 
                 
 
-<h2 id="encoding">4.4 Encoding</h2>
-In some cases it may be necessary to specify an encoding for your assets. An example might be for Japanese characters in a JavaScript file. To do this, two things must be done. First, we simply set the charset attribute when we include are JavaScript file:<p class="paragraph"/><div class="code"><pre>&#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span> charset=<span class="java&#45;quote">"utf&#45;8"</span>/&#62;</pre></div><p class="paragraph"/>This should take care of testing in development mode and debugging. However, when we move to production/WAR mode the precompiler has no way to infer the desired encoding for compilation. To accomplish this, we have the <code>//= encoding</code> directive. This can be placed at the top of your <code>application.js</code> to define the desired compilation encoding.<p class="paragraph"/><div class="code"><pre>//=encoding UTF&#45;8
-//=require_self
-//=require_tree .</pre></div><p class="paragraph"/>That's all there is to it.
+<h2 id="rel2">2.1 2.0 Release</h2>
+The new asset-pipeline brings with it a host of new features and improvements. The plugin is no longer restricted to the grails Framework but can be adapted and extended to work with any framework that runs on the JVM. This can provide a more consistent workspace for dealing with many applications on your stack.<p class="paragraph"/><h3>New Features</h3>
+<ul class="star">
+<li>UglifyJs Replaced by Closure Compiler</li>
+<li>Sourcemaps Generated on Minification of Js (Easier debugging in Production)</li>
+<li>Custom Asset Resolvers adds support for Binary Grails Plugins</li>
+<li>Up to 2x Compiling speed improvements</li>
+<li>Transpiling ES6 to ES5 support</li>
+<li>Cleaner Extensibility</li>
+</ul><p class="paragraph"/><h3>Upgrading to 2.0</h3><p class="paragraph"/>It is important to note that the asset-pipeline plugins that were created before 2.0 will not be immediately compatible. While the updates are minor, third party plugins will have to update to be compatible with 2.0. If possible they should publish gradle builds to maven central so their plugin works with more than just the Grails web stack.<p class="paragraph"/>Another important change is the backwards compatibility. Asset-Pipeline 2.0 is designed to support Grails all the way back to 2.2.0. Anything less than this will more than likely not work correctly. Also the asset-pipeline minimum JVM version has moved up to version 7. This had to be done to facilitate requirements for the new minification library as well as the java nio helpers for file pattern matching.<p class="paragraph"/>Some configuration syntax has changed with relation to minification. Please see the Configuration section of the docs for more information on this. The section on extending the asset-pipeline has also been updated to provide information on how this might be accomplished now. 
 
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../../guide/configuration.html">&lt;&lt; <strong>3</strong><span>Configuration</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../../guide/extending.html"><strong>5</strong><span>Extending Asset-Pipeline</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/configuration.html"><strong>3</strong><span>Configuration</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

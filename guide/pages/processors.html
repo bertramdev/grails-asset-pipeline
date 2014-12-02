@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4.2 Processors 1.9.3</title>
+    <title>5.2 Processors 2.0.8</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -27,13 +27,16 @@ function addJsClass() {
                     <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/configuration.html"><strong>2</strong><span>Configuration</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/releases.html"><strong>2</strong><span>Release Notes</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/configuration.html"><strong>3</strong><span>Configuration</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/extending.html"><strong>4</strong><span>Extending Asset-Pipeline</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>4</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/extending.html"><strong>5</strong><span>Extending Asset-Pipeline</span></a>
                     </div>
                     
                 </div>
@@ -59,7 +62,7 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>4</strong><span>Usage</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
@@ -68,11 +71,11 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>4.2 Processors - Reference Documentation</h1>
+                    <h1>5.2 Processors - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 1.9.3</p>
+                    <p><strong>Version:</strong> 2.0.8</p>
 
                     
                 </div>
@@ -81,13 +84,13 @@ function addJsClass() {
 
                 
 
-<h2 id="processors">4.2 Processors</h2>
+<h2 id="processors">5.2 Processors</h2>
 Processors are where the real power of asset-pipeline comes into play. These are the driving force behind making compileable assets such as LESS, and CoffeeScript first class citizens. Gone is the need to run a compiler on the side, and gone is the delay between making changes in development.<p class="paragraph"/>A Processor is an implementation of the <code>Processor</code> interface via the <code>AbstractProcessor</code> class. It must have a constructor with an <code>AssetCompiler</code> argument, and it must have a process method. The rest is up to the developer.
 The reason the AssetCompiler is passed is for giving the processor access to manipulate the precompiler phase. If a null precompiler is passed, than development mode is assumed and the processor can infer that. An example use case
 for this is the SassProcessor in the SASS/SCSS Asset Pipeline Plugin. Image sprite generation causes additional image files to be created that need added to the list of files to process.<p class="paragraph"/><div class="code"><pre>class CoffeeScriptProcessor <span class="java&#45;keyword">extends</span> AbstractProcessor &#123;<p class="paragraph"/>  Scriptable globalScope
   <span class="java&#45;object">ClassLoader</span> classLoader<p class="paragraph"/>  CoffeeScriptProcessor(AssetCompiler precompiler)&#123;
     <span class="java&#45;keyword">super</span>(precompiler)
-  &#125;<p class="paragraph"/>  def process(input, assetFile) &#123;
+  &#125;<p class="paragraph"/>  <span class="java&#45;object">String</span> process(<span class="java&#45;object">String</span> input, AssetFile assetFile) &#123;
     <span class="java&#45;keyword">try</span> &#123;
       def cx = Context.enter()
       def compileScope = cx.newObject(globalScope)
@@ -110,7 +113,7 @@ for this is the SassProcessor in the SASS/SCSS Asset Pipeline Plugin. Image spri
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>4</strong><span>Usage</span></a></div>
                 
                 <div style="clear:both"></div>
             </div>

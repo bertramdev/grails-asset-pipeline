@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3 Usage 1.9.3</title>
+    <title>4 Usage 2.0.8</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -27,13 +27,16 @@ function addJsClass() {
                     <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>2</strong><span>Configuration</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/releases.html"><strong>2</strong><span>Release Notes</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>3</strong><span>Configuration</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../guide/extending.html"><strong>4</strong><span>Extending Asset-Pipeline</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>4</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/extending.html"><strong>5</strong><span>Extending Asset-Pipeline</span></a>
                     </div>
                     
                 </div>
@@ -59,22 +62,22 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/configuration.html">&lt;&lt; <strong>2</strong><span>Configuration</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/configuration.html">&lt;&lt; <strong>3</strong><span>Configuration</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/extending.html"><strong>4</strong><span>Extending Asset-Pipeline</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/extending.html"><strong>5</strong><span>Extending Asset-Pipeline</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>3 Usage - Reference Documentation</h1>
+                    <h1>4 Usage - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 1.9.3</p>
+                    <p><strong>Version:</strong> 2.0.8</p>
 
                     
                 </div>
@@ -83,16 +86,16 @@ function addJsClass() {
                 <div id="table-of-content">
                     <h2>Table of Contents</h2>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#directives"><strong>3.1</strong><span>Manifests and Directives</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#directives"><strong>4.1</strong><span>Manifests and Directives</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#organization"><strong>3.2</strong><span>Asset Organization</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#organization"><strong>4.2</strong><span>Asset Organization</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#linking"><strong>3.3</strong><span>Linking to Assets</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#linking"><strong>4.3</strong><span>Linking to Assets</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0px"><a href="#encoding"><strong>3.4</strong><span>Encoding</span></a>
+                    <div class="toc-item" style="margin-left:0px"><a href="#encoding"><strong>4.4</strong><span>Encoding</span></a>
                     </div>
                     
                 </div>
@@ -100,7 +103,7 @@ function addJsClass() {
 
                 
 
-<h1 id="usage">3 Usage</h1>
+<h1 id="usage">4 Usage</h1>
 Asset-Pipeline automatically creates a series of folders within your <code>grails-app</code> directory:<p class="paragraph"/><div class="code"><pre>grails&#45;app/assets/javascripts
 grails&#45;app/assets/images
 grails&#45;app/assets/stylesheets</pre></div><p class="paragraph"/>Place your static assets in those directories and simply include them in your layouts.<p class="paragraph"/><h3>Setting up Manifests</h3><p class="paragraph"/>Example <code>grails-app/assets/javascripts/application.js</code>:<p class="paragraph"/><div class="code"><pre>//This is a JavaScript file with its top level require directives
@@ -117,7 +120,7 @@ If, in the event, you need to add these files back to the precompile phase you c
     &#60;asset:link rel=<span class="java&#45;quote">"shortcut icon"</span> href=<span class="java&#45;quote">"favicon.ico"</span> type=<span class="java&#45;quote">"image/x&#45;icon"</span>/&#62;
 &#60;/head&#62;</pre></div><p class="paragraph"/>These helpers will automatically adjust to point to the cache-digested versions of the files when running in a non-development environment.<p class="paragraph"/><blockquote class="note">
 In development mode your stylesheets and scripts will be included as individual script tags. This is intended to make it easier for debugging. Bundling is enabled in all other environments and can be forced in development mode by adding <code>grails.assets.bundle=true</code> to your <code>Config.groovy</code>.
-</blockquote><p class="paragraph"/><h3>Using with Plugins</h3><p class="paragraph"/>Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The <code>grails-app/assets</code>, and <code>web-app</code> (for legacy plugin support) folders from all plugins are considered include paths. Essentially, when a file is requested (e.g. <code>jquery.js</code>), the Asset-Pipeline first will check the local applications assets folder. If not found there, it will scan through all the installed plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of a JavaScript file in your local project.<p class="paragraph"/><h3>Using with Stylesheets</h3><p class="paragraph"/>Asset Pipeline now automatically tries to convert relative URLs specified in your CSS files to absolute paths. This makes it easier to use third party libraries within the Asset-Pipeline stack.<p class="paragraph"/><h3>Precompiling for Production</h3><p class="paragraph"/>Assets are now automatically precompiled into <code>target/assets</code> when you create a war file. This should further simplify the deployment process. During WAR creation, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run <code>grails asset-clean</code>.<p class="paragraph"/>During WAR build your assets are also minified using UglifierJs. To disable this feature, you can add the following option to your config:<p class="paragraph"/><div class="code"><pre>grails.assets.minifyJs = <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/><h3>Serving Assets from External Storage Directory</h3><p class="paragraph"/>Asset Pipeline can be configured to copy your assets files out to an external storage path. This can be useful for setting up your web server (e.g. nginx) to directly serve your static assets. To do so, simply define a config variable in your <code>Config.groovy</code> environment block.<p class="paragraph"/><div class="code"><pre>environments &#123;
+</blockquote><p class="paragraph"/><h3>Using with Plugins</h3><p class="paragraph"/>Asset pipeline makes it easy to serve assets from within plugins. It's actually quite simple. The <code>grails-app/assets</code>, and <code>web-app</code> (for legacy plugin support) folders from all plugins are considered include paths. Essentially, when a file is requested (e.g. <code>jquery.js</code>), the Asset-Pipeline first will check the local applications assets folder. If not found there, it will scan through all the installed plugins and serve the requested file. This has the added benefit of allowing you to override a plugins copy of a JavaScript file in your local project.<p class="paragraph"/><h3>Using with Stylesheets</h3><p class="paragraph"/>Asset Pipeline now automatically tries to convert relative URLs specified in your CSS files to absolute paths. This makes it easier to use third party libraries within the Asset-Pipeline stack.<p class="paragraph"/><h3>Precompiling for Production</h3><p class="paragraph"/>Assets are now automatically precompiled into <code>target/assets</code> when you create a war file. This should further simplify the deployment process. During WAR creation, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run <code>grails asset-clean</code>.<p class="paragraph"/>During WAR build your assets are also minified using Closure Compiler. To disable this feature, you can add the following option to your config:<p class="paragraph"/><div class="code"><pre>grails.assets.minifyJs = <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/><h3>Serving Assets from External Storage Directory</h3><p class="paragraph"/>Asset Pipeline can be configured to copy your assets files out to an external storage path. This can be useful for setting up your web server (e.g. nginx) to directly serve your static assets. To do so, simply define a config variable in your <code>Config.groovy</code> environment block.<p class="paragraph"/><div class="code"><pre>environments &#123;
     production &#123;
         grails.assets.storagePath = <span class="java&#45;quote">"/full/path/to/storage"</span>
     &#125;
@@ -125,14 +128,11 @@ In development mode your stylesheets and scripts will be included as individual 
     production &#123;
         grails.assets.url = <span class="java&#45;quote">"http://s3.amazonaws.com/asset&#45;pipe/assets/"</span>
     &#125;
-&#125;</pre></div><p class="paragraph"/><h3>Custom Files</h3><p class="paragraph"/>Asset Pipeline uses classes of type <code>AssetFile</code>. By default, this plugin comes with a <code>JsAssetFile</code>, and <code>CssAssetFile</code>. These define the match pattern syntax for understanding requires directives, known extensions, processors, and content-type. The application bases its file look-up on content-type of the request rather than extension. This allows the user to maybe define a <code>CoffeeAssetFile</code> with the JavaScript content type and a request to <code>localhost/assets/app.js</code> would be able to find <code>assets/app.coffee</code>. To add custom file definitions you must add the definition in 2 locations:<p class="paragraph"/>Add the reference to your <code>AssetHelper.assetSpecs</code> static property in your plugins startup or Bootstrap:<p class="paragraph"/><div class="code"><pre>def doWithDynamicMethods = &#123; ctx &#45;&#62;
-    AssetHelper.assetSpecs &#60;&#60; HandlebarsAssetFile
-&#125;</pre></div><p class="paragraph"/>Add an <code>_Events.groovy</code> file and register an event listener for <code>eventAssetPrecompileStart</code>:<p class="paragraph"/><div class="code"><pre>eventAssetPrecompileStart = &#123; assetConfig &#45;&#62;
-    assetConfig.specs &#60;&#60; 'asset.pipeline.handlebars.HandlebarsAssetFile'
-&#125;</pre></div><p class="paragraph"/>We do this instead of Artefacts so that we do not have to load up the full application stack during precompile. This saves &#62; 30% of memory usage right off the bat and reduces compile time significantly.<p class="paragraph"/>
+&#125;</pre></div><p class="paragraph"/><h3>Custom Files</h3><p class="paragraph"/>Asset Pipeline uses classes of type <code>AssetFile</code>. By default, this plugin comes with a <code>JsAssetFile</code>, and <code>CssAssetFile</code>. These define the match pattern syntax for understanding requires directives, known extensions, processors, and content-type. The application bases its file look-up on content-type of the request rather than extension. This allows the user to maybe define a <code>CoffeeAssetFile</code> with the JavaScript content type and a request to <code>localhost/assets/app.js</code> would be able to find <code>assets/app.coffee</code>. To add custom file definitions you must add the definition in 2 locations:<p class="paragraph"/>Create a <code>META-INF/asset-pipeline/asset.specs</code> file with the name of your class file (line seperated) to be added to the list of valid implementations. For more information check out the section on extending the asset-pipeline.
 
 
-<h2 id="directives">3.1 Manifests and Directives</h2>
+
+<h2 id="directives">4.1 Manifests and Directives</h2>
 Asset Pipeline controls asset depdencency by using a custom syntax with commands called "directives". These directives give more fine grained control over what needs included as well as load order.<p class="paragraph"/><h3>Manifest Files</h3><p class="paragraph"/>In the Grails asset pipeline, the concept of a manifest file exists. This is typically the root/parent JavaScript or CSS file which requires all of your application code. This file is then included into your application with a taglib.  Another comparison that can be made here is to the 'Resources Plugin' modules; the difference being, your manifest is kept within the source code of your JavaScript or CSS rather than within a separate file you keep having to jump back to.<p class="paragraph"/>An example JavaScript manifest called 'application.js' might look like this:<p class="paragraph"/><div class="code"><pre>//= require jquery/jquery
 //= require_self
 //= require_tree .
@@ -149,7 +149,7 @@ In the examples above, 2 different directive prefixes were shown, one for CSS, a
 
 
 
-<h2 id="organization">3.2 Asset Organization</h2>
+<h2 id="organization">4.2 Asset Organization</h2>
 Asset pipeline organization occurs within the "grails-app/assets" folder. This folder can exist within both the main application as well as a plugin.<p class="paragraph"/><blockquote class="note">
 A plugin will also include its web-app directory to better deal with plugins that wish to support both the resources plugin as well as asset-pipeline.
 </blockquote><p class="paragraph"/><h3>Organization</h3><p class="paragraph"/>Within the "grails-app/assets" directory are several subfolders<p class="paragraph"/><div class="code"><pre>grails&#45;app/assets/javascripts
@@ -172,7 +172,7 @@ These same conditions should be implemented on any preprocessor extension plugin
 
 
 
-<h2 id="linking">3.3 Linking to Assets</h2>
+<h2 id="linking">4.3 Linking to Assets</h2>
 Asset Pipeline adds a few new taglibs to properly reference your assets. These taglibs automatically handle swapout of cache digest names during production use as well as any custom URL mapping changes.<p class="paragraph"/><h3>Views</h3><p class="paragraph"/><div class="code"><pre>&#60;head&#62;
   &#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span>/&#62;
   &#60;asset:stylesheet src=<span class="java&#45;quote">"application.css"</span>/&#62;
@@ -205,7 +205,7 @@ In production mode, your image references or CSS references will automatically g
 
 
 
-<h2 id="encoding">3.4 Encoding</h2>
+<h2 id="encoding">4.4 Encoding</h2>
 In some cases it may be necessary to specify an encoding for your assets. An example might be for Japanese characters in a JavaScript file. To do this, two things must be done. First, we simply set the charset attribute when we include are JavaScript file:<p class="paragraph"/><div class="code"><pre>&#60;asset:javascript src=<span class="java&#45;quote">"application.js"</span> charset=<span class="java&#45;quote">"utf&#45;8"</span>/&#62;</pre></div><p class="paragraph"/>This should take care of testing in development mode and debugging. However, when we move to production/WAR mode the precompiler has no way to infer the desired encoding for compilation. To accomplish this, we have the <code>//= encoding</code> directive. This can be placed at the top of your <code>application.js</code> to define the desired compilation encoding.<p class="paragraph"/><div class="code"><pre>//=encoding UTF&#45;8
 //=require_self
 //=require_tree .</pre></div><p class="paragraph"/>That's all there is to it.
@@ -214,9 +214,9 @@ In some cases it may be necessary to specify an encoding for your assets. An exa
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/configuration.html">&lt;&lt; <strong>2</strong><span>Configuration</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/configuration.html">&lt;&lt; <strong>3</strong><span>Configuration</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/extending.html"><strong>4</strong><span>Extending Asset-Pipeline</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/extending.html"><strong>5</strong><span>Extending Asset-Pipeline</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
