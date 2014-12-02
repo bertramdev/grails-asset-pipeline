@@ -50,6 +50,8 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,fallbackPath,true))
 	}
 
+	assetPipelineConfigHolder.config = config.grails.assets
+
 	event("StatusUpdate",["Precompiling Assets!"])
 
 	def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: 'target/assets', classLoader: classLoader],  eventListener)
