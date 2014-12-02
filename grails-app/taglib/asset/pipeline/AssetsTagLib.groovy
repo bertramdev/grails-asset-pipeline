@@ -136,7 +136,7 @@ class AssetsTagLib {
                 out << (body() ?: true)
             } else {
                 out << ''
-            } 
+            }
     }
 
 	def isAssetPath(src) {
@@ -154,9 +154,9 @@ class AssetsTagLib {
 		}
 		return false
 	}
-	
+
 	private paramsToHtmlAttr(attrs) {
-		attrs.collect { key, value -> "${key}=\"${value.toString().replace('\'', '\\\'')}\"" }?.join(" ")
+		attrs.collect { key, value -> "${key}='${value.toString().replace('\'', '\\\'')}'" }?.join(" ")
 	}
 
 }
