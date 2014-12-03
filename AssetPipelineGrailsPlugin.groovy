@@ -26,7 +26,7 @@ import asset.pipeline.*
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "2.0.10"
+    def version         = "2.0.11"
     def grailsVersion   = "2.2 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
