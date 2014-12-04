@@ -1,6 +1,7 @@
 h3. Release Hitory
 
 * December 3, 2014
+** 2.0.13 Release - Faster Dev Mode, Fixed bug in war build, Fixed Css Processor with image paths. Fixed files with spaces.
 ** 2.0.11 Release - We no longer export groovy,groovy-templates dependency since grails uses groovy-all
 ** 2.0.10 Release - Fixed a bug in require_tree directive being a little too grabby. Also fixed windows platform support.
 * December 2, 2014
