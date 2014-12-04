@@ -63,7 +63,9 @@ class AssetPipelineFilter implements Filter {
                     } catch(e) {
                         log.debug("File Transfer Aborted (Probably by the user)",e)
                     }
-                }
+                 } else {
+                    response.flushBuffer()
+                 }
 
             }
         } else {
