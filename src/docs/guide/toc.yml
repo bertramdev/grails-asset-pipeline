@@ -1,5 +1,8 @@
 introduction:
   title: Introduction
+releases:
+  title: Release Notes
+  rel2: 2.0 Release
 configuration:
   title: Configuration
 usage:

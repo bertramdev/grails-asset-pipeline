@@ -15,24 +15,25 @@ Above you will notice the use of an includes. An includes allows you to override
 
 h3. Minification
 
-The Asset-pipeline comes with the newer version of UglifyJs to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. UglifyJS can be enabled/disabled entirely as well as configured via various options.
+The Asset-pipeline comes with the newer version of Closure Compiler to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. Closure can be enabled/disabled entirely as well as configured via various options.
 
 {table}
 *Property* | *Value*
 grails.assets.minifyJs | *true* or *false*
 grails.assets.minifyCss | *true* or *false*
+grails.assets.enableSourceMaps | *true* or *false*
 grails.assets.minifyOptions | *Map*
 {table}
 
 {code}
 grails.assets.minifyOptions = [
-  strictSemicolons: false,
-  mangleOptions: [mangle: true, toplevel: false, defines: null, except: null, no_functions:false],
-  genOptions: [indent_start:0, indent_level:4, quote_keys: false, space_colon: false, beautify: false, ascii_only: false, inline_script:false]
+    languageMode: 'ES5',
+    targetLanguage: 'ES5', //Can go from ES6 to ES5 for those bleeding edgers
+    optimizationLevel: 'SIMPLE' //Or ADVANCED or WHITESPACE_ONLY
 ]
 {code}
 
-Above are the default values for the majority of UglifyJS. For specifics on what these options do please refer to the documentation for UglifyJS. It is worth noting that @mangle: true@ is what mangles variable names and may need to be turned off using this information.
+Above are the default values for the majority of Closure Compiler. For specifics on what these options do please refer to the documentation for Closure Compiler.
 
 h3. Mappings and Asset Taglib URLs
 

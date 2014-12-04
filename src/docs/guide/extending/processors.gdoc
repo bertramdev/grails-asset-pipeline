@@ -14,7 +14,7 @@ class CoffeeScriptProcessor extends AbstractProcessor {
     super(precompiler)
   }
 
-  def process(input, assetFile) {
+  String process(String input, AssetFile assetFile) {
     try {
       def cx = Context.enter()
       def compileScope = cx.newObject(globalScope)

@@ -8,9 +8,11 @@ import groovy.util.logging.Log4j
 class AssetPipelineFilter implements Filter {
     def applicationContext
     def servletContext
+    def warDeployed
     void init(FilterConfig config) throws ServletException {
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.servletContext)
         servletContext = config.servletContext
+        warDeployed = grails.util.Environment.isWarDeployed()
         // permalinkService = applicationContext['spudPermalinkService']
     }
 
@@ -20,74 +22,82 @@ class AssetPipelineFilter implements Filter {
     void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         def mapping = applicationContext.assetProcessorService.assetMapping
 
-        def fileUri = request.requestURI
+        def fileUri = new java.net.URI(request.requestURI).path
         def baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
+        def format = servletContext.getMimeType(fileUri)
+        def encoding = request.getParameter('encoding') ?: request.getCharacterEncoding()
         if(fileUri.startsWith(baseAssetUrl)) {
             fileUri = fileUri.substring(baseAssetUrl.length())
         }
+        if(warDeployed) {
+            def file = applicationContext.getResource("assets${fileUri}")
+            if (file.exists()) {
+                def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'))
+                responseBuilder.headers.each { header ->
+                    response.setHeader(header.key,header.value)
+                }
+                if(responseBuilder.statusCode) {
+                    response.status = responseBuilder.statusCode
+                }
 
-        def file = applicationContext.getResource("assets${fileUri}")
-        if (file.exists()) {
-            if(checkETag(request, response, fileUri)) {
-                // Check for GZip
-                def acceptsEncoding = request.getHeader("Accept-Encoding")
-                if(acceptsEncoding?.split(",")?.contains("gzip")) {
-                    def gzipFile = applicationContext.getResource("assets${fileUri}.gz")
-                    if(gzipFile.exists()) {
-                        file = gzipFile
-                        response.setHeader('Content-Encoding','gzip')
+                if(responseBuilder.statusCode != 304) {
+                    // Check for GZip
+                    def acceptsEncoding = request.getHeader("Accept-Encoding")
+                    if(acceptsEncoding?.split(",")?.contains("gzip")) {
+                        def gzipFile = applicationContext.getResource("assets${fileUri}.gz")
+                        if(gzipFile.exists()) {
+                            file = gzipFile
+                            response.setHeader('Content-Encoding','gzip')
+                        }
+                    }
+                    
+                    if(encoding) {
+                        response.setCharacterEncoding(encoding)
+                    }
+                    response.setContentType(format)
+                    response.setHeader('Content-Length', file.contentLength().toString())
+
+                    try {
+                        response.outputStream << file.inputStream.getBytes()
+                        response.flushBuffer()
+                    } catch(e) {
+                        log.debug("File Transfer Aborted (Probably by the user)",e)
                     }
                 }
-                def format = servletContext.getMimeType(request.forwardURI)
-                def encoding = request.getCharacterEncoding()
-                if(encoding) {
-                    response.setCharacterEncoding(encoding)
-                }
-                response.setContentType(format)
-                response.setHeader('Vary', 'Accept-Encoding')
-                response.setHeader('Cache-Control','public, max-age=31536000')
 
+            }
+        } else {
+            def fileContents
+            if(request.getParameter('compile') == 'false') {
+                fileContents = AssetPipeline.serveUncompiledAsset(fileUri,format, null, encoding)
+            } else {
+                fileContents = AssetPipeline.serveAsset(fileUri,format, null, encoding)
+            }
+
+            if (fileContents != null) {
+
+                response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+                response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+                response.setDateHeader("Expires", 0); // Proxies.
+                response.setHeader('Content-Length', fileContents.size().toString())
+                
+                response.setContentType(format)
                 try {
-                    response.outputStream << file.inputStream.getBytes()
+                    response.outputStream << fileContents
                     response.flushBuffer()
                 } catch(e) {
                     log.debug("File Transfer Aborted (Probably by the user)",e)
                 }
+            } else {
+                response.status = 404
+                response.flushBuffer()
             }
-
         }
+
 
         if (!response.committed) {
             chain.doFilter(request, response)
         }
     }
 
-    /**
-    * Here we check if the request is contingent upon an ETag and if not, we append the ETag to the header key.
-    * This ETag is essentially the digested file name as it is unique unless the file changes.
-    * @return Whether processing should continue or not
-    */
-    Boolean checkETag(ServletRequest request, ServletResponse response, fileUri) {
-        String etagName = getCurrentETag(fileUri)
-
-        def ifNoneMatchHeader = request.getHeader('If-None-Match')
-        if(ifNoneMatchHeader && ifNoneMatchHeader == etagName) {
-            response.status = 304
-            response.flushBuffer()
-            return false
-        }
-        response.setHeader('ETag',etagName)
-        return true
-    }
-
-    String getCurrentETag(String fileUri) {
-        def manifestPath = fileUri
-        if(fileUri.startsWith('/')) {
-            manifestPath = fileUri.substring(1) //Omit forward slash
-        }
-
-        def manifest = applicationContext.grailsApplication.config.grails.assets.manifest
-
-        return manifest?.getProperty(manifestPath) ?: manifestPath
-    }
 }
