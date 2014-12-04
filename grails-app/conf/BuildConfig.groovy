@@ -14,6 +14,7 @@ grails.project.dependency.resolution = {
         mavenLocal()
         mavenCentral()
         jcenter()
+        mavenRepo "http://dl.bintray.com/bertramlabs/asset-pipeline"
     }
 
     dependencies {
