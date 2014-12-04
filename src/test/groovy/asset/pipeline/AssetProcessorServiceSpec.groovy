@@ -65,12 +65,12 @@ class AssetProcessorServiceSpec extends Specification {
             def contentType = "application/javascript"
             def depList
         when:
-            depList = service.getDependencyList(fileUri, contentType, extension)
+            depList = AssetPipeline.getDependencyList(fileUri, contentType, extension)
         then:
             depList?.size() > 0
 
         when:
-            depList = service.getDependencyList("unknownfile", contentType, extension)
+            depList = AssetPipeline.getDependencyList("unknownfile", contentType, extension)
         then:
             depList == null
     }
@@ -82,11 +82,11 @@ class AssetProcessorServiceSpec extends Specification {
             def contentType = "application/javascript"
             def uncompiledFile
         when:
-            uncompiledFile = service.serveUncompiledAsset(fileUri, contentType, extension)
+            uncompiledFile = AssetPipeline.serveUncompiledAsset(fileUri, contentType, extension)
         then:
             !(new String(uncompiledFile)).contains("This is File A")
         when:
-            uncompiledFile = service.serveUncompiledAsset('unknownfile', contentType, extension)
+            uncompiledFile = AssetPipeline.serveUncompiledAsset('unknownfile', contentType, extension)
         then:
             uncompiledFile == null
     }
@@ -98,11 +98,11 @@ class AssetProcessorServiceSpec extends Specification {
             def contentType = "application/javascript"
             def uncompiledFile
         when:
-            uncompiledFile = service.serveAsset(fileUri, contentType, extension)
+            uncompiledFile = AssetPipeline.serveAsset(fileUri, contentType, extension)
         then:
             (new String(uncompiledFile)).contains("This is File A")
         when:
-            uncompiledFile = service.serveAsset('unknownfile', contentType, extension)
+            uncompiledFile = AssetPipeline.serveAsset('unknownfile', contentType, extension)
         then:
             uncompiledFile == null
     }
