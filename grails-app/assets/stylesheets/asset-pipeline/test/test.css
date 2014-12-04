@@ -1,3 +1,7 @@
+/*
+*= require_self
+*= require test2
+*/
 #logo {
 	background: url('../../../images/grails_logo.png');
 }

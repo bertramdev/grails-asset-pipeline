@@ -30,7 +30,6 @@ class AssetsTagLibSpec extends Specification {
     AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))      
     assetProcessorServiceMock.getAssetMapping() >> { "assets" }
     def assetMethodTagLibMock = mockTagLib(AssetMethodTagLib)
-    tagLib.assetProcessorService = assetProcessorServiceMock
     assetMethodTagLibMock.assetProcessorService = assetProcessorServiceMock
   }
 
@@ -63,9 +62,7 @@ class AssetsTagLibSpec extends Specification {
       output = tagLib.javascript(src: assetSrc)
 
     then:
-      1 * assetProcessorServiceMock.getDependencyList('asset-pipeline/test/test', 'application/javascript', 'js') >> { [[path: "asset-pipeline/test/test.js"],[path:"asset-pipeline/test/test2.js"]] }
-      output == '<script src="/assets/asset-pipeline/test/test.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/test2.js?compile=false" type="text/javascript" ></script>\n'
-
+      output == '<script src="/assets/asset-pipeline/test/test.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/libs/file_a.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/libs/file_c.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/libs/file_b.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/libs/subset/subset_a.js?compile=false" type="text/javascript" ></script>\n'
   }
 
   void "should return stylesheet link tag when debugMode is off"() {
@@ -90,7 +87,6 @@ class AssetsTagLibSpec extends Specification {
       output = tagLib.stylesheet(src: assetSrc)
 
     then:
-      1 * assetProcessorServiceMock.getDependencyList('asset-pipeline/test/test', 'text/css', 'css') >> { [[path: "asset-pipeline/test/test.css"],[path:"asset-pipeline/test/test2.css"]] }
       output == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css?compile=false"  /><link rel="stylesheet" href="/assets/asset-pipeline/test/test2.css?compile=false"  />'
 
   }

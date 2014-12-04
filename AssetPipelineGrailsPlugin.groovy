@@ -86,7 +86,7 @@ class AssetPipelineGrailsPlugin {
         }
 
         if(!application.config.grails.assets.containsKey("precompiled")) {
-            application.config.grails.assets.precompiled = !Environment.isDevelopmentMode() || application.warDeployed
+            application.config.grails.assets.precompiled = application.warDeployed
         }
 
 
@@ -116,11 +116,13 @@ class AssetPipelineGrailsPlugin {
 
     def doWithWebDescriptor = { xml ->
         def mapping = application.config?.grails?.assets?.mapping ?: "assets"
+        def filterClassName = 'asset.pipeline.AssetPipelineFilter'
+
         def filters = xml.filter[0]
         filters + {
             'filter' {
                 'filter-name'('AssetPipelineFilter')
-                'filter-class'('asset.pipeline.AssetPipelineFilter')
+                'filter-class'(filterClassName)
             }
         }
 
