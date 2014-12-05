@@ -28,7 +28,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	assetConfig.minifyJs = config.grails.assets.containsKey('minifyJs') ? config.grails.assets.minifyJs : (argsMap.containsKey('minifyJs') ? argsMap.minifyJs == 'true' : true)
 	assetConfig.minifyCss = config.grails.assets.containsKey('minifyCss') ? config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
 	assetConfig.minifyOptions = config.grails.assets.minifyOptions
-	assetConfig.compileDir = "target/assets"
+	assetConfig.compileDir = "${basedir}/target/assets"
 	assetConfig.excludesGzip = config.grails.assets.excludesGzip
 
 	//Add Resolvers for Grails
@@ -54,7 +54,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	event("StatusUpdate",["Precompiling Assets!"])
 
-	def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: 'target/assets', classLoader: classLoader],  eventListener)
+	def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: "${basedir}/target/assets", classLoader: classLoader],  eventListener)
 
 	assetCompiler.excludeRules.default = config.grails.assets.excludes
 	assetCompiler.includeRules.default = config.grails.assets.includes
