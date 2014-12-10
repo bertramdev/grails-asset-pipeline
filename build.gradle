@@ -35,9 +35,6 @@ repositories {
   maven { url "http://repo.grails.org/grails/core" }
 }
 
-configurations {
-  provided
-}
 
 dependencies {
   provided "org.grails:grails-dependencies:$grailsVersion"
@@ -49,15 +46,6 @@ dependencies {
   provided 'javax.servlet:javax.servlet-api:3.1.0'
 }
 
-sourceSets {
-    main {
-        compileClasspath += files(configurations.provided)
-    }
-    test {
-        compileClasspath += files(configurations.provided)
-        runtimeClasspath += files(configurations.provided)
-    }
-}
 
 eclipse {
     classpath {
@@ -71,15 +59,6 @@ idea {
     }
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
 
 publishing {
     publications {
