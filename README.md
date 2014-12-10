@@ -6,15 +6,15 @@ Overview
 --------
 The Grails Asset-Pipeline is a plugin used for managing and processing static assets in [Grails](http://grails.org) applications. Asset-Pipeline functions include processing and minification of both CSS and JavaScript files. It is also capable of being extended to compile custom static assets, such as CoffeeScript or LESS.
 
+For contributions to the core plugin please see the repository for the core plugin at [asset-pipeline-core](https://github.com/bertramdev/asset-pipeline-core)
+
 Documentation
 -------------
 http://bertramdev.github.io/asset-pipeline
 
 Things to be Done
 -----------------
-* Remove commons-io
-* Implement Globbing support to the AssetResolver implementation for file scans
-* Pull in abstracted means for setting response headers in production
+* Improve SourceMaps
 
 
 Contributions
