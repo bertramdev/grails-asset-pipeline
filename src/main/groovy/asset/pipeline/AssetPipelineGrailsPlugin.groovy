@@ -28,7 +28,6 @@ import org.springframework.boot.context.embedded.*
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "1.10.0"
     def grailsVersion   = "2.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
