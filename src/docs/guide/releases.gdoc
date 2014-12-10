@@ -1,5 +1,7 @@
 h3. Release History
 
+* December 10, 2014
+** 2.0.16 Release - Fixed bug on 2nd war compile with Windows Platforms
 * December 5, 2014
 ** 2.0.14 Release - Fixed compileDir for maven based builds
 * December 3, 2014
