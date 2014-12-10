@@ -6,7 +6,7 @@ grails-app/assets/images
 grails-app/assets/stylesheets
 {code}
 
-Place your static assets in those directories and simply include them in your layouts. 
+Place your static assets in those directories and simply include them in your layouts.
 
 h3. Setting up Manifests
 
@@ -22,7 +22,7 @@ Example @grails-app/assets/javascripts/application.js@:
 console.log("This is my javascript manifest");
 {code}
 
-The above is an example of some of the require directives that can be used. Custom directives can be created and overridden into the @DirectiveProcessor@ class. 
+The above is an example of some of the require directives that can be used. Custom directives can be created and overridden into the @DirectiveProcessor@ class.
 
 {note}
 Make sure an empty line does not exist between the top of the file and your require directives, or else these requires will be ignored!
@@ -82,7 +82,7 @@ h3. Precompiling for Production
 
 Assets are now automatically precompiled into @target/assets@ when you create a war file. This should further simplify the deployment process. During WAR creation, only the changed assets are compiled making your precompiler phase a bit quicker. If, for any reason, you want to ensure a clean assets folder, feel free to run @grails asset-clean@.
 
-During WAR build your assets are also minified using UglifierJs. To disable this feature, you can add the following option to your config:
+During WAR build your assets are also minified using Closure Compiler. To disable this feature, you can add the following option to your config:
 
 {code}
 grails.assets.minifyJs = false
@@ -100,7 +100,7 @@ environments {
 }
 {code}
 
-It is also possible to configure a custom CDN asset URL for serving these assets:	
+It is also possible to configure a custom CDN asset URL for serving these assets:
 
 {code}
 environments {
@@ -114,21 +114,4 @@ h3. Custom Files
 
 Asset Pipeline uses classes of type @AssetFile@. By default, this plugin comes with a @JsAssetFile@, and @CssAssetFile@. These define the match pattern syntax for understanding requires directives, known extensions, processors, and content-type. The application bases its file look-up on content-type of the request rather than extension. This allows the user to maybe define a @CoffeeAssetFile@ with the JavaScript content type and a request to @localhost/assets/app.js@ would be able to find @assets/app.coffee@. To add custom file definitions you must add the definition in 2 locations:
 
-Add the reference to your @AssetHelper.assetSpecs@ static property in your plugins startup or Bootstrap:
-
-{code}
-def doWithDynamicMethods = { ctx ->
-    AssetHelper.assetSpecs << HandlebarsAssetFile
-}
-{code}
-
-Add an @_Events.groovy@ file and register an event listener for @eventAssetPrecompileStart@:
-
-{code}
-eventAssetPrecompileStart = { assetConfig ->
-    assetConfig.specs << 'asset.pipeline.handlebars.HandlebarsAssetFile'
-}
-{code}
-
-We do this instead of Artefacts so that we do not have to load up the full application stack during precompile. This saves > 30% of memory usage right off the bat and reduces compile time significantly.
-
+Create a @META-INF/asset-pipeline/asset.specs@ file with the name of your class file (line seperated) to be added to the list of valid implementations. For more information check out the section on extending the asset-pipeline.

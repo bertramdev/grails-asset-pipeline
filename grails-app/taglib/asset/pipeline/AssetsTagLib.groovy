@@ -7,10 +7,8 @@ class AssetsTagLib {
 
 	static namespace = "asset"
 	static returnObjectForTags = ['assetPath']
-
+	
 	GrailsApplication grailsApplication
-	def assetProcessorService
-
 	/**
 	 * @attr src REQUIRED
 	 */
@@ -36,7 +34,7 @@ class AssetsTagLib {
 				extension = 'js'
 			}
 			// def startTime = new Date().time
-			def list = assetProcessorService.getDependencyList(uri, 'application/javascript', extension)
+			def list = AssetPipeline.getDependencyList(uri, 'application/javascript', extension)
 			def modifierParams = ["compile=false"]
 			if(attrs.charset) {
 				modifierParams << "encoding=${attrs.charset}"
@@ -76,7 +74,7 @@ class AssetsTagLib {
 				uri = src
 				extension = 'css'
 			}
-			def list = assetProcessorService.getDependencyList(uri, 'text/css', extension)
+			def list = AssetPipeline.getDependencyList(uri, 'text/css', extension)
 			def modifierParams = ["compile=false"]
 			if(attrs.charset) {
 				modifierParams << "encoding=${attrs.charset}"
@@ -137,7 +135,7 @@ class AssetsTagLib {
                 out << (body() ?: true)
             } else {
                 out << ''
-            } 
+            }
     }
 
 	def isAssetPath(src) {
@@ -155,9 +153,9 @@ class AssetsTagLib {
 		}
 		return false
 	}
-	
+
 	private paramsToHtmlAttr(attrs) {
-		attrs.collect { key, value -> "${key}=\"${value.toString().replace('\'', '\\\'')}\"" }?.join(" ")
+		attrs.collect { key, value -> "${key}=\"${value.toString().replace('"', '\\"')}\"" }?.join(" ")
 	}
 
 }

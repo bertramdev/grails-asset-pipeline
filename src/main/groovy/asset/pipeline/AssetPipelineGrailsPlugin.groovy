@@ -28,7 +28,7 @@ import org.springframework.boot.context.embedded.*
 
 
 class AssetPipelineGrailsPlugin {
-    def grailsVersion   = "2.0 > *"
+    def grailsVersion   = "3.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
     def authorEmail     = "destes@bcap.com"
@@ -48,23 +48,6 @@ class AssetPipelineGrailsPlugin {
     def doWithApplicationContext = { ctx ->
         //Register Plugin Paths
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))    
-        
-        def pluginManager = ctx.pluginManager
-        for(plugin in pluginManager.getAllPlugins()) {
-            if(plugin instanceof org.grails.plugins.BinaryGrailsPlugin) {
-                def descriptorURI = plugin.binaryDescriptor.resource.URI
-                descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
-
-                AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/assets'))
-                AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/static'))
-            } else {
-                def assetPath = [plugin.pluginPath, "grails-app", "assets"].join(File.separator)
-                def fallbackPath = [plugin.pluginPath, "web-app"].join(File.separator)
-                AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))
-                AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,fallbackPath,false))
-            }
-
-        }
     }
     def doWithSpring = {
         def manifestProps = new Properties()
@@ -87,7 +70,7 @@ class AssetPipelineGrailsPlugin {
         }
 
         if(!application.config.grails.assets.containsKey("precompiled")) {
-            application.config.grails.assets.precompiled = !Environment.isDevelopmentMode() || application.warDeployed
+            application.config.grails.assets.precompiled = application.warDeployed
         }
 
 
@@ -110,6 +93,7 @@ class AssetPipelineGrailsPlugin {
         }
 
         def mapping = application.config?.grails?.assets?.mapping ?: "assets"
+
         assetPipelineFilter(FilterRegistrationBean) {
             filter = new asset.pipeline.AssetPipelineFilter()
             urlPatterns = ["/${mapping}/*".toString()]
