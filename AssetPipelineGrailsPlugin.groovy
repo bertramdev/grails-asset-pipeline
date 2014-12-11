@@ -26,7 +26,7 @@ import asset.pipeline.*
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "2.0.17"
+    def version         = "2.0.19"
     def grailsVersion   = "2.2 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -48,22 +48,25 @@ class AssetPipelineGrailsPlugin {
         //Register Plugin Paths
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
         def pluginManager = ctx.pluginManager
-        for(plugin in pluginManager.getAllPlugins()) {
-            if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
-                def descriptorURI = plugin.binaryDescriptor.resource.URI
-                descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
+        if(!application.warDeployed) {
+            for(plugin in pluginManager.getAllPlugins()) {
+                if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
+                    def descriptorURI = plugin.binaryDescriptor.resource.URI
+                    descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
 
-                AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/assets'))
-                AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/static'))
+                    AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/assets'))
+                    AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/static'))
+                }
+
             }
-
+            for(plugin in GrailsPluginUtils.pluginInfos) {
+                def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
+                def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
+                AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))
+                AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,fallbackPath,true))
+            }
         }
-        for(plugin in GrailsPluginUtils.pluginInfos) {
-            def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
-            def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
-            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))
-            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,fallbackPath,true))
-        }
+        
     }
     def doWithSpring = {
         def manifestProps = new Properties()
