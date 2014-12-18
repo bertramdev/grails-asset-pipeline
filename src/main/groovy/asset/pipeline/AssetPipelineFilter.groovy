@@ -1,31 +1,37 @@
 package asset.pipeline
 
-import javax.servlet.*
-import org.springframework.web.context.support.WebApplicationContextUtils
-import groovy.util.logging.Log4j
 
-@Log4j
-class AssetPipelineFilter implements Filter {
-    def applicationContext
-    def servletContext
-    def warDeployed
-    void init(FilterConfig config) throws ServletException {
+import org.springframework.context.*
+import javax.servlet.*
+import javax.servlet.http.*
+import org.springframework.web.context.support.WebApplicationContextUtils
+import org.springframework.web.filter.*
+import groovy.util.logging.Commons
+import groovy.transform.*
+
+@Commons
+@CompileStatic
+class AssetPipelineFilter extends OncePerRequestFilter {
+    ApplicationContext applicationContext
+    ServletContext servletContext
+    boolean warDeployed
+
+    @Override
+    void initFilterBean() throws ServletException {
+        def config = filterConfig
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.servletContext)
         servletContext = config.servletContext
         warDeployed = grails.util.Environment.isWarDeployed()
         // permalinkService = applicationContext['spudPermalinkService']
     }
 
-    void destroy() {
-    }
-
-    void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        def mapping = applicationContext.assetProcessorService.assetMapping
+    void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String mapping = applicationContext.getBean('assetProcessorService', AssetProcessorService).assetMapping
 
         def fileUri = new java.net.URI(request.requestURI).path
-        def baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
-        def format = servletContext.getMimeType(fileUri)
-        def encoding = request.getParameter('encoding') ?: request.getCharacterEncoding()
+        String baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
+        String format = servletContext.getMimeType(fileUri)
+        String encoding = request.getParameter('encoding') ?: request.getCharacterEncoding()
         if(fileUri.startsWith(baseAssetUrl)) {
             fileUri = fileUri.substring(baseAssetUrl.length())
         }
@@ -33,8 +39,8 @@ class AssetPipelineFilter implements Filter {
             def file = applicationContext.getResource("assets${fileUri}")
             if (file.exists()) {
                 def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'))
-                responseBuilder.headers.each { header ->
-                    response.setHeader(header.key,header.value)
+                responseBuilder.headers.each { Map.Entry header ->
+                    response.setHeader(header.key.toString(), header.value.toString())
                 }
                 if(responseBuilder.statusCode) {
                     response.status = responseBuilder.statusCode
