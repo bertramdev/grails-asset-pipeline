@@ -1,5 +1,6 @@
 h3. Release History
-
+* December 29, 2014
+** 2.0.20 Release - Fixed bug in CSSProcessor and cache digest names, Fixed absolute path issue, documentation improvements, resolver improvements
 * December 10, 2014
 ** 2.0.17 Release - Fixed bug in CSSProcessor for recalculating relative paths
 ** 2.0.16 Release - Fixed bug on 2nd war compile with Windows Platforms
