@@ -26,11 +26,15 @@ import spock.lang.Specification
 class AssetsTagLibSpec extends Specification {
   AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
 
+  private static MOCK_BASE_SERVER_URL = 'http://localhost:8080/foo'
+
   def setup() {
     AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))      
     assetProcessorServiceMock.getAssetMapping() >> { "assets" }
     def assetMethodTagLibMock = mockTagLib(AssetMethodTagLib)
     assetMethodTagLibMock.assetProcessorService = assetProcessorServiceMock
+
+    assetMethodTagLibMock.grailsLinkGenerator = [serverBaseURL: MOCK_BASE_SERVER_URL]
   }
 
   void "should return assetPath"() {
@@ -97,6 +101,14 @@ class AssetsTagLibSpec extends Specification {
     expect:
       tagLib.image(src: assetSrc, width:'200',height:200) == '<img src="/assets/grails_logo.png" width="200" height="200"/>'
   }
+
+    void "should return image tag with absolute path"() {
+      given:
+        def assetSrc = "grails_logo.png"
+
+      expect:
+        tagLib.image(src: assetSrc, absolute: true) == "<img src=\"$MOCK_BASE_SERVER_URL/assets/grails_logo.png\" />"
+    }
 
   void "should return link tag"() {
     given:
