@@ -48,3 +48,15 @@ The @require_self@ directive allows you to control where in the manifest the con
 {note}
 In the examples above, 2 different directive prefixes were shown, one for CSS, and one for JavaScript. It is important to note that the syntax of these directives can vary based on the file type and preprocessor definition. For example, CoffeeScript files begin with "#=".
 {note}
+
+h3. Dynamic Directives
+
+The asset-pipeline require directives also support the use of the Groovy Templates via the @GStringTemplateEngine@. This means you can use some conditional require situations based, for example, on the grails Environment.
+
+{code}
+//= require ${grails.util.Environment.currentEnvironment == 'development' ? 'ember.debug.js' : 'ember.prod.js'}
+{code}
+
+{note}
+It is important to note that when prepping for a production release these conditionals are only evaluated in dev runtime and in war build. If you build a war in prod environment but start it up in staging, the evaluation will have already occurred in prod.
+{note}
