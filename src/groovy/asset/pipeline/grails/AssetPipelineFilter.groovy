@@ -1,8 +1,9 @@
-package asset.pipeline
+package asset.pipeline.grails
 
 import javax.servlet.*
 import org.springframework.web.context.support.WebApplicationContextUtils
 import groovy.util.logging.Log4j
+import asset.pipeline.*
 
 @Log4j
 class AssetPipelineFilter implements Filter {

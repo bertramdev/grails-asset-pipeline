@@ -26,7 +26,7 @@ import asset.pipeline.*
 
 
 class AssetPipelineGrailsPlugin {
-    def version         = "2.0.20"
+    def version         = "2.0.21"
     def grailsVersion   = "2.2 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -119,7 +119,7 @@ class AssetPipelineGrailsPlugin {
 
     def doWithWebDescriptor = { xml ->
         def mapping = application.config?.grails?.assets?.mapping ?: "assets"
-        def filterClassName = 'asset.pipeline.AssetPipelineFilter'
+        def filterClassName = 'asset.pipeline.grails.AssetPipelineFilter'
 
         def filters = xml.filter[0]
         filters + {

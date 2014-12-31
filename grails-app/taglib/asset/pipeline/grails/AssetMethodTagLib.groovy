@@ -1,4 +1,4 @@
-package asset.pipeline
+package asset.pipeline.grails
 
 import grails.util.Environment
 

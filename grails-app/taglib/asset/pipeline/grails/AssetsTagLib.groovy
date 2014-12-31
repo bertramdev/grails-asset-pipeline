@@ -1,6 +1,8 @@
-package asset.pipeline
+package asset.pipeline.grails
 
 import grails.util.Environment
+import asset.pipeline.AssetPipeline
+import asset.pipeline.AssetHelper
 
 class AssetsTagLib {
 
