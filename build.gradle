@@ -75,8 +75,11 @@ publishing {
     repositories {
         maven {
             credentials {
-                username project.properties.get('artifactoryPublishUsername')
-                password project.properties.get('artifactoryPublishPassword')
+                def user = System.getenv('GRAILS_CENTRAL_USERNAME') ?: project.properties.get('grailsPluginsUsername')
+                def pass = System.getenv("GRAILS_CENTRAL_PASSWORD") ?: project.properties.get('grailsPluginsPassword')
+
+                username user
+                password pass
             }
             url "https://repo.grails.org/grails/libs-snapshots-local/"
         }
