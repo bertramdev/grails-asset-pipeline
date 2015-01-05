@@ -1,4 +1,6 @@
 h3. Release History
+* January 5, 2015
+** 2.1.0 Release - Fixed bug in CSS Processor breaking asset compile
 * December 31, 2014
 ** 2.0.21 Release - Nested Grails related asset-pipeline classes into the asset.pipeline.grails package so that the asset.pipeline package does not get marked reloadable
 * December 29, 2014
