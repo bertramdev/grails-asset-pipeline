@@ -36,7 +36,7 @@ class SpringResourceAssetResolverSpec extends spock.lang.Specification {
 
     }
 
-    def "Test that the scanForResources method scans and locates AssetFile instances"() {
+    /*def "Test that the scanForResources method scans and locates AssetFile instances"() {
         given:"A resourceLoader instancer with an asset resolver"
             def resourceLoader = new FileSystemResourceLoader()
             def assetResolver = new SpringResourceAssetResolver("spring", resourceLoader, "grails-app/assets/javascripts")
@@ -48,5 +48,5 @@ class SpringResourceAssetResolverSpec extends spock.lang.Specification {
         then:"It resolves the asset correctly"
             assetFiles.size() ==4
 
-    }    
+    }*/    
 }
