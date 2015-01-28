@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4 Usage 2.0.21</title>
+    <title>4 Usage 2.1.1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -77,7 +77,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> David Estes</p>
 
-                    <p><strong>Version:</strong> 2.0.21</p>
+                    <p><strong>Version:</strong> 2.1.1</p>
 
                     
                 </div>
@@ -182,7 +182,7 @@ Asset Pipeline adds a few new taglibs to properly reference your assets. These t
 This will only be displayed <span class="java&#45;keyword">if</span> the asset exists
 &#60;/asset:assetPathExists&#62;</pre></div><p class="paragraph"/>or<p class="paragraph"/><div class="code"><pre>asset.assetPathExists(src: 'test.js') //returns <span class="java&#45;keyword">true</span> or <span class="java&#45;keyword">false</span></pre></div><p class="paragraph"/>
 <h3>Getting Resource</h3>
-As of version 0.8.2 a new bean exists called <code>assetResourceLocator</code> This can be used to find assets by URI in both development and production mode.<p class="paragraph"/><div class="code"><pre>class exampleService &#123;
+As of version 0.8.2 a new bean exists called <code>assetResourceLocator</code> This can be used to find assets by URI in both development and production mode.<p class="paragraph"/><div class="code"><pre>class ExampleService &#123;
   def assetResourceLocator<p class="paragraph"/>  def someMethod() &#123;
     Resource myResource = assetResourceLocator.findAssetForURI('test.css')
   &#125;
@@ -241,6 +241,15 @@ In some cases it may be necessary to specify an encoding for your assets. An exa
                             </div>
                             
                             <div class="menu-item"><a href="../ref/Command%20Line/asset-precompile.html">asset-precompile</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Spring Beans</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Spring%20Beans/assetResourceLocator.html">assetResourceLocator</a>
                             </div>
                             
                             </div>

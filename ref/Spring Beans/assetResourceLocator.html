@@ -64,7 +64,13 @@ function addJsClass(el) {
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
-                <h1>asset-clean</h1><p class="paragraph"/><h2>Description</h2><p class="paragraph"/>Cleans the directory where precompiled assets are stored (<code>target/assets</code>).
+                <h1>assetResourceLocator</h1><p class="paragraph"/><h2>Description</h2><p class="paragraph"/>This bean implements the <a href="http://grails.org/doc/latest/api/org/codehaus/groovy/grails/core/io/ResourceLocator.html" target="blank">ResourceLocator</a> interface,
+adding one additional method that returns a <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/io/Resource.html" target="blank">Resource</a> instance,
+given an asset's URI<p class="paragraph"/><div class="code"><pre>class ExampleService &#123;
+  def assetResourceLocator<p class="paragraph"/>  def someMethod() &#123;
+    Resource testCssResource = assetResourceLocator.findAssetForURI('test.css')
+  &#125;
+&#125;</pre></div>
             </div>
         </td>
         <td id="col2">
@@ -77,7 +83,7 @@ function addJsClass(el) {
                     
                     <div class="menu-block">
                         <h1 class="menu-title" onclick="toggleRef(nextElement(this))">Command Line</h1>
-                        <div class="menu-sub selected">
+                        <div class="menu-sub">
                             
                             
                             <div class="menu-item"><a href="../../ref/Command%20Line/asset-clean.html">asset-clean</a>
@@ -94,7 +100,7 @@ function addJsClass(el) {
                     
                     <div class="menu-block">
                         <h1 class="menu-title" onclick="toggleRef(nextElement(this))">Spring Beans</h1>
-                        <div class="menu-sub">
+                        <div class="menu-sub selected">
                             
                             
                             <div class="menu-item"><a href="../../ref/Spring%20Beans/assetResourceLocator.html">assetResourceLocator</a>
