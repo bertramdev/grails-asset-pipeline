@@ -8,6 +8,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils
 import org.springframework.web.filter.*
 import groovy.util.logging.Commons
 import groovy.transform.*
+import asset.pipeline.grails.AssetProcessorService
 
 @Commons
 @CompileStatic
@@ -26,7 +27,7 @@ class AssetPipelineFilter extends OncePerRequestFilter {
     }
 
     void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String mapping = (AssetProcessorService)(applicationContext.getBean('assetProcessorService', AssetProcessorService)).assetMapping
+        String mapping = ((AssetProcessorService)(applicationContext.getBean('assetProcessorService', AssetProcessorService))).assetMapping
 
         def fileUri = new java.net.URI(request.requestURI).path
         String baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"

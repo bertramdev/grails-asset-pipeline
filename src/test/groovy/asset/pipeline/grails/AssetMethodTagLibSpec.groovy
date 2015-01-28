@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package asset.pipeline
+package asset.pipeline.grails
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 import asset.pipeline.fs.FileSystemAssetResolver
+import asset.pipeline.*
 /**
  * @author David Estes
  */
