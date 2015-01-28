@@ -26,7 +26,7 @@ class AssetPipelineFilter extends OncePerRequestFilter {
     }
 
     void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String mapping = applicationContext.getBean('assetProcessorService', AssetProcessorService).assetMapping
+        String mapping = (AssetProcessorService)(applicationContext.getBean('assetProcessorService', AssetProcessorService)).assetMapping
 
         def fileUri = new java.net.URI(request.requestURI).path
         String baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
