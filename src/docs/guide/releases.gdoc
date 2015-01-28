@@ -1,5 +1,17 @@
-h3. Release Hitory
-
+h3. Release History
+* January 28, 2014
+** 2.1.1 Release - Fixed Binary / Classpath Resolver Support. Now scans META-INF/assets, META-INF/static, and META-INF/resources (yes that means webjars).
+* January 5, 2015
+** 2.1.0 Release - Fixed bug in CSS Processor breaking asset compile
+* December 31, 2014
+** 2.0.21 Release - Nested Grails related asset-pipeline classes into the asset.pipeline.grails package so that the asset.pipeline package does not get marked reloadable
+* December 29, 2014
+** 2.0.20 Release - Fixed bug in CSSProcessor and cache digest names, Fixed absolute path issue, documentation improvements, resolver improvements
+* December 10, 2014
+** 2.0.17 Release - Fixed bug in CSSProcessor for recalculating relative paths
+** 2.0.16 Release - Fixed bug on 2nd war compile with Windows Platforms
+* December 5, 2014
+** 2.0.14 Release - Fixed compileDir for maven based builds
 * December 3, 2014
 ** 2.0.13 Release - Faster Dev Mode, Fixed bug in war build, Fixed Css Processor with image paths. Fixed files with spaces.
 ** 2.0.11 Release - We no longer export groovy,groovy-templates dependency since grails uses groovy-all

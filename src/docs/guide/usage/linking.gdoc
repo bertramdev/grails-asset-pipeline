@@ -48,7 +48,7 @@ h3. Getting Resource
 As of version 0.8.2 a new bean exists called @assetResourceLocator@ This can be used to find assets by URI in both development and production mode.
 
 {code}
-class exampleService {
+class ExampleService {
   def assetResourceLocator
 
   def someMethod() {

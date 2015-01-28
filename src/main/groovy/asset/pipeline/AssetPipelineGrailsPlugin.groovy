@@ -20,6 +20,7 @@ import grails.util.Environment
 import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.CachingLinkGenerator
 import asset.pipeline.grails.AssetResourceLocator
+import asset.pipeline.grails.fs.*
 import asset.pipeline.fs.*
 import asset.pipeline.*
 
@@ -48,6 +49,10 @@ class AssetPipelineGrailsPlugin {
     def doWithApplicationContext = { ctx ->
         //Register Plugin Paths
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))    
+        AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/assets'))
+        AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/static'))
+        AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/resources'))
+
     }
     def doWithSpring = {
         def manifestProps = new Properties()
