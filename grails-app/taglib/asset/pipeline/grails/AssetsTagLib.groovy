@@ -83,7 +83,7 @@ class AssetsTagLib {
 			}
 			list.each { dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join("&")}\" ${paramsToHtmlAttr(attrs)} />"
+				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join("&")}\" ${paramsToHtmlAttr(attrs)} />\n"
 			}
 		}
 	}
