@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package asset.pipeline
+package asset.pipeline.grails
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
-private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
+import asset.pipeline.*
+
+
 /**
  * @author David Estes
  */
 @TestFor(AssetsTagLib)
 class AssetsTagLibSpec extends Specification {
+  private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
   AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
 
   def setup() {
