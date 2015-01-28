@@ -1,14 +1,18 @@
-package asset.pipeline
+package asset.pipeline.grails
 
 import grails.util.Environment
 import grails.core.GrailsApplication
+import asset.pipeline.AssetPipeline
+import asset.pipeline.AssetHelper
 
 class AssetsTagLib {
 
 	static namespace = "asset"
 	static returnObjectForTags = ['assetPath']
-	
+
+	private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
 	GrailsApplication grailsApplication
+
 	/**
 	 * @attr src REQUIRED
 	 */
@@ -41,7 +45,7 @@ class AssetsTagLib {
 			}
 			list.each { dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<script src=\"${depAssetPath}?${modifierParams.join("&")}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>\n"
+				out << "<script src=\"${depAssetPath}?${modifierParams.join("&")}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>${LINE_BREAK}"
 			}
 			// println "Fetching Dev Mode Dependency List Time ${new Date().time - startTime}"
 		}
@@ -81,7 +85,7 @@ class AssetsTagLib {
 			}
 			list.each { dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join("&")}\" ${paramsToHtmlAttr(attrs)} />"
+				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join("&")}\" ${paramsToHtmlAttr(attrs)} />${LINE_BREAK}"
 			}
 		}
 	}

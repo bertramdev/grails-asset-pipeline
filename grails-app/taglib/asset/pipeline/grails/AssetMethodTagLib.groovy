@@ -1,4 +1,4 @@
-package asset.pipeline
+package asset.pipeline.grails
 
 import grails.util.Environment
 import grails.core.*
@@ -50,7 +50,7 @@ class AssetMethodTagLib {
             return conf.url.call(request)
         } else {
             if(absolute && !conf.url){
-                return "${grailsLinkGenerator.getServerBaseURL()}" + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/"
+                return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
             }
             String relativePathToResource = (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
             return conf.url ?: relativePathToResource
