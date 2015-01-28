@@ -26,7 +26,7 @@ import asset.pipeline.*
 @TestFor(AssetsTagLib)
 class AssetsTagLibSpec extends Specification {
   AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
-
+  private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
   private static MOCK_BASE_SERVER_URL = 'http://localhost:8080/foo'
 
   def setup() {
@@ -67,7 +67,7 @@ class AssetsTagLibSpec extends Specification {
       output = tagLib.javascript(src: assetSrc)
 
     then:
-      output == '<script src="/assets/asset-pipeline/test/test.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/libs/file_a.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/libs/file_c.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/libs/file_b.js?compile=false" type="text/javascript" ></script>\n<script src="/assets/asset-pipeline/test/libs/subset/subset_a.js?compile=false" type="text/javascript" ></script>\n'
+      output == '<script src="/assets/asset-pipeline/test/test.js?compile=false" type="text/javascript" ></script>' + LINE_BREAK + '<script src="/assets/asset-pipeline/test/libs/file_a.js?compile=false" type="text/javascript" ></script>' + LINE_BREAK + '<script src="/assets/asset-pipeline/test/libs/file_c.js?compile=false" type="text/javascript" ></script>' + LINE_BREAK + '<script src="/assets/asset-pipeline/test/libs/file_b.js?compile=false" type="text/javascript" ></script>' + LINE_BREAK + '<script src="/assets/asset-pipeline/test/libs/subset/subset_a.js?compile=false" type="text/javascript" ></script>' + LINE_BREAK
   }
 
   void "should return stylesheet link tag when debugMode is off"() {
@@ -92,7 +92,7 @@ class AssetsTagLibSpec extends Specification {
       output = tagLib.stylesheet(src: assetSrc)
 
     then:
-      output == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css?compile=false"  /><link rel="stylesheet" href="/assets/asset-pipeline/test/test2.css?compile=false"  />'
+      output == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css?compile=false"  />' + LINE_BREAK + '<link rel="stylesheet" href="/assets/asset-pipeline/test/test2.css?compile=false"  />' + LINE_BREAK
 
   }
 

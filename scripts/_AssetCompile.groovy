@@ -15,12 +15,14 @@ target(assetClean: "Cleans Compiled Assets Directory") {
 
 target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
 	depends(configureProxy,compile)
-	def assetPipelineConfigHolder  = classLoader.loadClass('asset.pipeline.AssetPipelineConfigHolder')
-	def fileSystemAssetResolver    = classLoader.loadClass('asset.pipeline.fs.FileSystemAssetResolver')
-	def jarAssetResolver           = classLoader.loadClass('asset.pipeline.fs.JarAssetResolver')
-	def assetHelper                = classLoader.loadClass('asset.pipeline.AssetHelper')
-	def assetCompilerClass         = classLoader.loadClass('asset.pipeline.AssetCompiler')
-	def directiveProcessorClass    = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
+	def assetPipelineConfigHolder   = classLoader.loadClass('asset.pipeline.AssetPipelineConfigHolder')
+	def defaultResourceLoader       = classLoader.loadClass('org.springframework.core.io.DefaultResourceLoader').newInstance(classLoader)
+	def fileSystemAssetResolver     = classLoader.loadClass('asset.pipeline.fs.FileSystemAssetResolver')
+	def springResourceAssetResolver = classLoader.loadClass('asset.pipeline.grails.fs.SpringResourceAssetResolver')
+	def jarAssetResolver            = classLoader.loadClass('asset.pipeline.fs.JarAssetResolver')
+	def assetHelper                 = classLoader.loadClass('asset.pipeline.AssetHelper')
+	def assetCompilerClass          = classLoader.loadClass('asset.pipeline.AssetCompiler')
+	def directiveProcessorClass     = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
 
 	def assetConfig                = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
 
@@ -33,22 +35,26 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	//Add Resolvers for Grails
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application','grails-app/assets'))
-	for(plugin in pluginManager.getAllPlugins()) {
-		if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
-			def descriptorURI = plugin.binaryDescriptor.resource.URI
-			descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
+	// for(plugin in pluginManager.getAllPlugins()) {
+	// 	if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
+	// 		def descriptorURI = plugin.binaryDescriptor.resource.URI
+	// 		descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
 
-			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(plugin.name,descriptorURI,'META-INF/assets'))
-			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(plugin.name,descriptorURI,'META-INF/static'))
-		}
+	// 		assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(plugin.name,descriptorURI,'META-INF/assets'))
+	// 		assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(plugin.name,descriptorURI,'META-INF/static'))
+	// 	}
 
-	}
+	// }
 	for(plugin in GrailsPluginUtils.pluginInfos) {
 		def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
 		def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,assetPath))
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,fallbackPath,true))
 	}
+
+	assetPipelineConfigHolder.registerResolver(springResourceAssetResolver.newInstance('classpath',defaultResourceLoader,'META-INF/assets'))
+	assetPipelineConfigHolder.registerResolver(springResourceAssetResolver.newInstance('classpath',defaultResourceLoader,'META-INF/static'))
+	assetPipelineConfigHolder.registerResolver(springResourceAssetResolver.newInstance('classpath',defaultResourceLoader,'META-INF/resources'))
 
 	assetPipelineConfigHolder.config = config.grails.assets
 
@@ -70,4 +76,6 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		}
 	}
 	assetCompiler.compile()
+	event("AssetPrecompileComplete", [assetConfig])
+
 }
