@@ -25,8 +25,17 @@ class AssetsTagLib {
 		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
 		def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && !grailsApplication.warDeployed && conf.bundle != true)
 
+		List renderedSrcs = request.getAttribute('assetRenderedScriptSrcs')
+		if(!renderedSrcs) {
+			renderedSrcs = []
+		}
+
 		if(!debugMode) {
-			out << "<script src=\"${assetPath(src:src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
+			String depAssetPath = assetPath(src:src)
+			if (! renderedSrcs.contains(depAssetPath)) {
+				out << "<script src=\"${depAssetPath}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
+				renderedSrcs << depAssetPath
+			}
 		} else {
 			if (src.lastIndexOf(".") >= 0) {
 				uri = src.substring(0, src.lastIndexOf("."))
@@ -42,11 +51,17 @@ class AssetsTagLib {
 				modifierParams << "encoding=${attrs.charset}"
 			}
 			list.each { dep ->
-				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<script src=\"${depAssetPath}?${modifierParams.join("&")}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>\n"
+				String depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true]) + "?" + modifierParams.join("&")
+				if (renderedSrcs.contains(depAssetPath)) {
+					log.debug("Script asset was included already in request.  Skipping: ${depAssetPath}")
+				} else {
+					out << "<script src=\"${depAssetPath}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>\n"
+					renderedSrcs << depAssetPath
+				}
 			}
 			// println "Fetching Dev Mode Dependency List Time ${new Date().time - startTime}"
 		}
+		request.setAttribute('assetRenderedScriptSrcs', renderedSrcs)
 	}
 
 	/**
