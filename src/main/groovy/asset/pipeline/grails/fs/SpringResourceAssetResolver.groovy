@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package asset.pipeline.fs
+package asset.pipeline.grails.fs
 
 import asset.pipeline.*
+import asset.pipeline.fs.*
+
 import org.springframework.core.io.support.*
 import org.springframework.core.io.*
 
@@ -42,6 +44,8 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
 
         if(contentType) {
             specs = AssetHelper.getPossibleFileSpecs(contentType)
+        } else {
+            specs = AssetHelper.assetFileClasses()
         }
 
         if(!specs) return null
@@ -52,6 +56,9 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
     }
 
     String relativePathToResolver(Resource file, String scanDirectoryPath) {
+        if(!file.exists()) {
+            return null
+        }        
         def filePath = file.URL.path
         if(filePath.contains(scanDirectoryPath)) {
             def i = filePath.indexOf(scanDirectoryPath)
@@ -60,13 +67,21 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
         else {
             throw new RuntimeException("File was not sourced from the same ScanDirectory ${filePath}")
         }
+ 
+        
     }
 
     Resource getRelativeFile(String relativePath, String name) {
-        resourceLoader.getResource("$relativePath/$name")
+        if(name.startsWith('/')) {
+            name = name.substring(1)
+        }
+        resourceLoader.getResource("classpath:$relativePath/$name")
     }
 
     Closure<InputStream> createInputStreamClosure(Resource file) {
+        if(!file.exists()) {
+            return null
+        }    
         {-> file.inputStream }
     }
 
@@ -93,23 +108,41 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
             }            
         }
 
-        def resources = resourceResolver.getResources("$prefixPath/$basePath/**").findAll { res ->
-            extensions.any { ext -> res.filename.endsWith(ext) }
+        def resources = []
+        def normalizedPath = AssetHelper.normalizePath(basePath)
+        try {
+            // println "Looking for files in classpath:$prefixPath/$normalizedPath/**"
+            def scanPath = "classpath*:$prefixPath/"
+            if(normalizedPath) {
+                scanPath += "$normalizedPath/"
+            }
+            resources = resourceResolver.getResources(scanPath + "**").findAll { res ->
+                def filePath = res.URL.path
+                !filePath.endsWith('/') &&extensions.any { ext -> res.filename.endsWith(".$ext") }
+            }
+        } catch(e) {
+            //ITS OK IF ITS NOT FOUND
         }
 
-        resources.collect {
+        resources = resources.collect {
             assetForFile(it, contentType, baseFile, prefixPath)
-        }
+        }.findAll{it != null}
+        return resources
     }
 
     Collection<AssetFile> scanForFiles(List<String> excludePatterns, List<String> includePatterns) {
-        def excludedPatternRegex =  excludePatterns ? excludePatterns.collect{ convertGlobToRegEx(it) } : []
-        def includedPatternRegex =  includePatterns ? includePatterns.collect{ convertGlobToRegEx(it) } : []
-
-        def resources = resourceResolver.getResources("$prefixPath/**").findAll { res ->
-            def relativePath = relativePathToResolver(res, prefixPath)  
-            def filename = res.filename
-            !isFileMatchingPatterns(relativePath,excludedPatternRegex) && isFileMatchingPatterns(relativePath,includedPatternRegex) && filename.contains('.') && !filename.startsWith('.')
+        def excludedPatternRegex =  excludePatterns ?: []
+        def includedPatternRegex =  includePatterns ?: []
+        def resources = []
+        try {
+            resources = resourceResolver.getResources("classpath*:$prefixPath/**").findAll { res ->
+                def relativePath = relativePathToResolver(res, prefixPath)  
+                def filename = res.filename
+                def path = res.URL.path
+                return !path.endsWith('/') && (!isFileMatchingPatterns(relativePath,excludedPatternRegex) || isFileMatchingPatterns(relativePath,includedPatternRegex)) && filename.contains('.') && !filename.startsWith('.')
+            }
+        } catch(e) {
+            //ITS OK IF ITS NOT FOUND
         }
 
 
