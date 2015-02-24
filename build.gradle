@@ -21,7 +21,7 @@ ext {
   gradleWrapperVersion = project.gradleWrapperVersion
 }
 
-version "3.0.0.BUILD-SNAPSHOT"
+version "3.0.0.M2"
 group "org.grails.plugins"
 
 apply plugin: "org.grails.grails-plugin"
@@ -56,7 +56,7 @@ dependencies {
   provided "org.grails:grails-dependencies"
   runtime 'org.mozilla:rhino:1.7R4'
   compile 'commons-io:commons-io:2.2'
-  compile "com.bertramlabs.plugins:asset-pipeline-core:2.0.20"
+  compile "com.bertramlabs.plugins:asset-pipeline-core:2.1.1"
   testCompile "org.grails:grails-plugin-testing"
   provided 'javax.servlet:javax.servlet-api'
 }
@@ -73,5 +73,3 @@ idea {
         scopes.PROVIDED.plus += [configurations.provided]
     }
 }
-
-
