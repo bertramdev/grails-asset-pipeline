@@ -1,5 +1,8 @@
 h3. Release History
-* January 28, 2014
+* February 25, 2015
+** 2.1.2 Release - Performance Improvement on scanning classpath for binary plugin assets.
+** 2.1.3 Release - Fixed bug preventing images / non processable entities from being loaded from binary plugins.
+* January 28, 2015
 ** 2.1.1 Release - Fixed Binary / Classpath Resolver Support. Now scans META-INF/assets, META-INF/static, and META-INF/resources (yes that means webjars).
 * January 5, 2015
 ** 2.1.0 Release - Fixed bug in CSS Processor breaking asset compile

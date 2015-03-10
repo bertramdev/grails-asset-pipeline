@@ -27,12 +27,15 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
     String prefixPath
     ResourceLoader resourceLoader
     PathMatchingResourcePatternResolver resourceResolver
+    Map<String,Resource> cache
 
     SpringResourceAssetResolver(String name, ResourceLoader resourceLoader, String basePath) {
         super(name)
         this.prefixPath = basePath
         this.resourceLoader = resourceLoader
         this.resourceResolver = new PathMatchingResourcePatternResolver(resourceLoader)
+        def cacheThread = new SpringAssetCache(this)
+        cacheThread.start();
     }
 
     AssetFile getAsset(String relativePath, String contentType = null, String extension = null, AssetFile baseFile=null) {
@@ -48,7 +51,7 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
             specs = AssetHelper.assetFileClasses()
         }
 
-        if(!specs) return null
+        
 
         AssetFile assetFile = resolveAsset(specs, prefixPath, normalizedPath, baseFile, extension)
 
@@ -75,7 +78,25 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
         if(name.startsWith('/')) {
             name = name.substring(1)
         }
-        resourceLoader.getResource("classpath:$relativePath/$name")
+
+        if(cache) {
+            // Time to find this file in our cache map
+            def filePath = "$relativePath/$name"
+            def i = filePath.indexOf(prefixPath)
+            if(i > -1) {
+                filePath = filePath.substring(i + prefixPath.size() + 1)
+            }
+            def result = cache[filePath]
+            println "Looking for ${filePath}"
+            if(result) {
+                println "Found ${result}"
+                return result
+            }
+            return new EmptyResource()
+        } else {
+            resourceLoader.getResource("classpath:$relativePath/$name")        
+        }
+        
     }
 
     Closure<InputStream> createInputStreamClosure(Resource file) {
@@ -111,14 +132,24 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
         def resources = []
         def normalizedPath = AssetHelper.normalizePath(basePath)
         try {
-            // println "Looking for files in classpath:$prefixPath/$normalizedPath/**"
-            def scanPath = "classpath*:$prefixPath/"
-            if(normalizedPath) {
-                scanPath += "$normalizedPath/"
-            }
-            resources = resourceResolver.getResources(scanPath + "**").findAll { res ->
-                def filePath = res.URL.path
-                !filePath.endsWith('/') &&extensions.any { ext -> res.filename.endsWith(".$ext") }
+            if(cache) {
+                def filesToScan = cache
+                if(normalizedPath) {
+                    filesToScan = filesToScan.findAll{ it.key.startsWith("$normalizedPath/") }
+                }
+                resources = filesToScan.findAll { it ->
+                    def filePath = it.value.URL.path
+                    !filePath.endsWith('/') &&extensions.any { ext -> res.filename.endsWith(".$ext") }
+                }?.collect{it.value}
+            } else {
+                def scanPath = "classpath*:$prefixPath/"
+                if(normalizedPath) {
+                    scanPath += "$normalizedPath/"
+                }
+                resources = resourceResolver.getResources(scanPath + "**").findAll { res ->
+                    def filePath = res.URL.path
+                    !filePath.endsWith('/') &&extensions.any { ext -> res.filename.endsWith(".$ext") }
+                }
             }
         } catch(e) {
             //ITS OK IF ITS NOT FOUND
@@ -157,4 +188,18 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
         }.findAll { it != null }
 
     }
+
+    void cacheAllResources() {
+        Map<String,Resource> results = [:]
+        resourceResolver.getResources("classpath*:$prefixPath/**").findAll{ res ->
+            def filePath = res.URL.path
+            !filePath.endsWith('/')
+        }
+        .each { res ->
+            def relativePath = relativePathToResolver(res,prefixPath)
+            results[relativePath] = res
+        }
+        println "Cache ${results}"
+        cache = results
+    } 
 }
