@@ -86,9 +86,7 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
                 filePath = filePath.substring(i + prefixPath.size() + 1)
             }
             def result = cache[filePath]
-            println "Looking for ${filePath}"
             if(result) {
-                println "Found ${result}"
                 return result
             }
             return new EmptyResource()
@@ -198,7 +196,6 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
             def relativePath = relativePathToResolver(res,prefixPath)
             results[relativePath] = res
         }
-        println "Cache ${results}"
         cache = results
     } 
 }
