@@ -7,8 +7,11 @@ filename=$(find build/libs -name "*.jar" | head -1)
 filename=$(basename $filename)
 
 if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then
-  ./gradlew install publish 
-  
+    if [[ -n $TRAVIS_TAG ]]; then
+        ./gradlew bintrayUpload || EXIT_STATUS=$?
+    else
+        ./gradlew publish || EXIT_STATUS=$?
+    fi  
   git config --global user.name "$GIT_NAME"
   git config --global user.email "$GIT_EMAIL"
   git config --global credential.helper "store --file=~/.git-credentials"
