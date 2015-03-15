@@ -196,7 +196,6 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
             def relativePath = relativePathToResolver(res,prefixPath)
             results[relativePath] = res
         }
-        println "Cache ${results}"
         cache = results
     } 
 }
