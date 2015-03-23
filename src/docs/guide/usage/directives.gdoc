@@ -54,7 +54,11 @@ h3. Dynamic Directives
 The asset-pipeline require directives also support the use of the Groovy Templates via the @GStringTemplateEngine@. This means you can use some conditional require situations based, for example, on the grails Environment.
 
 {code}
-//= require ${grails.util.Environment.currentEnvironment == 'development' ? 'ember.debug.js' : 'ember.prod.js'}
+//= require ${grails.util.Environment.currentEnvironment.toString() == 'DEVELOPMENT' ? 'ember.debug.js' : 'ember.prod.js'}
+{code}
+or
+{code}
+//= require ${grails.util.Environment.currentEnvironment == grails.util.Environment.DEVELOPMENT ? 'ember.debug.js' : 'ember.prod.js'}
 {code}
 
 {note}
