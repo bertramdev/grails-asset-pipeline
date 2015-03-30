@@ -30,7 +30,7 @@ class AssetsTagLibSpec extends Specification {
   private static MOCK_BASE_SERVER_URL = 'http://localhost:8080/foo'
 
   def setup() {
-    AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))      
+    AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))
     assetProcessorServiceMock.getAssetMapping() >> { "assets" }
     def assetMethodTagLibMock = mockTagLib(AssetMethodTagLib)
     assetMethodTagLibMock.assetProcessorService = assetProcessorServiceMock
@@ -48,6 +48,34 @@ class AssetsTagLibSpec extends Specification {
   void "should return javascript link tag when debugMode is off"() {
     given:
       grailsApplication.config.grails.assets.bundle = true
+      def assetSrc = "asset-pipeline/test/test.js"
+    expect:
+      tagLib.javascript(src: assetSrc) == '<script src="/assets/asset-pipeline/test/test.js" type="text/javascript" ></script>'
+  }
+
+  void "should return gzipped javascript link tag when header accept it"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = true
+      request.addHeader "Accept-Encoding", "gzip"
+      def assetSrc = "asset-pipeline/test/test.js"
+    expect:
+      tagLib.javascript(src: assetSrc) == '<script src="/assets/asset-pipeline/test/test.js.gz" type="text/javascript" ></script>'
+  }
+
+  void "should return un-gzipped javascript link tag when header does not accept it"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = true
+      request.addHeader "Accept-Encoding", ""
+      def assetSrc = "asset-pipeline/test/test.js"
+    expect:
+      tagLib.javascript(src: assetSrc) == '<script src="/assets/asset-pipeline/test/test.js" type="text/javascript" ></script>'
+  }
+
+  void "should return un-gzipped javascript link tag when gzip is excluded"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = true
+      grailsApplication.config.grails.assets.excludesGzip = true
+      request.addHeader "Accept-Encoding", "gzip"
       def assetSrc = "asset-pipeline/test/test.js"
     expect:
       tagLib.javascript(src: assetSrc) == '<script src="/assets/asset-pipeline/test/test.js" type="text/javascript" ></script>'
@@ -73,6 +101,36 @@ class AssetsTagLibSpec extends Specification {
   void "should return stylesheet link tag when debugMode is off"() {
     given:
       grailsApplication.config.grails.assets.bundle = true
+      def assetSrc = "asset-pipeline/test/test.css"
+    expect:
+      tagLib.stylesheet(href: assetSrc) == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css"/>'
+  }
+
+  void "should return gzipped stylesheet link tag when header accept it"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = true
+      grailsApplication.config.grails.assets.excludesGzip = false
+      request.addHeader "Accept-Encoding", "gzip"
+      def assetSrc = "asset-pipeline/test/test.css"
+    expect:
+      tagLib.stylesheet(href: assetSrc) == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css.gz"/>'
+  }
+
+  void "should return un-gzipped stylesheet link tag when header does not accept it"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = true
+      grailsApplication.config.grails.assets.excludesGzip = false
+      request.addHeader "Accept-Encoding", ""
+      def assetSrc = "asset-pipeline/test/test.css"
+    expect:
+      tagLib.stylesheet(href: assetSrc) == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css"/>'
+  }
+
+  void "should return un-gzipped stylesheet link tag when gzip is excluded"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = true
+      grailsApplication.config.grails.assets.excludesGzip = true
+      request.addHeader "Accept-Encoding", "gzip"
       def assetSrc = "asset-pipeline/test/test.css"
     expect:
       tagLib.stylesheet(href: assetSrc) == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css"/>'
