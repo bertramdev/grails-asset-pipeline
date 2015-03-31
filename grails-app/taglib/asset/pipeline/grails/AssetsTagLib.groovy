@@ -3,6 +3,7 @@ package asset.pipeline.grails
 import grails.util.Environment
 import grails.core.GrailsApplication
 import asset.pipeline.AssetPipeline
+import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetHelper
 
 class AssetsTagLib {
@@ -25,7 +26,7 @@ class AssetsTagLib {
 
 		def conf = grailsApplication.config.grails.assets
 		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
-		def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && !grailsApplication.warDeployed && conf.bundle != true)
+		def debugMode = (conf.allowDebugParam && debugParameter) ||  (!AssetPipelineConfigHolder.manifest && conf.bundle != true)
 
 		if(!debugMode) {
 			out << "<script src=\"${assetPath(src:src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
@@ -66,7 +67,7 @@ class AssetsTagLib {
 		def uri
 		def extension
 		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
-	    def debugMode = (conf.allowDebugParam && debugParameter) ||  (Environment.current == Environment.DEVELOPMENT && !grailsApplication.warDeployed && conf.bundle != true)
+	    def debugMode = (conf.allowDebugParam && debugParameter) ||  (!AssetPipelineConfigHolder.manifest && conf.bundle != true)
 
 		if(!debugMode) {
 			out << link([rel: 'stylesheet', href:src] + attrs)

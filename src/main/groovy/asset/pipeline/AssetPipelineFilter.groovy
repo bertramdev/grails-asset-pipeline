@@ -9,24 +9,24 @@ import org.springframework.web.filter.*
 import groovy.util.logging.Commons
 import groovy.transform.*
 import asset.pipeline.grails.AssetProcessorService
+import asset.pipeline.AssetPipelineConfigHolder
 
 @Commons
 @CompileStatic
 class AssetPipelineFilter extends OncePerRequestFilter {
     ApplicationContext applicationContext
     ServletContext servletContext
-    boolean warDeployed
 
     @Override
     void initFilterBean() throws ServletException {
         def config = filterConfig
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.servletContext)
         servletContext = config.servletContext
-        warDeployed = grails.util.Environment.isWarDeployed()
-        // permalinkService = applicationContext['spudPermalinkService']
     }
 
     void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        boolean warDeployed = AssetPipelineConfigHolder.manifest ? true : false
+
         String mapping = ((AssetProcessorService)(applicationContext.getBean('assetProcessorService', AssetProcessorService))).assetMapping
 
         def fileUri = new java.net.URI(request.requestURI).path
@@ -37,7 +37,7 @@ class AssetPipelineFilter extends OncePerRequestFilter {
             fileUri = fileUri.substring(baseAssetUrl.length())
         }
         if(warDeployed) {
-            def file = applicationContext.getResource("assets${fileUri}")
+            def file = applicationContext.getResource("classpath:assets${fileUri}")
             if (file.exists()) {
                 def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'))
                 responseBuilder.headers.each { Map.Entry header ->
@@ -51,7 +51,7 @@ class AssetPipelineFilter extends OncePerRequestFilter {
                     // Check for GZip
                     def acceptsEncoding = request.getHeader("Accept-Encoding")
                     if(acceptsEncoding?.split(",")?.contains("gzip")) {
-                        def gzipFile = applicationContext.getResource("assets${fileUri}.gz")
+                        def gzipFile = applicationContext.getResource("classpath:assets${fileUri}.gz")
                         if(gzipFile.exists()) {
                             file = gzipFile
                             response.setHeader('Content-Encoding','gzip')

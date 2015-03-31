@@ -32,7 +32,7 @@ class AssetMethodTagLib {
 
         def assetUrl = assetUriRootPath(grailsApplication, request, absolute)
 
-        if(conf.precompiled) {
+        if(conf.precompiled && src) {
             def realPath = conf.manifest.getProperty(src)
             if(realPath) {
                 return "${assetUrl}${realPath}"
