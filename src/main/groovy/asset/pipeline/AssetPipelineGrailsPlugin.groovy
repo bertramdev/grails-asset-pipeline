@@ -75,7 +75,7 @@ class AssetPipelineGrailsPlugin {
         }
 
         if(!application.config.grails.assets.containsKey("precompiled")) {
-            application.config.grails.assets.precompiled = application.warDeployed
+            application.config.grails.assets.precompiled = AssetPipelineConfigHolder.manifest ? true : false
         }
 
 
