@@ -1,11 +1,21 @@
 package asset.pipeline.grails
 
-import javax.servlet.*
-import org.springframework.web.context.support.WebApplicationContextUtils
-import groovy.util.logging.Log4j
-import asset.pipeline.*
+import grails.util.Environment
+import groovy.util.logging.Slf4j
 
-@Log4j
+import javax.servlet.Filter
+import javax.servlet.FilterChain
+import javax.servlet.FilterConfig
+import javax.servlet.ServletException
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+
+import org.springframework.web.context.support.WebApplicationContextUtils
+
+import asset.pipeline.AssetPipeline
+import asset.pipeline.AssetPipelineResponseBuilder
+
+@Slf4j
 class AssetPipelineFilter implements Filter {
     def applicationContext
     def servletContext
@@ -13,7 +23,7 @@ class AssetPipelineFilter implements Filter {
     void init(FilterConfig config) throws ServletException {
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.servletContext)
         servletContext = config.servletContext
-        warDeployed = grails.util.Environment.isWarDeployed()
+        warDeployed = Environment.isWarDeployed()
         // permalinkService = applicationContext['spudPermalinkService']
     }
 
@@ -23,7 +33,7 @@ class AssetPipelineFilter implements Filter {
     void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         def mapping = applicationContext.assetProcessorService.assetMapping
 
-        def fileUri = new java.net.URI(request.requestURI).path
+        def fileUri = new URI(request.requestURI).path
         def baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
         def format = servletContext.getMimeType(fileUri)
         def encoding = request.getParameter('encoding') ?: request.getCharacterEncoding()
@@ -51,7 +61,7 @@ class AssetPipelineFilter implements Filter {
                             response.setHeader('Content-Encoding','gzip')
                         }
                     }
-                    
+
                     if(encoding) {
                         response.setCharacterEncoding(encoding)
                     }
@@ -79,11 +89,11 @@ class AssetPipelineFilter implements Filter {
 
             if (fileContents != null) {
 
-                response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-                response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-                response.setDateHeader("Expires", 0); // Proxies.
+                response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+                response.setHeader("Pragma", "no-cache") // HTTP 1.0.
+                response.setDateHeader("Expires", 0) // Proxies.
                 response.setHeader('Content-Length', fileContents.size().toString())
-                
+
                 response.setContentType(format)
                 try {
                     response.outputStream << fileContents

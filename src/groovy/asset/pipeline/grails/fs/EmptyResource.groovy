@@ -1,36 +1,26 @@
 package asset.pipeline.grails.fs
-import org.springframework.core.io.support.*
-import org.springframework.core.io.*
 
+import org.springframework.core.io.Resource
 
 class EmptyResource implements Resource {
+
 	boolean exists() {
 		return false
 	}
 
-	Resource createRelative(String relativePath) {
-		return null
-	}
+	Resource createRelative(String relativePath) {}
 
-	String getDescription() {
-		return null
-	}
+	String getDescription() {}
 
-	File getFile() {
-		return null
-	}
-	String getFilename() {
-		return null
-	}
-	URI getURI() {
-		return null
-	}
-	URL getURL() {
-		return null
-	}
-	InputStream getInputStream() {
-		return null
-	}
+	File getFile() {}
+
+	String getFilename() {}
+
+	URI getURI() {}
+
+	URL getURL() {}
+
+	InputStream getInputStream() {}
 
 	boolean isOpen() {
 		return false
@@ -46,5 +36,4 @@ class EmptyResource implements Resource {
 	long lastModified() {
 		return 0
 	}
-
 }

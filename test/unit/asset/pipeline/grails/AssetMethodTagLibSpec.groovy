@@ -18,8 +18,9 @@ package asset.pipeline.grails
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
+import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.fs.FileSystemAssetResolver
-import asset.pipeline.*
+
 /**
  * @author David Estes
  */
@@ -41,7 +42,4 @@ class AssetMethodTagLibSpec extends Specification {
     expect:
       tagLib.assetPath(src: assetSrc) == '/assets/asset-pipeline/test/test.css'
   }
-
-
-
 }
