@@ -4,9 +4,9 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 import asset.pipeline.AssetHelper
-import groovy.util.logging.Log4j
+import groovy.util.logging.Slf4j
 
-@Log4j
+@Slf4j
 class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAware {
 	GrailsApplication grailsApplication
 	def assetProcessorService

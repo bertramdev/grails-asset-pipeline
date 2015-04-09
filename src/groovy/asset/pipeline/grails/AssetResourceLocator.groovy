@@ -6,9 +6,9 @@ import asset.pipeline.GenericAssetFile
 import org.codehaus.groovy.grails.core.io.DefaultResourceLocator
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
-import groovy.util.logging.Log4j
+import groovy.util.logging.Slf4j
 
-@Log4j
+@Slf4j
 class AssetResourceLocator extends DefaultResourceLocator {
 	Resource findResourceForURI(String uri) {
 		Resource resource = super.findResourceForURI(uri)

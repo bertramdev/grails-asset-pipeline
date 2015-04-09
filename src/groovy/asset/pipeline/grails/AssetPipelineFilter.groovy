@@ -1,7 +1,7 @@
 package asset.pipeline.grails
 
 import grails.util.Environment
-import groovy.util.logging.Log4j
+import groovy.util.logging.Slf4j
 
 import javax.servlet.Filter
 import javax.servlet.FilterChain
@@ -15,7 +15,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils
 import asset.pipeline.AssetPipeline
 import asset.pipeline.AssetPipelineResponseBuilder
 
-@Log4j
+@Slf4j
 class AssetPipelineFilter implements Filter {
     def applicationContext
     def servletContext
