@@ -30,5 +30,5 @@ eventCreatePluginArchiveStart = { stagingDir ->
 }
 
 eventCleanStart = {
-    Ant.delete('dir':'target/assets')
+    ant.delete('dir':'target/assets')
 }

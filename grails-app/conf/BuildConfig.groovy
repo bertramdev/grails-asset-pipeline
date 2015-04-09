@@ -1,6 +1,4 @@
 grails.project.work.dir = 'target'
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
 
 grails.project.dependency.resolver = "maven"
 
@@ -10,8 +8,8 @@ grails.project.dependency.resolution = {
     log 'warn'
 
     repositories {
-        grailsCentral()
         mavenLocal()
+        grailsCentral()
         mavenCentral()
         jcenter()
         mavenRepo "http://dl.bintray.com/bertramlabs/asset-pipeline"

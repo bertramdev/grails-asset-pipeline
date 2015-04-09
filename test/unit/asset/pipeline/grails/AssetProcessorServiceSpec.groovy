@@ -18,14 +18,16 @@ package asset.pipeline.grails
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
-import asset.pipeline.*
+import asset.pipeline.AssetPipeline
+import asset.pipeline.AssetPipelineConfigHolder
+
 /**
  * @author Tommy Barker
  */
 @TestFor(AssetProcessorService)
 class AssetProcessorServiceSpec extends Specification {
     def setup() {
-        AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))      
+        AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))
     }
     void "asset mapping can be configured"() {
         given:
@@ -106,6 +108,4 @@ class AssetProcessorServiceSpec extends Specification {
         then:
             uncompiledFile == null
     }
-
-
 }

@@ -1,7 +1,7 @@
 package asset.pipeline.grails
 
-import asset.pipeline.DirectiveProcessor
 import asset.pipeline.AssetHelper
+import asset.pipeline.DirectiveProcessor
 import asset.pipeline.GenericAssetFile
 import org.codehaus.groovy.grails.core.io.DefaultResourceLocator
 import org.springframework.core.io.ByteArrayResource
@@ -10,7 +10,7 @@ import groovy.util.logging.Log4j
 
 @Log4j
 class AssetResourceLocator extends DefaultResourceLocator {
-	public Resource findResourceForURI(String uri) {
+	Resource findResourceForURI(String uri) {
 		Resource resource = super.findResourceForURI(uri)
 		if(!resource) {
 			resource = findAssetForURI(uri)
@@ -18,13 +18,13 @@ class AssetResourceLocator extends DefaultResourceLocator {
 		return resource
 	}
 
-	public Resource findAssetForURI(String uri) {
+	Resource findAssetForURI(String uri) {
 		Resource resource
 		if(warDeployed) {
 			def assetUri = "assets/${uri}"
-			Resource defaultResource = defaultResourceLoader.getResource(assetUri);
-			if (defaultResource != null && defaultResource.exists()) {
-				resource = defaultResource;
+			Resource defaultResource = defaultResourceLoader.getResource(assetUri)
+			if (defaultResource?.exists()) {
+				resource = defaultResource
 			}
 		} else {
 			def contentTypes = AssetHelper.assetMimeTypeForURI(uri)

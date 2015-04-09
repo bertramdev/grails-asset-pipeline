@@ -17,9 +17,9 @@
 package asset.pipeline.processors
 
 import grails.test.spock.IntegrationSpec
-import asset.pipeline.*
-import asset.pipeline.fs.*
 import grails.util.Holders
+import asset.pipeline.AssetCompiler
+import asset.pipeline.fs.FileSystemAssetResolver
 
 class CssProcessorSpec extends IntegrationSpec {
     def "replaces image urls with relative paths"() {
