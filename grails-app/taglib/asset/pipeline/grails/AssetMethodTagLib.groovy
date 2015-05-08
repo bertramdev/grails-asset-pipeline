@@ -51,7 +51,7 @@ class AssetMethodTagLib {
             if(absolute && !conf.url){
                 return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
             }
-            String relativePathToResource = (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
+            String relativePathToResource = (grailsLinkGenerator.contextPath + "${grailsLinkGenerator.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
             return conf.url ?: relativePathToResource
         }
 
