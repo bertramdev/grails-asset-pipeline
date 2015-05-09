@@ -1,11 +1,12 @@
 package asset.pipeline.grails
 
-import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.commons.GrailsApplication
-import asset.pipeline.AssetHelper
-import groovy.util.logging.Log4j
+import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 
-@Log4j
+import asset.pipeline.AssetHelper
+import groovy.util.logging.Slf4j
+
+@Slf4j
 class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.CachingLinkGenerator implements GrailsApplicationAware {
 	GrailsApplication grailsApplication
 	def assetProcessorService
@@ -15,13 +16,7 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 	}
 
 	String resource(Map attrs) {
-		def url = asset(attrs)
-
-		if(!url) {
-			url = super.resource(attrs)
-		}
-
-		return url
+		return asset(attrs) ?: super.resource(attrs)
 	}
 
 	/**

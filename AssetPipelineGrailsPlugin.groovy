@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import grails.util.Environment
 import grails.plugin.webxml.FilterManager
+
 import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 
-import asset.pipeline.grails.LinkGenerator
-import asset.pipeline.grails.CachingLinkGenerator
+import asset.pipeline.AssetPipelineConfigHolder
+import asset.pipeline.fs.FileSystemAssetResolver
+import asset.pipeline.grails.AssetPipelineFilter
 import asset.pipeline.grails.AssetResourceLocator
-import asset.pipeline.grails.fs.*
-import asset.pipeline.fs.*
-import asset.pipeline.*
-
-
+import asset.pipeline.grails.CachingLinkGenerator
+import asset.pipeline.grails.LinkGenerator
+import asset.pipeline.grails.fs.SpringResourceAssetResolver
 
 class AssetPipelineGrailsPlugin {
     def version         = "2.2.0"
@@ -61,9 +60,10 @@ class AssetPipelineGrailsPlugin {
                 AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,fallbackPath,true))
             }
         }
-        
     }
+
     def doWithSpring = {
+        def assetsConfig = application.config.grails.assets
         def manifestProps = new Properties()
         def manifestFile
         try {
@@ -76,19 +76,19 @@ class AssetPipelineGrailsPlugin {
         if(manifestFile?.exists()) {
             try {
                 manifestProps.load(manifestFile.inputStream)
-                application.config.grails.assets.manifest = manifestProps
+                assetsConfig.manifest = manifestProps
                 AssetPipelineConfigHolder.manifest = manifestProps
             } catch(e) {
                 log.warn "Failed to load Manifest"
             }
         }
 
-        if(!application.config.grails.assets.containsKey("precompiled")) {
-            application.config.grails.assets.precompiled = application.warDeployed
+        if(!assetsConfig.containsKey("precompiled")) {
+            assetsConfig.precompiled = application.warDeployed
         }
 
 
-        AssetPipelineConfigHolder.config = application.config.grails.assets
+        AssetPipelineConfigHolder.config = assetsConfig
 
         // Register Link Generator
         String serverURL = application.config?.grails?.serverURL ?: null
@@ -97,7 +97,6 @@ class AssetPipelineGrailsPlugin {
             cacheUrls = true
         }
 
-
         grailsLinkGenerator(cacheUrls ? CachingLinkGenerator : LinkGenerator, serverURL) { bean ->
             bean.autowire = true
         }
@@ -105,22 +104,20 @@ class AssetPipelineGrailsPlugin {
         assetResourceLocator(AssetResourceLocator) { bean ->
             bean.parent = "abstractGrailsResourceLocator"
         }
-
     }
 
     def getWebXmlFilterOrder() {
-        ["AssetPipelineFilter": FilterManager.GRAILS_WEB_REQUEST_POSITION - 120]
+        [AssetPipelineFilter: FilterManager.GRAILS_WEB_REQUEST_POSITION - 120]
     }
 
     def doWithWebDescriptor = { xml ->
         def mapping = application.config?.grails?.assets?.mapping ?: "assets"
-        def filterClassName = 'asset.pipeline.grails.AssetPipelineFilter'
 
         def filters = xml.filter[0]
         filters + {
             'filter' {
                 'filter-name'('AssetPipelineFilter')
-                'filter-class'(filterClassName)
+                'filter-class'(AssetPipelineFilter.name)
             }
         }
 
@@ -133,5 +130,4 @@ class AssetPipelineGrailsPlugin {
             }
         }
     }
-
 }

@@ -17,9 +17,6 @@
 package asset.pipeline.grails
 
 import grails.test.spock.IntegrationSpec
-import asset.pipeline.*
-import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
-
 
 class LinkGeneratorSpec extends IntegrationSpec {
     def grailsApplication
@@ -64,7 +61,7 @@ class LinkGeneratorSpec extends IntegrationSpec {
             Properties manifestProperties = new Properties()
             manifestProperties.setProperty(filePath, "grails_logo-abcdefg.png")
             grailsApplication.config.grails.assets.manifest = manifestProperties
-            
+
         when:
             def resource = linkGenerator.resource(file: filePath)
         then:
