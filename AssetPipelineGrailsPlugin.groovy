@@ -50,16 +50,7 @@ class AssetPipelineGrailsPlugin {
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
         def pluginManager = ctx.pluginManager
         if(!application.warDeployed) {
-            // for(plugin in pluginManager.getAllPlugins()) {
-            //     if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
-            //         def descriptorURI = plugin.binaryDescriptor.resource.URI
-            //         descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
 
-            //         AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/assets'))
-            //         AssetPipelineConfigHolder.registerResolver(new JarAssetResolver(plugin.name,descriptorURI,'META-INF/static'))
-            //     }
-
-            // }
             AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/assets'))
             AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/static'))
             AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/resources'))
