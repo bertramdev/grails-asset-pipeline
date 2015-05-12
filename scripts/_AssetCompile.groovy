@@ -35,7 +35,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
     assetConfig.enableSourceMaps = config.grails.assets.enableSourceMaps
 
 	//Add Resolvers for Grails
-	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application','grails-app/assets'))
+	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application',"${basedir}/grails-app/assets"))
 	// for(plugin in pluginManager.getAllPlugins()) {
 	// 	if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
 	// 		def descriptorURI = plugin.binaryDescriptor.resource.URI
