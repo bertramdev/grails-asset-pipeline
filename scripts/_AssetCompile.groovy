@@ -18,7 +18,6 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	def assetPipelineConfigHolder   = classLoader.loadClass('asset.pipeline.AssetPipelineConfigHolder')
 	def defaultResourceLoader       = classLoader.loadClass('org.springframework.core.io.DefaultResourceLoader').newInstance(classLoader)
 	def fileSystemAssetResolver     = classLoader.loadClass('asset.pipeline.fs.FileSystemAssetResolver')
-	def springResourceAssetResolver = classLoader.loadClass('asset.pipeline.grails.fs.SpringResourceAssetResolver')
 	def jarAssetResolver            = classLoader.loadClass('asset.pipeline.fs.JarAssetResolver')
 	def assetHelper                 = classLoader.loadClass('asset.pipeline.AssetHelper')
 	def assetCompilerClass          = classLoader.loadClass('asset.pipeline.AssetCompiler')
@@ -36,16 +35,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	//Add Resolvers for Grails
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application','grails-app/assets'))
-	// for(plugin in pluginManager.getAllPlugins()) {
-	// 	if(plugin instanceof org.codehaus.groovy.grails.plugins.BinaryGrailsPlugin) {
-	// 		def descriptorURI = plugin.binaryDescriptor.resource.URI
-	// 		descriptorURI = new java.net.URI( new java.net.URI(descriptorURI.getSchemeSpecificPart()).getSchemeSpecificPart()).toString().split("!")[0]
 
-	// 		assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(plugin.name,descriptorURI,'META-INF/assets'))
-	// 		assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(plugin.name,descriptorURI,'META-INF/static'))
-	// 	}
-
-	// }
 	for(plugin in GrailsPluginUtils.pluginInfos) {
 		def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
 		def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
@@ -53,9 +43,13 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,fallbackPath,true))
 	}
 
-	assetPipelineConfigHolder.registerResolver(springResourceAssetResolver.newInstance('classpath',defaultResourceLoader,'META-INF/assets'))
-	assetPipelineConfigHolder.registerResolver(springResourceAssetResolver.newInstance('classpath',defaultResourceLoader,'META-INF/static'))
-	assetPipelineConfigHolder.registerResolver(springResourceAssetResolver.newInstance('classpath',defaultResourceLoader,'META-INF/resources'))
+	grailsSettings.runtimeDependencies.each { dep ->
+		if(dep.name.endsWith('.jar')) {
+			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/assets'))
+			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/static'))
+			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/resources'))
+		}
+	}
 
 	assetPipelineConfigHolder.config = config.grails.assets
 
