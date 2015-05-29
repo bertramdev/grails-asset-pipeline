@@ -1,5 +1,6 @@
 h3. Release History
 * May 29, 2015
+** 2.2.2 Release - Also now scans 'provided' jar dependencies
 ** 2.2.1 Release - Fixed issue with binary plugins in war build not including assets
 * March 5, 2015
 ** 2.1.4 Release - Removed some debug printlns. Whoops!

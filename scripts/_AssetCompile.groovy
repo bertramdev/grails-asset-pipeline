@@ -43,12 +43,21 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name,fallbackPath,true))
 	}
 
+
 	grailsSettings.runtimeDependencies.each { dep ->
 		if(dep.name.endsWith('.jar')) {
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/assets'))
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/static'))
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/resources'))
 		}
+	}
+
+	grailsSettings.providedDependencies.each { dep ->
+		if(dep.name.endsWith('.jar')) {
+			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/assets'))
+			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/static'))
+			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/resources'))
+		}	
 	}
 
 	assetPipelineConfigHolder.config = config.grails.assets
