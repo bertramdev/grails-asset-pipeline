@@ -13,6 +13,7 @@ import javax.servlet.ServletResponse
 import org.springframework.web.context.support.WebApplicationContextUtils
 
 import asset.pipeline.AssetPipeline
+import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetPipelineResponseBuilder
 
 @Slf4j
@@ -41,7 +42,13 @@ class AssetPipelineFilter implements Filter {
             fileUri = fileUri.substring(baseAssetUrl.length())
         }
         if(warDeployed) {
-            def file = applicationContext.getResource("assets${fileUri}")
+            def manifest = AssetPipelineConfigHolder.manifest
+            def manifestPath = fileUri
+            if(fileUri.startsWith('/')) {
+              manifestPath = fileUri.substring(1) //Omit forward slash
+            }
+            fileUri = manifest?.getProperty(manifestPath) ?: manifestPath
+            def file = applicationContext.getResource("assets/${fileUri}")
             if (file.exists()) {
                 def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'))
                 responseBuilder.headers.each { header ->
@@ -55,7 +62,7 @@ class AssetPipelineFilter implements Filter {
                     // Check for GZip
                     def acceptsEncoding = request.getHeader("Accept-Encoding")
                     if(acceptsEncoding?.split(",")?.contains("gzip")) {
-                        def gzipFile = applicationContext.getResource("assets${fileUri}.gz")
+                        def gzipFile = applicationContext.getResource("assets/${fileUri}.gz")
                         if(gzipFile.exists()) {
                             file = gzipFile
                             response.setHeader('Content-Encoding','gzip')
@@ -69,7 +76,13 @@ class AssetPipelineFilter implements Filter {
                     response.setHeader('Content-Length', file.contentLength().toString())
 
                     try {
-                        response.outputStream << file.inputStream.getBytes()
+                        byte[] buffer = new byte[102400];
+                        int len;
+                        def inputStream = file.inputStream
+                        def out = response.outputStream
+                        while ((len = inputStream.read(buffer)) != -1) {
+                            out.write(buffer, 0, len);
+                        }
                         response.flushBuffer()
                     } catch(e) {
                         log.debug("File Transfer Aborted (Probably by the user)",e)

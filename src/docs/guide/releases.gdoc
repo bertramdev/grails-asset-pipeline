@@ -1,4 +1,6 @@
 h3. Release History
+* May 31, 2015
+** 2.2.3 Release - No longer storing non digest versions in war file, cutting overhead in half. Also removed Commons i/o dependency.
 * May 29, 2015
 ** 2.2.2 Release - Also now scans 'provided' jar dependencies
 ** 2.2.1 Release - Fixed issue with binary plugins in war build not including assets
