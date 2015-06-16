@@ -45,6 +45,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 
 	grailsSettings.runtimeDependencies.each { dep ->
+
 		if(dep.name.endsWith('.jar')) {
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/assets'))
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/static'))

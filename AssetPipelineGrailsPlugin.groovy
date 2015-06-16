@@ -26,7 +26,7 @@ import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.fs.SpringResourceAssetResolver
 
 class AssetPipelineGrailsPlugin {
-    def version         = "2.2.3"
+    def version         = "2.2.5"
     def grailsVersion   = "2.2 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -49,7 +49,6 @@ class AssetPipelineGrailsPlugin {
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
         def pluginManager = ctx.pluginManager
         if(!application.warDeployed) {
-
             AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/assets'))
             AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/static'))
             AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/resources'))

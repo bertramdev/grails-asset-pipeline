@@ -86,12 +86,14 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
             def result = cache[filePath]
             if(result) {
                 return result
+            } else {
+                result = resourceLoader.getResource("classpath:$relativePath/$name")
+                cache[filePath] = result ?: new EmptyResource()
             }
             return new EmptyResource()
         } else {
             resourceLoader.getResource("classpath:$relativePath/$name")
         }
-
     }
 
     Closure<InputStream> createInputStreamClosure(Resource file) {
@@ -136,7 +138,9 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
                     def filePath = it.value.URL.path
                     !filePath.endsWith('/') &&extensions.any { ext -> res.filename.endsWith(".$ext") }
                 }?.collect{it.value}
-            } else {
+
+            } 
+            if(!resources) {
                 def scanPath = "classpath*:$prefixPath/"
                 if(normalizedPath) {
                     scanPath += "$normalizedPath/"
@@ -144,6 +148,18 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
                 resources = resourceResolver.getResources(scanPath + "**").findAll { res ->
                     def filePath = res.URL.path
                     !filePath.endsWith('/') &&extensions.any { ext -> res.filename.endsWith(".$ext") }
+                }
+                if(cache) {
+                    if(resources) {
+                        resources?.each(resource) { res ->
+                            def relativePath = relativePathToResolver(res,prefixPath)
+                            cache[relativePath] = res    
+                        }       
+                    } else {
+                        if(cache && normalizedPath) {
+                            cache["$normalizedPath/".toString()] = new EmptyResource()
+                        }
+                    }
                 }
             }
         } catch(e) {
