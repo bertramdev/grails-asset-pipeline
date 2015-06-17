@@ -87,10 +87,10 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
             if(result) {
                 return result
             } else {
-                result = resourceLoader.getResource("classpath:$relativePath/$name")
-                cache[filePath] = result ?: new EmptyResource()
+                result = resourceLoader.getResource("classpath:$relativePath/$name") ?: new EmptyResource()
+                cache[filePath] = result
+                return result
             }
-            return new EmptyResource()
         } else {
             resourceLoader.getResource("classpath:$relativePath/$name")
         }
