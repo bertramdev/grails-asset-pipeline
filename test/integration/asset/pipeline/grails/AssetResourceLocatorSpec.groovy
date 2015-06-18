@@ -17,8 +17,6 @@
 package asset.pipeline.grails
 
 import grails.test.spock.IntegrationSpec
-import asset.pipeline.*
-
 
 class AssetResourceLocatorSpec extends IntegrationSpec {
 	def grailsApplication
@@ -42,6 +40,4 @@ class AssetResourceLocatorSpec extends IntegrationSpec {
 		then:
 			resource?.exists() == true
 	}
-
-
 }

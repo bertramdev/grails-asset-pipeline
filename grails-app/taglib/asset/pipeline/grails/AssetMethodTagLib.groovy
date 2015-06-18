@@ -2,6 +2,7 @@ package asset.pipeline.grails
 
 import grails.util.Environment
 import grails.core.*
+import org.apache.commons.lang.StringUtils
 
 class AssetMethodTagLib {
 
@@ -52,7 +53,8 @@ class AssetMethodTagLib {
             if(absolute && !conf.url){
                 return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
             }
-            String relativePathToResource = (request.contextPath + "${request.contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
+            def contextPath = StringUtils.trimToEmpty(grailsLinkGenerator?.contextPath)
+            String relativePathToResource = (contextPath + "${contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
             return conf.url ?: relativePathToResource
         }
 
