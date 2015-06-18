@@ -15,13 +15,7 @@ class CachingLinkGenerator extends org.grails.web.mapping.CachingLinkGenerator i
 	}
 
 	String resource(Map attrs) {
-		def url = asset(attrs)
-
-		if(!url) {
-			url = super.resource(attrs)
-		}
-
-		return url
+		return asset(attrs) ?: super.resource(attrs)
 	}
 
 	/**

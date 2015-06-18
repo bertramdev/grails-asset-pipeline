@@ -16,21 +16,13 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 	}
 
 	String resource(Map attrs) {
-		def url = asset(attrs)
-
-		if(!url) {
-			url = super.resource(attrs)
-		}
-
-		return url
+		return asset(attrs) ?: super.resource(attrs)
 	}
 
-
-
 	/**
-	* Finds an Asset from the asset-pipeline based on the file attribute.
-	* @param attrs [file]
-	*/
+	 * Finds an Asset from the asset-pipeline based on the file attribute.
+	 * @param attrs [file]
+	 */
 	String asset(Map attrs) {
 		def absolutePath = handleAbsolute(attrs)
 

@@ -34,8 +34,7 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
         this.prefixPath = basePath
         this.resourceLoader = resourceLoader
         this.resourceResolver = new PathMatchingResourcePatternResolver(resourceLoader)
-        def cacheThread = new SpringAssetCache(this)
-        cacheThread.start();
+        new SpringAssetCache(this).start()
     }
 
     AssetFile getAsset(String relativePath, String contentType = null, String extension = null, AssetFile baseFile=null) {
@@ -51,8 +50,6 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
             specs = AssetHelper.assetFileClasses()
         }
 
-        
-
         AssetFile assetFile = resolveAsset(specs, prefixPath, normalizedPath, baseFile, extension)
 
         return assetFile
@@ -61,7 +58,7 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
     String relativePathToResolver(Resource file, String scanDirectoryPath) {
         if(!file.exists()) {
             return null
-        }        
+        }
         def filePath = file.URL.path
         if(filePath.contains(scanDirectoryPath)) {
             def i = filePath.indexOf(scanDirectoryPath)
@@ -70,8 +67,6 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
         else {
             throw new RuntimeException("File was not sourced from the same ScanDirectory ${filePath}")
         }
- 
-        
     }
 
     Resource getRelativeFile(String relativePath, String name) {
@@ -89,18 +84,20 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
             def result = cache[filePath]
             if(result) {
                 return result
+            } else {
+                result = resourceLoader.getResource("classpath:$relativePath/$name") ?: new EmptyResource()
+                cache[filePath] = result
+                return result
             }
-            return new EmptyResource()
         } else {
-            resourceLoader.getResource("classpath:$relativePath/$name")        
+            resourceLoader.getResource("classpath:$relativePath/$name")
         }
-        
     }
 
     Closure<InputStream> createInputStreamClosure(Resource file) {
         if(!file.exists()) {
             return null
-        }    
+        }
         {-> file.inputStream }
     }
 
@@ -124,7 +121,7 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
         else {
             for(spec in specs) {
                 extensions.addAll(spec.extensions)
-            }            
+            }
         }
 
         def resources = []
@@ -139,7 +136,9 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
                     def filePath = it.value.URL.path
                     !filePath.endsWith('/') &&extensions.any { ext -> res.filename.endsWith(".$ext") }
                 }?.collect{it.value}
-            } else {
+
+            } 
+            if(!resources) {
                 def scanPath = "classpath*:$prefixPath/"
                 if(normalizedPath) {
                     scanPath += "$normalizedPath/"
@@ -147,6 +146,18 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
                 resources = resourceResolver.getResources(scanPath + "**").findAll { res ->
                     def filePath = res.URL.path
                     !filePath.endsWith('/') &&extensions.any { ext -> res.filename.endsWith(".$ext") }
+                }
+                if(cache) {
+                    if(resources) {
+                        resources?.each(resource) { res ->
+                            def relativePath = relativePathToResolver(res,prefixPath)
+                            cache[relativePath] = res    
+                        }       
+                    } else {
+                        if(cache && normalizedPath) {
+                            cache["$normalizedPath/".toString()] = new EmptyResource()
+                        }
+                    }
                 }
             }
         } catch(e) {
@@ -165,7 +176,7 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
         def resources = []
         try {
             resources = resourceResolver.getResources("classpath*:$prefixPath/**").findAll { res ->
-                def relativePath = relativePathToResolver(res, prefixPath)  
+                def relativePath = relativePathToResolver(res, prefixPath)
                 def filename = res.filename
                 def path = res.URL.path
                 return !path.endsWith('/') && (!isFileMatchingPatterns(relativePath,excludedPatternRegex) || isFileMatchingPatterns(relativePath,includedPatternRegex)) && filename.contains('.') && !filename.startsWith('.')
@@ -198,5 +209,5 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
             results[relativePath] = res
         }
         cache = results
-    } 
+    }
 }

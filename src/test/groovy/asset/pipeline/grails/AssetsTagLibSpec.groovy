@@ -18,7 +18,7 @@ package asset.pipeline.grails
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
-import asset.pipeline.*
+import asset.pipeline.AssetPipelineConfigHolder
 
 
 /**
@@ -30,7 +30,7 @@ class AssetsTagLibSpec extends Specification {
   AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
 
   def setup() {
-    AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))      
+    AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))
     assetProcessorServiceMock.getAssetMapping() >> { "assets" }
     def assetMethodTagLibMock = mockTagLib(AssetMethodTagLib)
     assetMethodTagLibMock.assetProcessorService = assetProcessorServiceMock

@@ -1,8 +1,6 @@
 package asset.pipeline
 
-import org.apache.commons.io.FileUtils
-
-
+import asset.pipeline.AssetPipelineConfigHolder
 
 class AssetPipelineBootStrap {
 
@@ -13,18 +11,34 @@ class AssetPipelineBootStrap {
         if (!storagePath) {
             return
         }
+        def manifest = AssetPipelineConfigHolder.manifest
 
-        def manifestFile = grailsApplication.getParentContext().getResource("assets/manifest.properties").getFile()
-        // println("Checking For Parent ${manifestFile.parent}")
-        def webAppAssetsDir = new File(manifestFile.parent)
-        // def webAppAssetsDir = new File("web-app/assets")
-        if (!webAppAssetsDir.exists()) {
-            return
+        if(manifest) {
+            def storageFile = new File(storagePath)
+            storageFile.mkdirs()
+            manifest.stringPropertyNames().each { propertyName ->
+                def propertyValue = manifest.getProperty(propertyName)
+                def res = grailsApplication.getParentContext().getResource("classpath:assets/${propertyValue}")
+                
+                def fileBytes = res.inputStream.bytes
+
+                def outputFile = new File(storagePath, propertyName)
+                def parentFile = new File(outputFile.parent)
+                parentFile.mkdirs()
+                outputFile.bytes = fileBytes
+                def outputDigestFile = new File(storagePath, propertyValue)
+                outputDigestFile.bytes = fileBytes
+                def gzRes = grailsApplication.getParentContext().getResource("classpath:assets/${propertyValue}.gz")
+                if(gzRes.exists()) {
+                    def gzBytes = gzRes.inputStream.bytes
+                    def outputGzFile = new File(storagePath, "${propertyName}.gz")
+                    outputGzFile.bytes = gzBytes
+                    def outputGzDigestFile = new File(storagePath, "${propertyValue}.gz")
+                    outputGzDigestFile.bytes = gzBytes    
+                }
+            }
+            def manifestFile = new File(storagePath,'manifest.properties')
+            manifest.store(manifestFile.newWriter(),"")
         }
-
-        // println "Path Found, Copying Assets"
-        def storageFile = new File(storagePath)
-        storageFile.mkdirs()
-        FileUtils.copyDirectory(webAppAssetsDir, storageFile)
     }
 }

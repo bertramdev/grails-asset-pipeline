@@ -52,9 +52,10 @@ class AssetPipelineGrailsPlugin {
         AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/assets'))
         AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/static'))
         AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/resources'))
-
     }
+
     def doWithSpring = {
+        def assetsConfig = application.config.grails.assets
         def manifestProps = new Properties()
         def manifestFile
         try {
@@ -67,7 +68,7 @@ class AssetPipelineGrailsPlugin {
         if(manifestFile?.exists()) {
             try {
                 manifestProps.load(manifestFile.inputStream)
-                application.config.grails.assets.manifest = manifestProps
+                assetsConfig.manifest = manifestProps
                 AssetPipelineConfigHolder.manifest = manifestProps
             } catch(e) {
                 log.warn "Failed to load Manifest"
@@ -79,7 +80,7 @@ class AssetPipelineGrailsPlugin {
         }
 
 
-        AssetPipelineConfigHolder.config = application.config.grails.assets
+        AssetPipelineConfigHolder.config = assetsConfig
 
         // Register Link Generator
         String serverURL = application.config?.grails?.serverURL ?: null
@@ -87,7 +88,6 @@ class AssetPipelineGrailsPlugin {
         if(!(cacheUrls instanceof Boolean)) {
             cacheUrls = true
         }
-
 
         grailsLinkGenerator(cacheUrls ? CachingLinkGenerator : LinkGenerator, serverURL) { bean ->
             bean.autowire = true
@@ -104,5 +104,4 @@ class AssetPipelineGrailsPlugin {
             urlPatterns = ["/${mapping}/*".toString()]
         }
     }
-
 }

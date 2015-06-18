@@ -69,7 +69,7 @@ dependencies {
     provided "org.grails:grails-dependencies"
     runtime 'org.mozilla:rhino:1.7R4'
     compile 'commons-io:commons-io:2.2'
-    compile "com.bertramlabs.plugins:asset-pipeline-core:2.1.1"
+    compile "com.bertramlabs.plugins:asset-pipeline-core:2.3.0"
     testCompile "org.grails:grails-plugin-testing"
 
     testCompile "org.grails:grails-plugin-testing"

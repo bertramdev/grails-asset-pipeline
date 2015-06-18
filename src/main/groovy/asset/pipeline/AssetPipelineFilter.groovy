@@ -1,6 +1,5 @@
 package asset.pipeline
 
-
 import org.springframework.context.*
 import javax.servlet.*
 import javax.servlet.http.*
@@ -10,6 +9,8 @@ import groovy.util.logging.Commons
 import groovy.transform.*
 import asset.pipeline.grails.AssetProcessorService
 import asset.pipeline.AssetPipelineConfigHolder
+import asset.pipeline.AssetPipelineResponseBuilder
+import java.net.URI
 
 @Commons
 @CompileStatic
@@ -29,15 +30,23 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 
         String mapping = ((AssetProcessorService)(applicationContext.getBean('assetProcessorService', AssetProcessorService))).assetMapping
 
-        def fileUri = new java.net.URI(request.requestURI).path
-        String baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
-        String format = servletContext.getMimeType(fileUri)
-        String encoding = request.getParameter('encoding') ?: request.getCharacterEncoding()
+        def fileUri = new URI(request.requestURI).path
+        def baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
+        def format = servletContext.getMimeType(fileUri)
+        def encoding = request.getParameter('encoding') ?: request.getCharacterEncoding()
+
         if(fileUri.startsWith(baseAssetUrl)) {
             fileUri = fileUri.substring(baseAssetUrl.length())
         }
         if(warDeployed) {
-            def file = applicationContext.getResource("classpath:assets${fileUri}")
+            def manifest = AssetPipelineConfigHolder.manifest
+            def manifestPath = fileUri
+            if(fileUri.startsWith('/')) {
+              manifestPath = fileUri.substring(1) //Omit forward slash
+            }
+            fileUri = manifest?.getProperty(manifestPath) ?: manifestPath
+            def file = applicationContext.getResource("classpath:assets/${fileUri}")
+
             if (file.exists()) {
                 def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'))
                 responseBuilder.headers.each { Map.Entry header ->
@@ -57,7 +66,7 @@ class AssetPipelineFilter extends OncePerRequestFilter {
                             response.setHeader('Content-Encoding','gzip')
                         }
                     }
-                    
+
                     if(encoding) {
                         response.setCharacterEncoding(encoding)
                     }
@@ -65,7 +74,13 @@ class AssetPipelineFilter extends OncePerRequestFilter {
                     response.setHeader('Content-Length', file.contentLength().toString())
 
                     try {
-                        response.outputStream << file.inputStream.getBytes()
+                        byte[] buffer = new byte[102400];
+                        int len;
+                        def inputStream = file.inputStream
+                        def out = response.outputStream
+                        while ((len = inputStream.read(buffer)) != -1) {
+                            out.write(buffer, 0, len);
+                        }
                         response.flushBuffer()
                     } catch(e) {
                         log.debug("File Transfer Aborted (Probably by the user)",e)
@@ -85,11 +100,11 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 
             if (fileContents != null) {
 
-                response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-                response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-                response.setDateHeader("Expires", 0); // Proxies.
+                response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+                response.setHeader("Pragma", "no-cache") // HTTP 1.0.
+                response.setDateHeader("Expires", 0) // Proxies.
                 response.setHeader('Content-Length', fileContents.size().toString())
-                
+
                 response.setContentType(format)
                 try {
                     response.outputStream << fileContents
@@ -102,7 +117,6 @@ class AssetPipelineFilter extends OncePerRequestFilter {
                 response.flushBuffer()
             }
         }
-
 
         if (!response.committed) {
             chain.doFilter(request, response)
