@@ -1,4 +1,6 @@
 h3. Release History
+* June 18, 2015
+** 2.3.0 Release - HtmlProcessor can now recalculate relative urls with digests on processing of static html. Fixed issues with classpath file resolution and cache. Better gradle support, boot support, and ratpack support.
 * June 16, 2015
 ** 2.2.5 Release - Fixing classpath resolution bug with cache.
 * May 31, 2015
