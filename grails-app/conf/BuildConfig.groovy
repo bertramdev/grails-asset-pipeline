@@ -17,7 +17,7 @@ grails.project.dependency.resolution = {
 
     dependencies {
         runtime 'org.mozilla:rhino:1.7R4'
-        compile("com.bertramlabs.plugins:asset-pipeline-core:2.2.5")
+        compile("com.bertramlabs.plugins:asset-pipeline-core:2.3.0")
 
         //Temporary inclusion due to bug in 2.4.2
         compile("cglib:cglib-nodep:2.2.2") {
