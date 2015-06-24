@@ -46,16 +46,19 @@ class AssetMethodTagLib {
         def context = grailsApplication.mainContext //unused
         def conf    = grailsApplication.config.grails.assets
         def mapping = assetProcessorService.assetMapping
+        def configUrl = conf.url
         if(conf.url && conf.url instanceof Closure) {
-            return conf.url.call(request)
-        } else {
-            if(absolute && !conf.url){
-                return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
+            configUrl = conf.url.call(request)
+            if(configUrl){
+                return configUrl
             }
-            def contextPath = StringUtils.trimToEmpty(grailsLinkGenerator?.contextPath)
-            String relativePathToResource = (contextPath + "${contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
-            return conf.url ?: relativePathToResource
+        } 
+        if(absolute && !configUrl){
+            return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
         }
+        def contextPath = StringUtils.trimToEmpty(grailsLinkGenerator?.contextPath)
+        String relativePathToResource = (contextPath + "${contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
+        return configUrl ?: relativePathToResource
 
     }
 }
