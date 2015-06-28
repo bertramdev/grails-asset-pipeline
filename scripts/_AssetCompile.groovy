@@ -34,7 +34,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
     assetConfig.enableSourceMaps = config.grails.assets.containsKey('enableSourceMaps') ? config.grails.assets.enableSourceMaps : true
     assetConfig.skipNonDigests = true
 	//Add Resolvers for Grails
-	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application','grails-app/assets'))
+	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application','${basedir}/grails-app/assets'))
 
 	for(plugin in GrailsPluginUtils.pluginInfos) {
 		def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
