@@ -1,4 +1,6 @@
 h3. Release History
+* June 27, 2015 
+** 2.3.7 Release - Fixes to relative path replacement in css/html. Improvements in Angular @ngInject minification.
 * June 19, 2015
 ** 2.3.2 Release - Fixes for html processor and performance improvements in css processor
 * June 18, 2015
