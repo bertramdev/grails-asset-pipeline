@@ -65,11 +65,9 @@ dependencies {
     provided "org.grails:grails-web-boot"
     provided "org.grails:grails-dependencies"
     provided 'javax.servlet:javax.servlet-api:3.1.0'
-
     provided "org.grails:grails-dependencies"
     runtime 'org.mozilla:rhino:1.7R4'
-    compile 'commons-io:commons-io:2.2'
-    compile "com.bertramlabs.plugins:asset-pipeline-core:2.3.2"
+    compile "com.bertramlabs.plugins:asset-pipeline-core:2.3.7"
     testCompile "org.grails:grails-plugin-testing"
 
     testCompile "org.grails:grails-plugin-testing"
