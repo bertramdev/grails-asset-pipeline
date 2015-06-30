@@ -59,7 +59,7 @@ class AssetPipelineGrailsPlugin {
         def manifestProps = new Properties()
         def manifestFile
         try {
-            manifestFile = application.getParentContext().getResource("assets/manifest.properties")
+            manifestFile = application.getParentContext().getResource("classpath:assets/manifest.properties")
         } catch(e) {
             if(application.warDeployed) {
                 log.warn "Unable to find asset-pipeline manifest, etags will not be properly generated"

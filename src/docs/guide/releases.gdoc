@@ -1,4 +1,7 @@
 h3. Release History
+* June 30, 2015
+** 2.3.8 Release - Fixes Jar asset injection for gradle and grails 3.x when assets.compileDir is non standard.
+** 3.0.2 Grails 3 Module - Updated to work with changes to public class directives in core.
 * June 27, 2015 
 ** 2.3.7 Release - Fixes to relative path replacement in css/html. Improvements in Angular @ngInject minification.
 * June 19, 2015
