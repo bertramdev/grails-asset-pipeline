@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Asset Pipeline Plugin 2.3.0</title>
+        <title>Asset Pipeline Plugin 2.3.8</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -60,7 +60,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>Asset Pipeline Plugin - Reference Documentation</h1>
                             <p><strong>Authors:</strong> David Estes</p>
-                            <p><strong>Version:</strong> 2.3.0</p>
+                            <p><strong>Version:</strong> 2.3.8</p>
                             
                         </div>
 
@@ -181,6 +181,19 @@ The Grails Asset-Pipeline is a plugin used for managing and processing static as
 <h1 id="releases">2 Release Notes</h1>
 <h3>Release History</h3>
 <ul class="star">
+<li>June 30, 2015</li>
+<ul class="star">
+<li>2.3.8 Release - Fixes Jar asset injection for gradle and grails 3.x when assets.compileDir is non standard.</li>
+<li>3.0.2 Grails 3 Module - Updated to work with changes to public class directives in core.</li>
+</ul>
+<li>June 27, 2015</li>
+<ul class="star">
+<li>2.3.7 Release - Fixes to relative path replacement in css/html. Improvements in Angular @ngInject minification. Support for custom directives on files (i.e. //=wrapped)</li>
+</ul>
+<li>June 19, 2015</li>
+<ul class="star">
+<li>2.3.2 Release - Fixes for html processor and performance improvements in css processor</li>
+</ul>
 <li>June 18, 2015</li>
 <ul class="star">
 <li>2.3.0 Release - HtmlProcessor can now recalculate relative urls with digests on processing of static html. Fixed issues with classpath file resolution and cache. Better gradle support, boot support, and ratpack support.</li>
