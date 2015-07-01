@@ -12,6 +12,8 @@ if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then
     else
         ./gradlew publish || EXIT_STATUS=$?
     fi  
+
+    ./gradlew docs || EXIT_STATUS=$?
   git config --global user.name "$GIT_NAME"
   git config --global user.email "$GIT_EMAIL"
   git config --global credential.helper "store --file=~/.git-credentials"
