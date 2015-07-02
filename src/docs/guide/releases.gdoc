@@ -1,4 +1,6 @@
 h3. Release History
+* July 2, 2014
+** Fix in _AssetCompile gant script for buildDir, bad quotation used around string
 * June 30, 2015
 ** 2.3.8 Release - Fixes Jar asset injection for gradle and grails 3.x when assets.compileDir is non standard.
 ** 3.0.2 Grails 3 Module - Updated to work with changes to public class directives in core.
