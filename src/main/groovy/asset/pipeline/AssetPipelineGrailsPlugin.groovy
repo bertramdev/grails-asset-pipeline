@@ -23,12 +23,12 @@ import asset.pipeline.grails.AssetResourceLocator
 import asset.pipeline.grails.fs.*
 import asset.pipeline.fs.*
 import asset.pipeline.*
-
+import grails.util.BuildSettings
 import org.springframework.boot.context.embedded.*
 
 
 
-class AssetPipelineGrailsPlugin {
+class AssetPipelineGrailsPlugin extends grails.plugins.Plugin {
     def grailsVersion   = "3.0 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -46,20 +46,25 @@ class AssetPipelineGrailsPlugin {
     def developers      = [ [name: 'Brian Wheeler'] ]
     def loadAfter = ['url-mappings']
 
-    def doWithApplicationContext = { ctx ->
+    void doWithApplicationContext() {
         //Register Plugin Paths
-        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))    
+        def ctx = applicationContext
+        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application',"${BuildSettings.BASE_DIR}/grails-app/assets"))    
         AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/assets'))
         AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/static'))
         AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/resources'))
     }
 
-    def doWithSpring = {
-        def assetsConfig = application.config.grails.assets
+    Closure doWithSpring() {{->
+        def application = grailsApplication
+        def config = application.config
+        def assetsConfig = config.getProperty('grails.assets', Map, [:])
         def manifestProps = new Properties()
         def manifestFile
+        
+
         try {
-            manifestFile = application.getParentContext().getResource("classpath:assets/manifest.properties")
+            manifestFile = applicationContext.getResource("classpath:assets/manifest.properties")
         } catch(e) {
             if(application.warDeployed) {
                 log.warn "Unable to find asset-pipeline manifest, etags will not be properly generated"
@@ -75,7 +80,7 @@ class AssetPipelineGrailsPlugin {
             }
         }
 
-        if(!application.config.grails.assets.containsKey("precompiled")) {
+        if(!assetsConfig.containsKey("precompiled")) {
             application.config.grails.assets.precompiled = AssetPipelineConfigHolder.manifest ? true : false
         }
 
@@ -83,11 +88,8 @@ class AssetPipelineGrailsPlugin {
         AssetPipelineConfigHolder.config = assetsConfig
 
         // Register Link Generator
-        String serverURL = application.config?.grails?.serverURL ?: null
-        def cacheUrls = application.config?.grails.web?.linkGenerator?.useCache
-        if(!(cacheUrls instanceof Boolean)) {
-            cacheUrls = true
-        }
+        String serverURL = config?.getProperty('grails.serverURL', String, null)
+        boolean cacheUrls = config?.getProperty('grails.web.linkGenerator.useCache', Boolean, true)
 
         grailsLinkGenerator(cacheUrls ? CachingLinkGenerator : LinkGenerator, serverURL) { bean ->
             bean.autowire = true
@@ -97,11 +99,11 @@ class AssetPipelineGrailsPlugin {
             bean.parent = "abstractGrailsResourceLocator"
         }
 
-        def mapping = application.config?.grails?.assets?.mapping ?: "assets"
+        def mapping = assetsConfig.mapping?.toString() ?: "assets"
 
         assetPipelineFilter(FilterRegistrationBean) {
             filter = new asset.pipeline.AssetPipelineFilter()
             urlPatterns = ["/${mapping}/*".toString()]
         }
-    }
+    }}
 }
