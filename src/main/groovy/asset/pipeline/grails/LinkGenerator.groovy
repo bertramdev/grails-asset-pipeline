@@ -4,6 +4,7 @@ import org.grails.web.mapping.DefaultLinkGenerator
 import grails.core.support.GrailsApplicationAware
 import grails.core.GrailsApplication
 import asset.pipeline.AssetHelper
+import asset.pipeline.AssetPipelineConfigHolder
 import groovy.util.logging.Commons
 
 @Commons
@@ -30,10 +31,10 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 		def conf = grailsApplication.config.grails.assets
 		def url  = attrs.file ?: attrs.src
 		def assetFound = false
-
+		def manifest = AssetPipelineConfigHolder.manifest
 		if(url) {
-			if(conf.precompiled) {
-				def realPath = conf.manifest.getProperty(url)
+			if(manifest) {
+				def realPath = manifest.getProperty(url)
 				if(realPath) {
 					url = assetUriRootPath() + realPath
 					assetFound = true
