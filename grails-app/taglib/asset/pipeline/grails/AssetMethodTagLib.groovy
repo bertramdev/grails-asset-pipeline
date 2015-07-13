@@ -2,6 +2,7 @@ package asset.pipeline.grails
 
 import grails.util.Environment
 import grails.core.*
+import asset.pipeline.AssetPipelineConfigHolder
 import org.apache.commons.lang.StringUtils
 
 class AssetMethodTagLib {
@@ -33,8 +34,8 @@ class AssetMethodTagLib {
 
         def assetUrl = assetUriRootPath(grailsApplication, request, absolute)
 
-        if(conf.precompiled && src) {
-            def realPath = conf.manifest.getProperty(src)
+        if(AssetPipelineConfigHolder.manifest && src) {
+            def realPath = AssetPipelineConfigHolder.manifest.getProperty(src)
             if(realPath) {
                 return "${assetUrl}${realPath}"
             }

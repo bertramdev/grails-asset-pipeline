@@ -29,10 +29,11 @@ class CachingLinkGenerator extends org.grails.web.mapping.CachingLinkGenerator i
 		def conf = grailsApplication.config.grails.assets
 		def url  = attrs.file ?: attrs.src
 		def assetFound = false
+		def manifest = AssetPipelineConfigHolder.manifest
 
 		if(url) {
-			if(conf.precompiled) {
-				def realPath = conf.manifest.getProperty(url)
+			if(manifest) {
+				def realPath = manifest.getProperty(url)
 				if(realPath) {
 					url = assetUriRootPath() + realPath
 					assetFound = true
