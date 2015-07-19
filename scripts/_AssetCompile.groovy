@@ -1,4 +1,3 @@
-import org.apache.tools.ant.DirectoryScanner
 import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 // import asset.pipeline.*
 includeTargets << grailsScript("_PackagePlugins")
@@ -26,13 +25,18 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	def assetConfig                = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
 
 	event("AssetPrecompileStart", [assetConfig])
-	assetConfig.minifyJs = config.grails.assets.containsKey('minifyJs') ? config.grails.assets.minifyJs : (argsMap.containsKey('minifyJs') ? argsMap.minifyJs == 'true' : true)
-	assetConfig.minifyCss = config.grails.assets.containsKey('minifyCss') ? config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
-	assetConfig.minifyOptions = config.grails.assets.minifyOptions
-	assetConfig.compileDir = "${basedir}/target/assets"
-	assetConfig.excludesGzip = config.grails.assets.excludesGzip
-    assetConfig.enableSourceMaps = config.grails.assets.containsKey('enableSourceMaps') ? config.grails.assets.enableSourceMaps : true
-    assetConfig.skipNonDigests = true
+
+	final def grailsAssetsConfig = config.grails.assets
+
+	assetConfig.compileDir       = "${basedir}/target/assets"
+	assetConfig.enableDigests    = grailsAssetsConfig.containsKey('enableDigests')    ? grailsAssetsConfig.enableDigests    : true
+	assetConfig.enableSourceMaps = grailsAssetsConfig.containsKey('enableSourceMaps') ? grailsAssetsConfig.enableSourceMaps : true
+	assetConfig.excludesGzip     = grailsAssetsConfig.excludesGzip
+	assetConfig.minifyCss        = grailsAssetsConfig.containsKey('minifyCss')        ? grailsAssetsConfig.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
+	assetConfig.minifyJs         = grailsAssetsConfig.containsKey('minifyJs')         ? grailsAssetsConfig.minifyJs  : (argsMap.containsKey('minifyJs')  ? argsMap.minifyJs  == 'true' : true)
+	assetConfig.minifyOptions    = grailsAssetsConfig.minifyOptions
+	assetConfig.skipNonDigests   = grailsAssetsConfig.containsKey('skipNonDigests')   ? grailsAssetsConfig.skipNonDigests   : true
+
 	//Add Resolvers for Grails
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application',"${basedir}/grails-app/assets"))
 
@@ -45,7 +49,6 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 
 	grailsSettings.runtimeDependencies.each { dep ->
-
 		if(dep.name.endsWith('.jar')) {
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/assets'))
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/static'))
@@ -58,21 +61,20 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/assets'))
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/static'))
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/resources'))
-		}	
+		}
 	}
 
-	assetPipelineConfigHolder.config = config.grails.assets
+	assetPipelineConfigHolder.config = grailsAssetsConfig
 
 	event("StatusUpdate",["Precompiling Assets!"])
 
 	def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: "${basedir}/target/assets", classLoader: classLoader],  eventListener)
 
-	assetCompiler.excludeRules.default = config.grails.assets.excludes
-	assetCompiler.includeRules.default = config.grails.assets.includes
+	assetCompiler.excludeRules.default = grailsAssetsConfig.excludes
+	assetCompiler.includeRules.default = grailsAssetsConfig.includes
 
 	// Initialize Exclude/Include Rules
-	config.grails.assets.plugin.each { pluginName, value ->
-
+	grailsAssetsConfig.plugin.each { pluginName, value ->
 		if(value.excludes) {
 			assetCompiler.excludeRules[pluginName] = value.excludes
 		}
@@ -82,5 +84,4 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	}
 	assetCompiler.compile()
 	event("AssetPrecompileComplete", [assetConfig])
-
 }
