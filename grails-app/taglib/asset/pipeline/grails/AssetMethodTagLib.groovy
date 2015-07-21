@@ -1,6 +1,5 @@
 package asset.pipeline.grails
 
-import grails.util.Environment
 import org.apache.commons.lang.StringUtils
 
 class AssetMethodTagLib {
@@ -18,21 +17,21 @@ class AssetMethodTagLib {
         def ignorePrefix = false
         def absolute = false
         if (attrs instanceof Map) {
-            
             src = attrs.src
             //unused
             ignorePrefix = attrs.containsKey('ignorePrefix')? attrs.ignorePrefix : false
             absolute = attrs.containsKey('absolute') ? attrs.absolute : false
         } else {
-            
             src = attrs
         }
-       
+
         def conf = grailsApplication.config.grails.assets
 
         def assetUrl = assetUriRootPath(grailsApplication, request, absolute)
 
-        if(conf.precompiled && src) {
+        def enableDigests = conf.containsKey('enableDigests') ? conf.enableDigests : true
+
+        if(conf.precompiled && src && enableDigests) {
             def realPath = conf.manifest.getProperty(src)
             if(realPath) {
                 return "${assetUrl}${realPath}"
@@ -52,13 +51,12 @@ class AssetMethodTagLib {
             if(configUrl){
                 return configUrl
             }
-        } 
+        }
         if(absolute && !configUrl){
             return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
         }
         def contextPath = StringUtils.trimToEmpty(grailsLinkGenerator?.contextPath)
         String relativePathToResource = (contextPath + "${contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
         return configUrl ?: relativePathToResource
-
     }
 }
