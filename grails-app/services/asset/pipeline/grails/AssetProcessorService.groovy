@@ -40,6 +40,13 @@ class AssetProcessorService {
 	}
 
 
+	boolean isAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
+		conf.precompiled \
+			? conf.manifest.getProperty(path)
+			: AssetHelper.fileForFullName(path) != null
+	}
+
+
 	String asset(Map attrs, DefaultLinkGenerator linkGenerator) {
 		def absolutePath = linkGenerator.handleAbsolute(attrs)
 

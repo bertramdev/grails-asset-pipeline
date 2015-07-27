@@ -13,6 +13,7 @@ class AssetsTagLib {
 	private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
 
 
+	def assetProcessorService
 	def grailsApplication
 
 
@@ -148,10 +149,7 @@ class AssetsTagLib {
 	}
 
 	boolean isAssetPath(src) {
-		def conf = grailsApplication.config.grails.assets
-		conf.precompiled \
-			? conf.manifest.getProperty(src)
-			: AssetHelper.fileForFullName(src) != null
+		assetProcessorService.isAssetPath(src)
 	}
 
 	private paramsToHtmlAttr(attrs) {
