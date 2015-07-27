@@ -10,8 +10,8 @@ class AssetMethodTagLib {
 	static returnObjectForTags = ['assetPath']
 
 
-	def grailsApplication
 	def assetProcessorService
+	def grailsApplication
 	def grailsLinkGenerator
 
 
