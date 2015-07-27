@@ -61,7 +61,7 @@ class AssetProcessorService {
 
 
 	String asset(final Map attrs, final DefaultLinkGenerator linkGenerator) {
-		final def absolutePath = linkGenerator.handleAbsolute(attrs)
+		def absolutePath = linkGenerator.handleAbsolute(attrs)
 
 		String url = getResolvedAssetPath(attrs.file ?: attrs.src)
 
@@ -73,15 +73,22 @@ class AssetProcessorService {
 
 		if (!url.startsWith('http')) {
 			if (absolutePath == null) {
-				final contextPathAttribute = attrs.contextPath?.toString()
-				final cp = contextPathAttribute == null ? linkGenerator.contextPath : contextPathAttribute
+				final String contextPathAttribute = attrs.contextPath?.toString()
+
+				final String contextPath =
+					contextPathAttribute == null \
+						? linkGenerator.contextPath
+						: contextPathAttribute
+
 				absolutePath = \
-					cp == null \
-						? linkGenerator.handleAbsolute(absolute: true)
-						: cp
+					contextPath == null \
+						? linkGenerator.handleAbsolute(absolute: true) ?: ''
+						: contextPath
 			}
-			url = (absolutePath ?: '') + (url ?: '')
+
+			url = absolutePath + url
 		}
+
 		return url
 	}
 
