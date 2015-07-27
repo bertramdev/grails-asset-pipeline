@@ -1,7 +1,6 @@
 package asset.pipeline.grails
 
 
-import asset.pipeline.AssetHelper
 import groovy.util.logging.Slf4j
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
@@ -24,62 +23,10 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 	}
 
 	/**
-	* Finds an Asset from the asset-pipeline based on the file attribute.
-	* @param attrs [file]
-	*/
+	 * Finds an Asset from the asset-pipeline based on the file attribute.
+	 * @param attrs [file]
+	 */
 	String asset(Map attrs) {
-		def absolutePath = handleAbsolute(attrs)
-
-		def conf = grailsApplication.config.grails.assets
-		def url  = attrs.file ?: attrs.src
-		def assetFound = false
-
-		if (url) {
-			if (conf.precompiled) {
-				def realPath = conf.manifest.getProperty(url)
-				if (realPath) {
-					url = assetUriRootPath() + realPath
-					assetFound = true
-				}
-			}
-			else {
-				def assetFile = AssetHelper.fileForFullName(url)
-				if (assetFile != null) {
-					url = assetUriRootPath() + url
-					assetFound = true
-				}
-			}
-		}
-
-		if (!assetFound) {
-			return null
-		}
-		else {
-			if (!url?.startsWith('http')) {
-				final contextPathAttribute = attrs.contextPath?.toString()
-				if (absolutePath == null) {
-					final cp = contextPathAttribute == null ? getContextPath() : contextPathAttribute
-					if (cp == null) {
-						absolutePath = handleAbsolute(absolute:true)
-					}
-					else {
-						absolutePath = cp
-					}
-				}
-				url = (absolutePath?:'') + (url ?: '')
-			}
-			return url
-		}
-	}
-
-	private assetUriRootPath() {
-		def conf    = grailsApplication.config.grails.assets
-		def mapping = assetProcessorService.assetMapping
-		if (conf.url && conf.url instanceof Closure) {
-			return conf.url.call(null)
-		}
-		else {
-			return conf.url ?: "/$mapping/"
-		}
+		assetProcessorService.asset(attrs, this)
 	}
 }
