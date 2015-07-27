@@ -17,17 +17,11 @@ class AssetMethodTagLib {
 
 	def assetPath = { attrs ->
 		def src
-		//unused
-		def ignorePrefix = false
 		def absolute = false
 		if (attrs instanceof Map) {
-
 			src = attrs.src
-			//unused
-			ignorePrefix = attrs.containsKey('ignorePrefix')? attrs.ignorePrefix : false
 			absolute = attrs.containsKey('absolute') ? attrs.absolute : false
 		} else {
-
 			src = attrs
 		}
 
@@ -45,7 +39,6 @@ class AssetMethodTagLib {
 	}
 
 	private assetUriRootPath(grailsApplication, request, absolute=false) {
-		def context = grailsApplication.mainContext //unused
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = assetProcessorService.assetMapping
 		def configUrl = conf.url

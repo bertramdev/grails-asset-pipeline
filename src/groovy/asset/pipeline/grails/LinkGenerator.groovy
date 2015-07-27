@@ -32,7 +32,6 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 	String asset(Map attrs) {
 		def absolutePath = handleAbsolute(attrs)
 
-		def absolute = attrs[DefaultLinkGenerator.ATTRIBUTE_ABSOLUTE]
 		def conf = grailsApplication.config.grails.assets
 		def url  = attrs.file ?: attrs.src
 		def assetFound = false
@@ -73,7 +72,6 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 	}
 
 	private assetUriRootPath() {
-		def context = grailsApplication.mainContext
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = assetProcessorService.assetMapping
 		if(conf.url && conf.url instanceof Closure) {

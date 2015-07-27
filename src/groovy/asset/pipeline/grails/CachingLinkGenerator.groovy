@@ -30,7 +30,6 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 	String asset(Map attrs) {
 		def absolutePath = handleAbsolute(attrs)
 
-		def absolute = attrs[CachingLinkGenerator.ATTRIBUTE_ABSOLUTE]
 		def conf = grailsApplication.config.grails.assets
 		def url  = attrs.file ?: attrs.src
 		def assetFound = false
@@ -71,7 +70,6 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 	}
 
 	private assetUriRootPath() {
-		def context = grailsApplication.mainContext
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = assetProcessorService.assetMapping
 		if(conf.url && conf.url instanceof Closure) {
