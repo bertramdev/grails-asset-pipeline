@@ -41,6 +41,17 @@ class AssetProcessorService {
 	}
 
 
+	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
+		path \
+			? conf.precompiled \
+				? conf.manifest.getProperty(path)
+				: fileForFullName(path) != null \
+					? path
+					: null
+			: null
+	}
+
+
 	boolean isAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		conf.precompiled \
 			? conf.manifest.getProperty(path)
@@ -51,17 +62,7 @@ class AssetProcessorService {
 	String asset(final Map attrs, final DefaultLinkGenerator linkGenerator) {
 		final def absolutePath = linkGenerator.handleAbsolute(attrs)
 
-		final ConfigObject conf = grailsApplication.config.grails.assets
-
-		def url = attrs.file ?: attrs.src
-
-		url \
-			? conf.precompiled \
-				? conf.manifest.getProperty(url)
-				: fileForFullName(url) != null \
-					? url
-					: null
-			: null
+		String url = getResolvedAssetPath(attrs.file ?: attrs.src)
 
 		if (!url) {
 			return null
