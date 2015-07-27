@@ -19,9 +19,10 @@ class AssetProcessorService {
 	String getAssetMapping() {
 		def path = grailsApplication.config?.grails?.assets?.mapping ?: "assets"
 		if (path.contains("/")) {
-			String message = "the property [grails.assets.mapping] can only be one level" +
-					"deep.  For example, 'foo' and 'bar' would be acceptable values, but 'foo/bar' is not"
-			throw new IllegalArgumentException(message)
+			throw new IllegalArgumentException(
+				"The property [grails.assets.mapping] can only be one level deep.  " +
+				"For example, 'foo' and 'bar' would be acceptable values, but 'foo/bar' is not"
+			)
 		}
 
 		return path
