@@ -91,7 +91,7 @@ class AssetsTagLib {
 			}
 			list.each {dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join('&')}\" ${paramsToHtmlAttr(attrs)} />${LINE_BREAK}"
+				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join('&')}\" ${paramsToHtmlAttr(attrs)}/>${LINE_BREAK}"
 			}
 		}
 	}
@@ -139,14 +139,12 @@ class AssetsTagLib {
 	}
 
 	def assetPathExists = {attrs, body ->
-		def src = attrs.remove('src')
-		def exists = isAssetPath(src)
-			if (exists) {
-				out << (body() ?: true)
-			}
-			else {
-				out << ''
-			}
+		out <<
+			(
+				isAssetPath(attrs.remove('src')) \
+					? (body() ?: true)
+					: ''
+			)
 	}
 
 	def isAssetPath(src) {
