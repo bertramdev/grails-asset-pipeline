@@ -1,7 +1,7 @@
 package asset.pipeline.grails
 
 
-import org.apache.commons.lang.StringUtils
+import static org.apache.commons.lang.StringUtils.trimToEmpty
 
 
 class AssetMethodTagLib {
@@ -15,23 +15,24 @@ class AssetMethodTagLib {
 	def grailsLinkGenerator
 
 
-	def assetPath = {attrs ->
-		def src
-		def absolute = false
+	def assetPath = {final Map<String, ?> attrs ->
+		final def src
+		final boolean absolute
 		if (attrs instanceof Map) {
 			src = attrs.src
 			absolute = attrs.containsKey('absolute') ? attrs.absolute : false
 		}
 		else {
 			src = attrs
+			absolute = false
 		}
 
-		def conf = grailsApplication.config.grails.assets
+		final def conf = grailsApplication.config.grails.assets
 
-		def assetUrl = assetUriRootPath(grailsApplication, request, absolute)
+		final String assetUrl = assetUriRootPath(absolute)
 
 		if (conf.precompiled && src) {
-			def realPath = conf.manifest.getProperty(src)
+			final def realPath = conf.manifest.getProperty(src)
 			if (realPath) {
 				return "${assetUrl}${realPath}"
 			}
@@ -39,21 +40,24 @@ class AssetMethodTagLib {
 		return "${assetUrl}${src}"
 	}
 
-	private assetUriRootPath(grailsApplication, request, absolute=false) {
-		def conf    = grailsApplication.config.grails.assets
-		def mapping = assetProcessorService.assetMapping
-		def configUrl = conf.url
-		if (conf.url instanceof Closure) {
-			configUrl = conf.url.call(request)
-			if (configUrl) {
-				return configUrl
-			}
+	private String assetUriRootPath(final boolean absolute) {
+		final String mapping = assetProcessorService.assetMapping
+
+		def configUrl = grailsApplication.config.grails.assets.url
+
+		if (configUrl instanceof Closure) {
+			configUrl = configUrl.call(request)
 		}
-		if (absolute && !configUrl) {
+
+		if (configUrl) {
+			return configUrl
+		}
+		else if (absolute) {
 			return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
 		}
-		def contextPath = StringUtils.trimToEmpty(grailsLinkGenerator?.contextPath)
-		String relativePathToResource = (contextPath + "${contextPath?.endsWith('/') ? '' : '/'}$mapping/")
-		return configUrl ?: relativePathToResource
+
+		final String contextPath = trimToEmpty(grailsLinkGenerator.contextPath)
+
+		return contextPath + "${contextPath.endsWith('/') ? '' : '/'}$mapping/"
 	}
 }
