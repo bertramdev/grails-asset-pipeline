@@ -93,14 +93,10 @@ class AssetProcessorService {
 		}
 	}
 
-	private assetUriRootPath() {
-		def conf    = grailsApplication.config.grails.assets
-		def mapping = assetMapping
-		if (conf.url instanceof Closure) {
-			return conf.url.call(null)
-		}
-		else {
-			return conf.url ?: "/$mapping/"
-		}
+	private String assetUriRootPath() {
+		final def url = grailsApplication.config.grails.assets.url
+		url instanceof Closure \
+			? url.call(null)
+			: url ?: "/$assetMapping/"
 	}
 }
