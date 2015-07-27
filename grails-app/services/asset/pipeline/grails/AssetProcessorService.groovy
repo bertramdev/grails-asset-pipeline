@@ -1,8 +1,9 @@
 package asset.pipeline.grails
 
 
-import asset.pipeline.AssetHelper
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
+
+import static asset.pipeline.AssetHelper.fileForFullName
 
 
 class AssetProcessorService {
@@ -43,7 +44,7 @@ class AssetProcessorService {
 	boolean isAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		conf.precompiled \
 			? conf.manifest.getProperty(path)
-			: AssetHelper.fileForFullName(path) != null
+			: fileForFullName(path) != null
 	}
 
 
@@ -63,7 +64,7 @@ class AssetProcessorService {
 				}
 			}
 			else {
-				def assetFile = AssetHelper.fileForFullName(url)
+				def assetFile = fileForFullName(url)
 				if (assetFile != null) {
 					url = assetUriRootPath() + url
 					assetFound = true
