@@ -1,15 +1,20 @@
 package asset.pipeline.grails
 
-import grails.util.Environment
-import asset.pipeline.AssetPipeline
+
 import asset.pipeline.AssetHelper
+import asset.pipeline.AssetPipeline
+
 
 class AssetsTagLib {
 
 	static namespace = "asset"
 	static returnObjectForTags = ['assetPath']
+
 	private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
+
+
 	def grailsApplication
+
 
 	/**
 	 * @attr src REQUIRED
@@ -22,7 +27,7 @@ class AssetsTagLib {
 		def extension
 
 		def conf = grailsApplication.config.grails.assets
-		
+
 		def nonBundledMode = (!grailsApplication.warDeployed && conf.bundle != true && attrs.bundle != true)
 
 		if(!nonBundledMode) {
@@ -89,7 +94,7 @@ class AssetsTagLib {
 
 	def image = { attrs ->
 		def src = attrs.remove('src')
-        def absolute = attrs.remove('absolute')
+		def absolute = attrs.remove('absolute')
 		out << "<img src=\"${assetPath(src:src, absolute: absolute)}\" ${paramsToHtmlAttr(attrs)}/>"
 	}
 
@@ -132,12 +137,12 @@ class AssetsTagLib {
 	def assetPathExists = { attrs, body ->
 		def src = attrs.remove('src')
 		def exists = isAssetPath(src)
-            if (exists){
-                out << (body() ?: true)
-            } else {
-                out << ''
-            }
-    }
+			if (exists){
+				out << (body() ?: true)
+			} else {
+				out << ''
+			}
+	}
 
 	def isAssetPath(src) {
 		def conf = grailsApplication.config.grails.assets
@@ -158,5 +163,4 @@ class AssetsTagLib {
 	private paramsToHtmlAttr(attrs) {
 		attrs.collect { key, value -> "${key}=\"${value.toString().replace('"', '\\"')}\"" }?.join(" ")
 	}
-
 }
