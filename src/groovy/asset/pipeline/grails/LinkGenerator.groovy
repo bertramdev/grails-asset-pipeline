@@ -15,12 +15,12 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 	def assetProcessorService
 
 
-	LinkGenerator(String serverUrl) {
+	LinkGenerator(final String serverUrl) {
 		super(serverUrl)
 	}
 
 
-	String resource(Map attrs) {
+	String resource(final Map attrs) {
 		asset(attrs) ?: super.resource(attrs)
 	}
 
@@ -28,7 +28,7 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 	 * Finds an Asset from the asset-pipeline based on the file attribute.
 	 * @param attrs [file]
 	 */
-	String asset(Map attrs) {
+	String asset(final Map attrs) {
 		assetProcessorService.asset(attrs, this)
 	}
 }

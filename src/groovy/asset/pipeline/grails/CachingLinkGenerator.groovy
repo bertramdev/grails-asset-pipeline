@@ -13,12 +13,12 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 	def assetProcessorService
 
 
-	CachingLinkGenerator(String serverUrl) {
+	CachingLinkGenerator(final String serverUrl) {
 		super(serverUrl)
 	}
 
 
-	String resource(Map attrs) {
+	String resource(final Map attrs) {
 		asset(attrs) ?: super.resource(attrs)
 	}
 
@@ -26,7 +26,7 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 	 * Finds an Asset from the asset-pipeline based on the file attribute.
 	 * @param attrs [file]
 	 */
-	String asset(Map attrs) {
+	String asset(final Map attrs) {
 		assetProcessorService.asset(attrs, this)
 	}
 }
