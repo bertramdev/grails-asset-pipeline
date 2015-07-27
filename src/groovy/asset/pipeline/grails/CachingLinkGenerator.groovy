@@ -19,7 +19,7 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 
 
 	String resource(Map attrs) {
-		return asset(attrs) ?: super.resource(attrs)
+		asset(attrs) ?: super.resource(attrs)
 	}
 
 	/**

@@ -21,7 +21,7 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 
 
 	String resource(Map attrs) {
-		return asset(attrs) ?: super.resource(attrs)
+		asset(attrs) ?: super.resource(attrs)
 	}
 
 	/**
