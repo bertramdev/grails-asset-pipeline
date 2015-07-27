@@ -48,12 +48,14 @@ class AssetProcessorService {
 	}
 
 
-	String asset(Map attrs, DefaultLinkGenerator linkGenerator) {
-		def absolutePath = linkGenerator.handleAbsolute(attrs)
+	String asset(final Map attrs, final DefaultLinkGenerator linkGenerator) {
+		final def absolutePath = linkGenerator.handleAbsolute(attrs)
 
-		def conf = grailsApplication.config.grails.assets
+		final ConfigObject conf = grailsApplication.config.grails.assets
+
+		boolean assetFound = false
+
 		def url  = attrs.file ?: attrs.src
-		def assetFound = false
 
 		if (url) {
 			if (conf.precompiled) {
@@ -75,22 +77,19 @@ class AssetProcessorService {
 		if (!assetFound) {
 			return null
 		}
-		else {
-			if (!url?.startsWith('http')) {
+
+		if (!url?.startsWith('http')) {
+			if (absolutePath == null) {
 				final contextPathAttribute = attrs.contextPath?.toString()
-				if (absolutePath == null) {
-					final cp = contextPathAttribute == null ? linkGenerator.getContextPath() : contextPathAttribute
-					if (cp == null) {
-						absolutePath = linkGenerator.handleAbsolute(absolute:true)
-					}
-					else {
-						absolutePath = cp
-					}
-				}
-				url = (absolutePath?:'') + (url ?: '')
+				final cp = contextPathAttribute == null ? linkGenerator.contextPath : contextPathAttribute
+				absolutePath = \
+					cp == null \
+						? linkGenerator.handleAbsolute(absolute: true)
+						: cp
 			}
-			return url
+			url = (absolutePath ?: '') + (url ?: '')
 		}
+		return url
 	}
 
 	private String assetUriRootPath() {
