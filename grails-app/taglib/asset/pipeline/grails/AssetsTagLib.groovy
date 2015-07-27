@@ -7,7 +7,7 @@ import asset.pipeline.AssetPipeline
 
 class AssetsTagLib {
 
-	static namespace = "asset"
+	static namespace = 'asset'
 	static returnObjectForTags = ['assetPath']
 
 	private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
@@ -33,22 +33,22 @@ class AssetsTagLib {
 		if(!nonBundledMode) {
 			out << "<script src=\"${assetPath(src:src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
 		} else {
-			if (src.lastIndexOf(".") >= 0) {
-				uri = src.substring(0, src.lastIndexOf("."))
-				extension = src.substring(src.lastIndexOf(".") + 1)
+			if (src.lastIndexOf('.') >= 0) {
+				uri = src.substring(0, src.lastIndexOf('.'))
+				extension = src.substring(src.lastIndexOf('.') + 1)
 			} else {
 				uri = src
 				extension = 'js'
 			}
 			// def startTime = new Date().time
 			def list = AssetPipeline.getDependencyList(uri, 'application/javascript', extension)
-			def modifierParams = ["compile=false"]
+			def modifierParams = ['compile=false']
 			if(attrs.charset) {
 				modifierParams << "encoding=${attrs.charset}"
 			}
 			list.each { dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<script src=\"${depAssetPath}?${modifierParams.join("&")}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>${LINE_BREAK}"
+				out << "<script src=\"${depAssetPath}?${modifierParams.join('&')}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>${LINE_BREAK}"
 			}
 			// println "Fetching Dev Mode Dependency List Time ${new Date().time - startTime}"
 		}
@@ -68,26 +68,26 @@ class AssetsTagLib {
 		def conf = grailsApplication.config.grails.assets
 		def uri
 		def extension
-	    def nonBundledMode = (!grailsApplication.warDeployed && conf.bundle != true && attrs.bundle != true)
+		def nonBundledMode = (!grailsApplication.warDeployed && conf.bundle != true && attrs.bundle != true)
 
 		if(!nonBundledMode) {
 			out << link([rel: 'stylesheet', href:src] + attrs)
 		} else {
-			if (src.lastIndexOf(".") >= 0) {
-				uri = src.substring(0, src.lastIndexOf("."))
-				extension = src.substring(src.lastIndexOf(".") + 1)
+			if (src.lastIndexOf('.') >= 0) {
+				uri = src.substring(0, src.lastIndexOf('.'))
+				extension = src.substring(src.lastIndexOf('.') + 1)
 			} else {
 				uri = src
 				extension = 'css'
 			}
 			def list = AssetPipeline.getDependencyList(uri, 'text/css', extension)
-			def modifierParams = ["compile=false"]
+			def modifierParams = ['compile=false']
 			if(attrs.charset) {
 				modifierParams << "encoding=${attrs.charset}"
 			}
 			list.each { dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join("&")}\" ${paramsToHtmlAttr(attrs)} />${LINE_BREAK}"
+				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join('&')}\" ${paramsToHtmlAttr(attrs)} />${LINE_BREAK}"
 			}
 		}
 	}
@@ -161,6 +161,6 @@ class AssetsTagLib {
 	}
 
 	private paramsToHtmlAttr(attrs) {
-		attrs.collect { key, value -> "${key}=\"${value.toString().replace('"', '\\"')}\"" }?.join(" ")
+		attrs.collect { key, value -> "${key}=\"${value.toString().replace('"', '\\"')}\"" }?.join(' ')
 	}
 }

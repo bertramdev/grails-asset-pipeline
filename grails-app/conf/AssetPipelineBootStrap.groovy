@@ -38,7 +38,7 @@ class AssetPipelineBootStrap {
 				}
 			}
 			def manifestFile = new File(storagePath,'manifest.properties')
-			manifest.store(manifestFile.newWriter(),"")
+			manifest.store(manifestFile.newWriter(),'')
 		}
 	}
 }

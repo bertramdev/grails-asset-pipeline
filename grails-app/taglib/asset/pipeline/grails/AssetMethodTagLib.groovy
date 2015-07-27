@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils
 
 class AssetMethodTagLib {
 
-	static namespace = "g"
+	static namespace = 'g'
 	static returnObjectForTags = ['assetPath']
 
 
