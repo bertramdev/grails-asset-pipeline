@@ -147,21 +147,11 @@ class AssetsTagLib {
 			)
 	}
 
-	def isAssetPath(src) {
+	boolean isAssetPath(src) {
 		def conf = grailsApplication.config.grails.assets
-		if (conf.precompiled) {
-			def realPath = conf.manifest.getProperty(src)
-			if (realPath) {
-				return true
-			}
-		}
-		else {
-			def assetFile = AssetHelper.fileForFullName(src)
-			if (assetFile != null) {
-				return true
-			}
-		}
-		return false
+		conf.precompiled \
+			? conf.manifest.getProperty(src)
+			: AssetHelper.fileForFullName(src) != null
 	}
 
 	private paramsToHtmlAttr(attrs) {
