@@ -34,8 +34,13 @@ class AssetProcessorService {
 	}
 
 
+	boolean shouldUseManifestPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
+		path && conf.precompiled
+	}
+
+
 	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
-		path && conf.precompiled \
+		shouldUseManifestPath(path, conf) \
 			? conf.manifest.getProperty(path) ?: path
 			: path
 	}
@@ -49,7 +54,7 @@ class AssetProcessorService {
 
 
 	boolean isAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
-		path && conf.precompiled \
+		shouldUseManifestPath(path, conf) \
 			? conf.manifest.getProperty(path)
 			: path && fileForFullName(path) != null
 	}
