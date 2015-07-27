@@ -19,7 +19,7 @@ class AssetsTagLib {
 	/**
 	 * @attr src REQUIRED
 	 */
-	def javascript = { attrs ->
+	def javascript = {attrs ->
 		def src = attrs.remove('src')
 		attrs.remove('href')
 		src = "${AssetHelper.nameWithoutExtension(src)}.js"
@@ -32,21 +32,23 @@ class AssetsTagLib {
 
 		if(!nonBundledMode) {
 			out << "<script src=\"${assetPath(src:src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
-		} else {
+		}
+		else {
 			if (src.lastIndexOf('.') >= 0) {
 				uri = src.substring(0, src.lastIndexOf('.'))
 				extension = src.substring(src.lastIndexOf('.') + 1)
-			} else {
+			}
+			else {
 				uri = src
 				extension = 'js'
 			}
 			// def startTime = new Date().time
 			def list = AssetPipeline.getDependencyList(uri, 'application/javascript', extension)
 			def modifierParams = ['compile=false']
-			if(attrs.charset) {
+			if (attrs.charset) {
 				modifierParams << "encoding=${attrs.charset}"
 			}
-			list.each { dep ->
+			list.each {dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
 				out << "<script src=\"${depAssetPath}?${modifierParams.join('&')}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>${LINE_BREAK}"
 			}
@@ -58,10 +60,10 @@ class AssetsTagLib {
 	 * @attr href OPTIONAL alternative to src
 	 * @attr src OPTIONAL alternative to href
 	 */
-	def stylesheet = { attrs ->
+	def stylesheet = {attrs ->
 		def src  = attrs.remove('src')
 		def href = attrs.remove('href')
-		if(href) {
+		if (href) {
 			src = href
 		}
 		src = "${AssetHelper.nameWithoutExtension(src)}.css"
@@ -72,27 +74,29 @@ class AssetsTagLib {
 
 		if(!nonBundledMode) {
 			out << link([rel: 'stylesheet', href:src] + attrs)
-		} else {
+		}
+		else {
 			if (src.lastIndexOf('.') >= 0) {
 				uri = src.substring(0, src.lastIndexOf('.'))
 				extension = src.substring(src.lastIndexOf('.') + 1)
-			} else {
+			}
+			else {
 				uri = src
 				extension = 'css'
 			}
 			def list = AssetPipeline.getDependencyList(uri, 'text/css', extension)
 			def modifierParams = ['compile=false']
-			if(attrs.charset) {
+			if (attrs.charset) {
 				modifierParams << "encoding=${attrs.charset}"
 			}
-			list.each { dep ->
+			list.each {dep ->
 				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
 				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join('&')}\" ${paramsToHtmlAttr(attrs)} />${LINE_BREAK}"
 			}
 		}
 	}
 
-	def image = { attrs ->
+	def image = {attrs ->
 		def src = attrs.remove('src')
 		def absolute = attrs.remove('absolute')
 		out << "<img src=\"${assetPath(src:src, absolute: absolute)}\" ${paramsToHtmlAttr(attrs)}/>"
@@ -104,56 +108,58 @@ class AssetsTagLib {
 	 * @attr rel REQUIRED
 	 * @attr type OPTIONAL
 	 */
-	def link = { attrs ->
+	def link = {attrs ->
 		def href = attrs.remove('href')
 		out << "<link ${paramsToHtmlAttr(attrs)} href=\"${assetPath(src:href)}\"/>"
 	}
 
 
-	def script = { attrs, body ->
+	def script = {attrs, body ->
 		def assetBlocks = request.getAttribute('assetScriptBlocks')
-		if(!assetBlocks) {
+		if (!assetBlocks) {
 			assetBlocks = []
 		}
 		assetBlocks << [attrs: attrs, body: body()]
 		request.setAttribute('assetScriptBlocks', assetBlocks)
 	}
 
-	def deferredScripts = { attrs ->
+	def deferredScripts = {attrs ->
 		def assetBlocks = request.getAttribute('assetScriptBlocks')
-		if(!assetBlocks) {
+		if (!assetBlocks) {
 			return
 		}
-		assetBlocks.each { assetBlock ->
+		assetBlocks.each {assetBlock ->
 			out << "<script ${paramsToHtmlAttr(assetBlock.attrs)}>${assetBlock.body}</script>"
 		}
 	}
 
 
-	def assetPath = { attrs ->
+	def assetPath = {attrs ->
 		g.assetPath(attrs)
 	}
 
-	def assetPathExists = { attrs, body ->
+	def assetPathExists = {attrs, body ->
 		def src = attrs.remove('src')
 		def exists = isAssetPath(src)
-			if (exists){
+			if (exists) {
 				out << (body() ?: true)
-			} else {
+			}
+			else {
 				out << ''
 			}
 	}
 
 	def isAssetPath(src) {
 		def conf = grailsApplication.config.grails.assets
-		if(conf.precompiled) {
+		if (conf.precompiled) {
 			def realPath = conf.manifest.getProperty(src)
-			if(realPath) {
+			if (realPath) {
 				return true
 			}
-		} else {
+		}
+		else {
 			def assetFile = AssetHelper.fileForFullName(src)
-			if(assetFile != null) {
+			if (assetFile != null) {
 				return true
 			}
 		}
@@ -161,6 +167,6 @@ class AssetsTagLib {
 	}
 
 	private paramsToHtmlAttr(attrs) {
-		attrs.collect { key, value -> "${key}=\"${value.toString().replace('"', '\\"')}\"" }?.join(' ')
+		attrs.collect {key, value -> "${key}=\"${value.toString().replace('"', '\\"')}\""}?.join(' ')
 	}
 }

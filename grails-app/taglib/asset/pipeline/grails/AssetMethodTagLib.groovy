@@ -15,13 +15,14 @@ class AssetMethodTagLib {
 	def grailsLinkGenerator
 
 
-	def assetPath = { attrs ->
+	def assetPath = {attrs ->
 		def src
 		def absolute = false
 		if (attrs instanceof Map) {
 			src = attrs.src
 			absolute = attrs.containsKey('absolute') ? attrs.absolute : false
-		} else {
+		}
+		else {
 			src = attrs
 		}
 
@@ -29,9 +30,9 @@ class AssetMethodTagLib {
 
 		def assetUrl = assetUriRootPath(grailsApplication, request, absolute)
 
-		if(conf.precompiled && src) {
+		if (conf.precompiled && src) {
 			def realPath = conf.manifest.getProperty(src)
-			if(realPath) {
+			if (realPath) {
 				return "${assetUrl}${realPath}"
 			}
 		}
@@ -42,17 +43,17 @@ class AssetMethodTagLib {
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = assetProcessorService.assetMapping
 		def configUrl = conf.url
-		if(conf.url && conf.url instanceof Closure) {
+		if (conf.url && conf.url instanceof Closure) {
 			configUrl = conf.url.call(request)
-			if(configUrl){
+			if (configUrl) {
 				return configUrl
 			}
 		}
-		if(absolute && !configUrl){
+		if (absolute && !configUrl) {
 			return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
 		}
 		def contextPath = StringUtils.trimToEmpty(grailsLinkGenerator?.contextPath)
-		String relativePathToResource = (contextPath + "${contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
+		String relativePathToResource = (contextPath + "${contextPath?.endsWith('/') ? '' : '/'}$mapping/")
 		return configUrl ?: relativePathToResource
 	}
 }

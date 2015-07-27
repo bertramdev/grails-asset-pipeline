@@ -34,32 +34,35 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 		def url  = attrs.file ?: attrs.src
 		def assetFound = false
 
-		if(url) {
-			if(conf.precompiled) {
+		if (url) {
+			if (conf.precompiled) {
 				def realPath = conf.manifest.getProperty(url)
-				if(realPath) {
+				if (realPath) {
 					url = assetUriRootPath() + realPath
 					assetFound = true
 				}
-			} else {
+			}
+			else {
 				def assetFile = AssetHelper.fileForFullName(url)
-				if(assetFile != null) {
+				if (assetFile != null) {
 					url = assetUriRootPath() + url
 					assetFound = true
 				}
 			}
 		}
 
-		if(!assetFound) {
+		if (!assetFound) {
 			return null
-		} else {
-			if(!url?.startsWith('http')) {
+		}
+		else {
+			if (!url?.startsWith('http')) {
 				final contextPathAttribute = attrs.contextPath?.toString()
-				if(absolutePath == null) {
+				if (absolutePath == null) {
 					final cp = contextPathAttribute == null ? getContextPath() : contextPathAttribute
-					if(cp == null) {
+					if (cp == null) {
 						absolutePath = handleAbsolute(absolute:true)
-					} else {
+					}
+					else {
 						absolutePath = cp
 					}
 				}
@@ -72,9 +75,10 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 	private assetUriRootPath() {
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = assetProcessorService.assetMapping
-		if(conf.url && conf.url instanceof Closure) {
+		if (conf.url && conf.url instanceof Closure) {
 			return conf.url.call(null)
-		} else {
+		}
+		else {
 			return conf.url ?: "/$mapping/"
 		}
 	}

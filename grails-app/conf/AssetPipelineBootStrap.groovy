@@ -6,17 +6,17 @@ class AssetPipelineBootStrap {
 	def grailsApplication
 
 
-	def init = { servletContext ->
+	def init = {servletContext ->
 		def storagePath = grailsApplication.config.grails.assets.storagePath
 		if (!storagePath) {
 			return
 		}
 		def manifest = AssetPipelineConfigHolder.manifest
 
-		if(manifest) {
+		if (manifest) {
 			def storageFile = new File(storagePath)
 			storageFile.mkdirs()
-			manifest.stringPropertyNames().each { propertyName ->
+			manifest.stringPropertyNames().each {propertyName ->
 				def propertyValue = manifest.getProperty(propertyName)
 				def res = grailsApplication.getParentContext().getResource("assets/${propertyValue}")
 
@@ -29,7 +29,7 @@ class AssetPipelineBootStrap {
 				def outputDigestFile = new File(storagePath, propertyValue)
 				outputDigestFile.bytes = fileBytes
 				def gzRes = grailsApplication.getParentContext().getResource("assets/${propertyValue}.gz")
-				if(gzRes.exists()) {
+				if (gzRes.exists()) {
 					def gzBytes = gzRes.inputStream.bytes
 					def outputGzFile = new File(storagePath, "${propertyName}.gz")
 					outputGzFile.bytes = gzBytes
