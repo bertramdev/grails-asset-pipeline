@@ -53,7 +53,7 @@ class AssetProcessorService {
 	boolean isAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		path && conf.precompiled \
 			? conf.manifest.getProperty(path)
-			: fileForFullName(path) != null
+			: path && fileForFullName(path) != null
 	}
 
 
