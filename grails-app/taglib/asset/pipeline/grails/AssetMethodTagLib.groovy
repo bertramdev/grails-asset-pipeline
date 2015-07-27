@@ -27,14 +27,7 @@ class AssetMethodTagLib {
 			absolute = false
 		}
 
-		final def conf = grailsApplication.config.grails.assets
-
-		final String path = \
-			src && conf.precompiled \
-				? conf.manifest.getProperty(src) ?: src
-				: src
-
-		return assetUriRootPath(absolute) + path
+		return assetUriRootPath(absolute) + assetProcessorService.getAssetPath(src)
 	}
 
 	private String assetUriRootPath(final boolean absolute) {

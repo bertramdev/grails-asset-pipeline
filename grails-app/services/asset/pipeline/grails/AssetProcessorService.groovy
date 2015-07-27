@@ -33,6 +33,13 @@ class AssetProcessorService {
 	}
 
 
+	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
+		path && conf.precompiled \
+			? conf.manifest.getProperty(path) ?: path
+			: path
+	}
+
+
 	String asset(Map attrs, DefaultLinkGenerator linkGenerator) {
 		def absolutePath = linkGenerator.handleAbsolute(attrs)
 
