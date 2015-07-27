@@ -53,32 +53,23 @@ class AssetProcessorService {
 
 		final ConfigObject conf = grailsApplication.config.grails.assets
 
-		boolean assetFound = false
+		def url = attrs.file ?: attrs.src
 
-		def url  = attrs.file ?: attrs.src
+		url \
+			? conf.precompiled \
+				? conf.manifest.getProperty(url)
+				: fileForFullName(url) != null \
+					? url
+					: null
+			: null
 
-		if (url) {
-			if (conf.precompiled) {
-				def realPath = conf.manifest.getProperty(url)
-				if (realPath) {
-					url = assetUriRootPath() + realPath
-					assetFound = true
-				}
-			}
-			else {
-				def assetFile = fileForFullName(url)
-				if (assetFile != null) {
-					url = assetUriRootPath() + url
-					assetFound = true
-				}
-			}
-		}
-
-		if (!assetFound) {
+		if (!url) {
 			return null
 		}
 
-		if (!url?.startsWith('http')) {
+		url = assetUriRootPath() + url
+
+		if (!url.startsWith('http')) {
 			if (absolutePath == null) {
 				final contextPathAttribute = attrs.contextPath?.toString()
 				final cp = contextPathAttribute == null ? linkGenerator.contextPath : contextPathAttribute
