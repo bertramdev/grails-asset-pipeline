@@ -2,15 +2,11 @@ package asset.pipeline.grails
 
 
 import groovy.util.logging.Slf4j
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 
 
 @Slf4j
-class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAware {
-
-	GrailsApplication grailsApplication
+class LinkGenerator extends DefaultLinkGenerator {
 
 	def assetProcessorService
 

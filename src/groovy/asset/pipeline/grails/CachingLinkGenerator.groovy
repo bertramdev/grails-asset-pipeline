@@ -2,14 +2,11 @@ package asset.pipeline.grails
 
 
 import groovy.util.logging.Slf4j
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 
 
 @Slf4j
-class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.CachingLinkGenerator implements GrailsApplicationAware {
+class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.CachingLinkGenerator {
 
-	GrailsApplication grailsApplication
 	def assetProcessorService
 
 
