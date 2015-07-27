@@ -1,4 +1,6 @@
 import asset.pipeline.AssetPipelineConfigHolder
+import org.springframework.context.ApplicationContext
+import org.springframework.core.io.Resource
 
 
 class AssetPipelineBootStrap {
@@ -6,39 +8,44 @@ class AssetPipelineBootStrap {
 	def grailsApplication
 
 
-	def init = {servletContext ->
-		def storagePath = grailsApplication.config.grails.assets.storagePath
+	def init = {final servletContext ->
+		final String storagePath = grailsApplication.config.grails.assets.storagePath
 		if (!storagePath) {
 			return
 		}
-		def manifest = AssetPipelineConfigHolder.manifest
+
+		final Properties manifest = AssetPipelineConfigHolder.manifest
 
 		if (manifest) {
-			def storageFile = new File(storagePath)
-			storageFile.mkdirs()
-			manifest.stringPropertyNames().each {propertyName ->
-				def propertyValue = manifest.getProperty(propertyName)
-				def res = grailsApplication.getParentContext().getResource("assets/${propertyValue}")
+			new File(storagePath).mkdirs()
 
-				def fileBytes = res.inputStream.bytes
+			final ApplicationContext parentContext = grailsApplication.parentContext
 
-				def outputFile = new File(storagePath, propertyName)
-				def parentFile = new File(outputFile.parent)
-				parentFile.mkdirs()
+			manifest.stringPropertyNames().each {final String propertyName ->
+				final File outputFile = new File(storagePath, propertyName)
+
+				new File(outputFile.parent).mkdirs()
+
+				final String propertyValue = manifest.getProperty(propertyName)
+
+				final String assetPath = "assets/${propertyValue}"
+
+				final byte[] fileBytes = parentContext.getResource(assetPath).inputStream.bytes
+
 				outputFile.bytes = fileBytes
-				def outputDigestFile = new File(storagePath, propertyValue)
-				outputDigestFile.bytes = fileBytes
-				def gzRes = grailsApplication.getParentContext().getResource("assets/${propertyValue}.gz")
+
+				new File(storagePath, propertyValue).bytes = fileBytes
+
+				final Resource gzRes = parentContext.getResource("${assetPath}.gz")
 				if (gzRes.exists()) {
-					def gzBytes = gzRes.inputStream.bytes
-					def outputGzFile = new File(storagePath, "${propertyName}.gz")
-					outputGzFile.bytes = gzBytes
-					def outputGzDigestFile = new File(storagePath, "${propertyValue}.gz")
-					outputGzDigestFile.bytes = gzBytes
+					final byte[] gzBytes = gzRes.inputStream.bytes
+
+					new File(storagePath, "${propertyName}.gz" ).bytes = gzBytes
+					new File(storagePath, "${propertyValue}.gz").bytes = gzBytes
 				}
 			}
-			def manifestFile = new File(storagePath,'manifest.properties')
-			manifest.store(manifestFile.newWriter(),'')
+
+			manifest.store(new File(storagePath, 'manifest.properties').newWriter(), '')
 		}
 	}
 }
