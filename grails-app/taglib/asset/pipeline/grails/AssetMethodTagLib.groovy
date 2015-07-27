@@ -43,7 +43,7 @@ class AssetMethodTagLib {
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = assetProcessorService.assetMapping
 		def configUrl = conf.url
-		if (conf.url && conf.url instanceof Closure) {
+		if (conf.url instanceof Closure) {
 			configUrl = conf.url.call(request)
 			if (configUrl) {
 				return configUrl

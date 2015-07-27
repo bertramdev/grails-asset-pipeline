@@ -81,7 +81,7 @@ class AssetProcessorService {
 	private assetUriRootPath() {
 		def conf    = grailsApplication.config.grails.assets
 		def mapping = assetMapping
-		if (conf.url && conf.url instanceof Closure) {
+		if (conf.url instanceof Closure) {
 			return conf.url.call(null)
 		}
 		else {
