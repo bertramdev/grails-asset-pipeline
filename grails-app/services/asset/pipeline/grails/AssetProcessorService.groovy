@@ -42,11 +42,9 @@ class AssetProcessorService {
 
 
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
-		path && conf.precompiled \
-			? conf.manifest.getProperty(path)
-			: path && fileForFullName(path) != null \
-				? path
-				: null
+		isAssetPath(path, conf) \
+			? path
+			: null
 	}
 
 
