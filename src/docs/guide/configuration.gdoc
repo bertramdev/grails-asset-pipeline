@@ -18,11 +18,11 @@ h3. Minification
 The Asset-pipeline comes with the newer version of Closure Compiler to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. Closure can be enabled/disabled entirely as well as configured via various options.
 
 {table}
-*Property* | *Value*
-grails.assets.minifyJs | *true* or *false*
-grails.assets.minifyCss | *true* or *false*
-grails.assets.enableSourceMaps | *true* or *false*
-grails.assets.minifyOptions | *Map*
+*Property* | *Value* | *Default*
+grails.assets.minifyJs | *true* or *false* | *true*
+grails.assets.minifyCss | *true* or *false* | *true*
+grails.assets.enableSourceMaps | *true* or *false* | *true*
+grails.assets.minifyOptions | *Map* | (see below)
 {table}
 
 {code}
