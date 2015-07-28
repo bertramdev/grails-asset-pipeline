@@ -49,7 +49,10 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
         if(contentType) {
             specs = AssetHelper.getPossibleFileSpecs(contentType)
         } else {
-            specs = AssetHelper.assetFileClasses()
+            if(!extension) {
+                extension = AssetHelper.extensionFromURI(relativePath)
+            }
+            specs = AssetHelper.assetFileClasses().findAll { it.extensions.contains(extension) }
         }
 
         AssetFile assetFile = resolveAsset(specs, prefixPath, normalizedPath, baseFile, extension)
