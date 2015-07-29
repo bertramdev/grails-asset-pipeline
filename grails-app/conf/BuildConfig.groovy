@@ -1,6 +1,8 @@
 grails.project.work.dir = 'target'
 
 grails.project.dependency.resolver = "maven"
+grails.project.target.level = 1.7
+grails.project.source.level = 1.7
 
 grails.project.dependency.resolution = {
 
