@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>asset-pipeline 3.0.4</title>
+        <title>asset-pipeline 3.0.5</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -60,7 +60,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>asset-pipeline - Reference Documentation</h1>
                             <p><strong>Authors:</strong> </p>
-                            <p><strong>Version:</strong> 3.0.4</p>
+                            <p><strong>Version:</strong> 3.0.5</p>
                             
                         </div>
 
@@ -115,72 +115,16 @@ The Grails Asset-Pipeline is a plugin used for managing and processing static as
 <li><a href="https://github.com/bertramdev/handlebars-grails-asset-pipeline" target="blank">Handlebars Asset-Pipeline Plugin</a></li>
 <li><a href="https://github.com/bertramdev/ember-grails-asset-pipeline" target="blank">Ember Asset-Pipeline Plugin</a></li>
 <li><a href="http://guides.rubyonrails.org/asset_pipeline.html" target="blank">Rails Asset Pipeline Guide</a></li>
-</ul><p class="paragraph"/><h3>Release History</h3>
-<ul class="star">
-<li>December 2, 2014</li>
-<ul class="star">
-<li>2.0.8 Release - Moved to the new Asset-Pipeline-Core library with 2x faster compiling, binary plugin support, sourcemaps and more.</li>
-</ul>
-<li>July 29, 2014</li>
-<ul class="star">
-<li>1.9.6 Release - Whoops I had a typo. Thanks Travis.ci</li>
-</ul>
-<li>July 29, 2014</li>
-<ul class="star">
-<li>1.9.5 Release - Fixed Windows Platform Bug in CSS. Upgraded to UglifyJS2.0</li>
-</ul>
-<li>July 11, 2014</li>
-<ul class="star">
-<li>1.9.3 Release - Fixed ETag Headers for non-digested files, and updated project docs.</li>
-</ul>
-<li>July 10, 2014</li>
-<ul class="star">
-<li>1.9.2 Release - Fixed bug in cache manager, updated docs.</li>
-<li>1.9.1 Release - Added commons-io dependency for more recent versions of grails.</li>
-</ul>
-<li>June 28, 2014</li>
-<ul class="star">
-<li>1.9.0 Release - Added Absolute Image Support, Various bug fixes. Documentation Improvements.</li>
-</ul>
-<li>June 6, 2014</li>
-<ul class="star">
-<li>1.8.11 Release - require_tree directive now falls back to absolute references if path doesn't exist relatively</li>
-</ul>
-<li>June 1, 2014</li>
-<ul class="star">
-<li>1.8.10 Release - Added Support for comma delimited require lists</li>
-</ul>
-<li>April 30, 2014</li>
-<ul class="star">
-<li>1.8.7 Release - ETag Header Support and Vary: Accept-Encoding</li>
-</ul>
-<li>April 29, 2014</li>
-<ul class="star">
-<li>1.8.6 Release - AssetResourceLocator fix</li>
-</ul>
-<li>April 28, 2014</li>
-<ul class="star">
-<li>1.8.5 Release - GGTS and STS Eclipse Groovy Compiler Fixes</li>
-<li>1.8.4 Release - GGTS and STS Eclipse Groovy Compiler Fixes</li>
-</ul>
-<li>October 13, 2013</li>
-<ul class="star">
-<li>1.0.1 release</li>
-</ul>
-<li>October 28, 2013</li>
-<ul class="star">
-<li>1.0.2 release</li>
-</ul>
-<li>November 22, 2013</li>
-<ul class="star">
-<li>1.1.2 Release</li>
-<li>1.1.3 Release</li>
-</ul></ul><p class="paragraph"/>
+</ul><p class="paragraph"/>
 
 
 <h1 id="releases">2 Release Notes</h1>
 <h3>Release History</h3>
 <ul class="star">
+<li>July 2, 2015</li>
+<ul class="star">
+<li>2.3.9 Release - Fix in _AssetCompile gant script for buildDir, bad quotation used around string</li>
+</ul>
 <li>June 30, 2015</li>
 <ul class="star">
 <li>2.3.8 Release - Fixes Jar asset injection for gradle and grails 3.x when assets.compileDir is non standard.</li>
@@ -188,7 +132,7 @@ The Grails Asset-Pipeline is a plugin used for managing and processing static as
 </ul>
 <li>June 27, 2015</li>
 <ul class="star">
-<li>2.3.7 Release - Fixes to relative path replacement in css/html. Improvements in Angular @ngInject minification.</li>
+<li>2.3.7 Release - Fixes to relative path replacement in css/html. Improvements in Angular @ngInject minification. Support for custom directives on files (i.e. //=wrapped)</li>
 </ul>
 <li>June 19, 2015</li>
 <ul class="star">
@@ -326,7 +270,7 @@ The new asset-pipeline brings with it a host of new features and improvements. T
 
 
 <h1 id="configuration">3 Configuration</h1>
-Asset-Pipeline has several customizable options to tweak the compiler to suit your needs. Below is a list of the various configuration options and explanations for how to use them<p class="paragraph"/><h3>Excludes and Includes</h3><p class="paragraph"/>Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.excludes</td><td>&#91;"tiny_mce/src/&#42;.js"]</td></tr><tr class="table-even"><td>grails.assets.plugin."twitter-bootstrap".excludes</td><td>&#91;"&#42;&#42;/&#42;.less"]</td></tr><tr class="table-odd"><td>grails.assets.plugin."twitter-bootstrap".includes</td><td>&#91;"bootstrap.less"]</td></tr></table><p class="paragraph"/>Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the <code>bootstrap.less</code> file can be compiled from the <code>twitter-bootstrap plugin</code>.<p class="paragraph"/><h3>Minification</h3><p class="paragraph"/>The Asset-pipeline comes with the newer version of Closure Compiler to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. Closure can be enabled/disabled entirely as well as configured via various options.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.minifyJs</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyCss</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-odd"><td>grails.assets.enableSourceMaps</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td></tr><tr class="table-even"><td>grails.assets.minifyOptions</td><td><strong class="bold">Map</strong></td></tr></table><p class="paragraph"/><div class="code"><pre>grails.assets.minifyOptions = &#91;
+Asset-Pipeline has several customizable options to tweak the compiler to suit your needs. Below is a list of the various configuration options and explanations for how to use them<p class="paragraph"/><h3>Excludes and Includes</h3><p class="paragraph"/>Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.excludes</td><td>&#91;"tiny_mce/src/&#42;.js"]</td></tr><tr class="table-even"><td>grails.assets.plugin."twitter-bootstrap".excludes</td><td>&#91;"&#42;&#42;/&#42;.less"]</td></tr><tr class="table-odd"><td>grails.assets.plugin."twitter-bootstrap".includes</td><td>&#91;"bootstrap.less"]</td></tr></table><p class="paragraph"/>Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the <code>bootstrap.less</code> file can be compiled from the <code>twitter-bootstrap plugin</code>.<p class="paragraph"/><h3>Minification</h3><p class="paragraph"/>The Asset-pipeline comes with the newer version of Closure Compiler to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. Closure can be enabled/disabled entirely as well as configured via various options.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th><th><strong class="bold">Default</strong></th></tr><tr class="table-odd"><td>grails.assets.minifyJs</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td><td><strong class="bold">true</strong></td></tr><tr class="table-even"><td>grails.assets.minifyCss</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td><td><strong class="bold">true</strong></td></tr><tr class="table-odd"><td>grails.assets.enableSourceMaps</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td><td><strong class="bold">true</strong></td></tr><tr class="table-even"><td>grails.assets.minifyOptions</td><td><strong class="bold">Map</strong></td><td>(see below)</td></tr></table><p class="paragraph"/><div class="code"><pre>grails.assets.minifyOptions = &#91;
     languageMode: 'ES5',
     targetLanguage: 'ES5', //Can go from ES6 to ES5 <span class="java&#45;keyword">for</span> those bleeding edgers
     optimizationLevel: 'SIMPLE' //Or ADVANCED or WHITESPACE_ONLY
