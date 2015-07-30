@@ -62,7 +62,10 @@ class AssetPipelineGrailsPlugin extends grails.plugins.Plugin {
         
 
         try {
-            manifestFile = applicationContext.getResource("classpath:assets/manifest.properties")
+            manifestFile = applicationContext.getResource("assets/manifest.properties")
+            if(!manifestFile.exists()) {
+                manifestFile = applicationContext.getResource("classpath:assets/manifest.properties")
+            }
         } catch(e) {
             if(application.warDeployed) {
                 log.warn "Unable to find asset-pipeline manifest, etags will not be properly generated"

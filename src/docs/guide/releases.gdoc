@@ -1,5 +1,13 @@
 h3. Release History
+<<<<<<< HEAD
 
+=======
+* July 29, 2015
+** 2.4.3 Release - Fixes for gradle plugin portal only
+** 2.4.2 Release - Fixes bug in CSS and HTML Relative URL digest replacement being inaccurate
+* July 28, 2015
+** 2.4.0 Release - Fixes bug in asset resolvers being overly aggressive about matching files with wrong extension type.
+>>>>>>> master
 * July 2, 2015
 ** 2.3.9 Release - Fix in _AssetCompile gant script for buildDir, bad quotation used around string
 * June 30, 2015
