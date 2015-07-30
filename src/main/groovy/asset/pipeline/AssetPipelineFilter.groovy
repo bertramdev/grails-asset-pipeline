@@ -45,8 +45,10 @@ class AssetPipelineFilter extends OncePerRequestFilter {
               manifestPath = fileUri.substring(1) //Omit forward slash
             }
             fileUri = manifest?.getProperty(manifestPath) ?: manifestPath
-            def file = applicationContext.getResource("classpath:assets/${fileUri}")
-
+            def file = applicationContext.getResource("assets/${fileUri}")
+            if(!file.exists()) {
+                file = applicationContext.getResource("classpath:assets/${fileUri}")
+            }
             if (file.exists()) {
                 def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'))
                 responseBuilder.headers.each { Map.Entry header ->
@@ -60,7 +62,10 @@ class AssetPipelineFilter extends OncePerRequestFilter {
                     // Check for GZip
                     def acceptsEncoding = request.getHeader("Accept-Encoding")
                     if(acceptsEncoding?.split(",")?.contains("gzip")) {
-                        def gzipFile = applicationContext.getResource("classpath:assets${fileUri}.gz")
+                        def gzipFile = applicationContext.getResource("assets${fileUri}.gz")
+                        if(!gzipFile.exists()) {
+                            gzipFile = applicationContext.getResource("classpath:assets${fileUri}.gz")
+                        }
                         if(gzipFile.exists()) {
                             file = gzipFile
                             response.setHeader('Content-Encoding','gzip')
