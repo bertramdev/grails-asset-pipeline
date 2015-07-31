@@ -26,7 +26,6 @@ class LinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new LinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
 
             def filePath = "grails_logo.png"
@@ -41,7 +40,6 @@ class LinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new LinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
 
             def filePath = "grails_logo.png"
@@ -55,7 +53,6 @@ class LinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = true
             def linkGenerator = new LinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
             def filePath = "grails_logo.png"
             Properties manifestProperties = new Properties()
@@ -72,7 +69,6 @@ class LinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new LinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
 
             def filePath = "fake_image.png"
