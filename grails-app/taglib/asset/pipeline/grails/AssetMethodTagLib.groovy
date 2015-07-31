@@ -15,7 +15,7 @@ class AssetMethodTagLib {
 	def grailsLinkGenerator
 
 
-	def assetPath = {final Map<String, ?> attrs ->
+	def assetPath = {final def attrs ->
 		final def src
 		final boolean absolute
 		if (attrs instanceof Map) {
