@@ -35,8 +35,16 @@ class AssetProcessorService {
 	}
 
 
+	boolean isEnableDigests(final ConfigObject conf = grailsApplication.config.grails.assets) {
+		conf.containsKey('enableDigests') ? conf.enableDigests : true
+	}
+
+	boolean isSkipNonDigests(final ConfigObject conf = grailsApplication.config.grails.assets) {
+		conf.containsKey('skipNonDigests') ? conf.skipNonDigests : true
+	}
+
 	boolean shouldUseManifestPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
-		path && AssetPipelineConfigHolder.manifest
+		path && AssetPipelineConfigHolder.manifest && isEnableDigests(conf)
 	}
 
 
