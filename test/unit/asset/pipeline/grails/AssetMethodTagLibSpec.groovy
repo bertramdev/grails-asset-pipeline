@@ -26,14 +26,14 @@ import asset.pipeline.fs.FileSystemAssetResolver
  */
 @TestFor(AssetMethodTagLib)
 class AssetMethodTagLibSpec extends Specification {
-  AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
+  AssetProcessorService assetProcessorService = new AssetProcessorService()
 
   def setup() {
-
     AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
 
-    assetProcessorServiceMock.getAssetMapping() >> { "assets" }
-    tagLib.assetProcessorService = assetProcessorServiceMock
+    assetProcessorService.grailsApplication = grailsApplication
+
+    tagLib.assetProcessorService = assetProcessorService
   }
 
   void "should return assetPath"() {

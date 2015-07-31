@@ -25,17 +25,20 @@ import asset.pipeline.AssetPipelineConfigHolder
  */
 @TestFor(AssetsTagLib)
 class AssetsTagLibSpec extends Specification {
-  AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
+  AssetProcessorService assetProcessorService = new AssetProcessorService()
   private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
   private static MOCK_BASE_SERVER_URL = 'http://localhost:8080/foo'
 
   def setup() {
     AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))
-    assetProcessorServiceMock.getAssetMapping() >> { "assets" }
-    def assetMethodTagLibMock = mockTagLib(AssetMethodTagLib)
-    assetMethodTagLibMock.assetProcessorService = assetProcessorServiceMock
 
-    assetMethodTagLibMock.grailsLinkGenerator = [serverBaseURL: MOCK_BASE_SERVER_URL]
+    assetProcessorService.grailsApplication = grailsApplication
+
+    def assetMethodTagLibMock = mockTagLib(AssetMethodTagLib)
+    assetMethodTagLibMock.assetProcessorService = assetProcessorService
+    assetMethodTagLibMock.grailsLinkGenerator   = [serverBaseURL: MOCK_BASE_SERVER_URL]
+
+    tagLib.assetProcessorService = assetProcessorService
   }
 
   void "should return assetPath"() {
@@ -103,13 +106,13 @@ class AssetsTagLibSpec extends Specification {
       tagLib.image(src: assetSrc, width:'200',height:200) == '<img src="/assets/grails_logo.png" width="200" height="200"/>'
   }
 
-    void "should return image tag with absolute path"() {
-      given:
-        def assetSrc = "grails_logo.png"
+  void "should return image tag with absolute path"() {
+    given:
+      def assetSrc = "grails_logo.png"
 
-      expect:
-        tagLib.image(src: assetSrc, absolute: true) == "<img src=\"$MOCK_BASE_SERVER_URL/assets/grails_logo.png\" />"
-    }
+    expect:
+      tagLib.image(src: assetSrc, absolute: true) == "<img src=\"$MOCK_BASE_SERVER_URL/assets/grails_logo.png\" />"
+  }
 
   void "should return link tag"() {
     given:
