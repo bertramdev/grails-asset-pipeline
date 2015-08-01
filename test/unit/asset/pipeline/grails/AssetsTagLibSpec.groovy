@@ -93,10 +93,8 @@ class AssetsTagLibSpec extends Specification {
     when:
       // tagLib.out = stringWriter
       output = tagLib.stylesheet(src: assetSrc)
-
     then:
-      output == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css?compile=false"  />' + LINE_BREAK + '<link rel="stylesheet" href="/assets/asset-pipeline/test/test2.css?compile=false"  />' + LINE_BREAK
-
+      output == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css?compile=false" />' + LINE_BREAK + '<link rel="stylesheet" href="/assets/asset-pipeline/test/test2.css?compile=false" />' + LINE_BREAK
   }
 
   void "should return image tag"() {
