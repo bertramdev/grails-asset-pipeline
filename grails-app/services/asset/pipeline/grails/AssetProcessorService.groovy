@@ -47,9 +47,11 @@ class AssetProcessorService {
 
 
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
-		isAssetPath(path, conf) \
-			? path
-			: null
+		shouldUseManifestPath(path, conf) \
+			? conf.manifest.getProperty(path)
+			: fileForFullName(path) != null \
+				? path
+				: null
 	}
 
 
@@ -80,7 +82,7 @@ class AssetProcessorService {
 						? linkGenerator.contextPath
 						: contextPathAttribute
 
-				absolutePath = \
+				absolutePath =
 					contextPath == null \
 						? linkGenerator.handleAbsolute(absolute: true) ?: ''
 						: contextPath
