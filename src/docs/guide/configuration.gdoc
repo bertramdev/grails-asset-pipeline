@@ -23,7 +23,14 @@ grails.assets.minifyJs | *true* or *false* | *true*
 grails.assets.minifyCss | *true* or *false* | *true*
 grails.assets.enableSourceMaps | *true* or *false* | *true*
 grails.assets.minifyOptions | *Map* | (see below)
+grails.assets.skipNonDigests | *true* or *false* | *true*
 {table}
+
+
+{note}
+It is not necessary for you to normally turn off 'skipNonDigets'. Tomcat will automatically still serve files by non digest name and will copy them out using storagePath via the `manifest.properties` alias map.
+This simply cuts storage in half. However, if you are attempting to do things like upload to a cdn outside of the cdn-asset-pipeline plugin and via the contents of 'target/assets'. This may still be useful.
+{note}
 
 {code}
 grails.assets.minifyOptions = [
