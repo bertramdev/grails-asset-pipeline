@@ -1,4 +1,7 @@
 h3. Release History
+
+* August 13, 2015
+** 2.5.0 Release - Development Runtime cache is now persisted for faster load times! Gradle enhancements for resolvers and deduplicated plugins. Can also now include non digested files in war if needed. Added skipNonDigests config option.
 * July 30, 2015
 ** 3.0.6 Grails3 Release - Fixes issues with extracted WAR containers
 * July 29, 2015
