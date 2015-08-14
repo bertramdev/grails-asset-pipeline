@@ -140,12 +140,12 @@ class AssetsTagLib {
 	}
 
 	def assetPathExists = {attrs, body ->
-		out <<
-			(
-				isAssetPath(attrs.remove('src')) \
-					? (body() ?: true)
-					: ''
-			)
+		if (isAssetPath(attrs.remove('src'))) {
+			out << (body() ?: true)
+		}
+		else {
+			out << ''
+		}
 	}
 
 	boolean isAssetPath(src) {

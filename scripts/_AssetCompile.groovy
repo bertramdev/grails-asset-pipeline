@@ -15,6 +15,7 @@ target(assetClean: "Cleans Compiled Assets Directory") {
 
 target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
 	depends(configureProxy,compile)
+
 	def assetPipelineConfigHolder = classLoader.loadClass('asset.pipeline.AssetPipelineConfigHolder')
 	def defaultResourceLoader     = classLoader.loadClass('org.springframework.core.io.DefaultResourceLoader').newInstance(classLoader)
 	def fileSystemAssetResolver   = classLoader.loadClass('asset.pipeline.fs.FileSystemAssetResolver')
@@ -23,16 +24,18 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	def assetCompilerClass        = classLoader.loadClass('asset.pipeline.AssetCompiler')
 	def directiveProcessorClass   = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
 
-	def assetConfig                = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
+	def assetConfig               = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
 
 	event("AssetPrecompileStart", [assetConfig])
+
 	assetConfig.minifyJs         = config.grails.assets.containsKey('minifyJs')  ? config.grails.assets.minifyJs  : (argsMap.containsKey('minifyJs')  ? argsMap.minifyJs  == 'true' : true)
 	assetConfig.minifyCss        = config.grails.assets.containsKey('minifyCss') ? config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
 	assetConfig.minifyOptions    = config.grails.assets.minifyOptions
 	assetConfig.compileDir       = "${basedir}/target/assets"
 	assetConfig.excludesGzip     = config.grails.assets.excludesGzip
 	assetConfig.enableSourceMaps = config.grails.assets.containsKey('enableSourceMaps') ? config.grails.assets.enableSourceMaps : true
-	assetConfig.skipNonDigests   = config.grails.assets.containsKey('skipNonDigests') ? config.grails.assets.skipNonDigests : true
+	assetConfig.skipNonDigests   = config.grails.assets.containsKey('skipNonDigests')   ? config.grails.assets.skipNonDigests   : true
+
 	//Add Resolvers for Grails
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application',"${basedir}/grails-app/assets"))
 
