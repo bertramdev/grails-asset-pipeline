@@ -28,7 +28,7 @@ grails.assets.skipNonDigests | *true* or *false* | *true*
 
 
 {note}
-It is not necessary for you to normally turn off 'skipNonDigets'. Tomcat will automatically still serve files by non digest name and will copy them out using storagePath via the `manifest.properties` alias map.
+It is not necessary for you to normally turn off 'skipNonDigests'. Tomcat will automatically still serve files by non digest name and will copy them out using storagePath via the `manifest.properties` alias map.
 This simply cuts storage in half. However, if you are attempting to do things like upload to a cdn outside of the cdn-asset-pipeline plugin and via the contents of 'target/assets'. This may still be useful.
 {note}
 
