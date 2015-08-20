@@ -9,20 +9,21 @@ class AssetPipelineBootStrap {
 
 
 	def init = {final servletContext ->
-		final String storagePath = grailsApplication.config.grails.assets.storagePath
-		if (!storagePath) {
+		final def storagePath = grailsApplication.config.grails.assets.storagePath
+		if (! storagePath) {
 			return
 		}
 
 		final Properties manifest = AssetPipelineConfigHolder.manifest
 
 		if (manifest) {
-			new File(storagePath).mkdirs()
+			final File storageDir = new File((String) storagePath)
+			storageDir.mkdirs()
 
 			final ApplicationContext parentContext = grailsApplication.parentContext
 
 			manifest.stringPropertyNames().each {final String propertyName ->
-				final File outputFile = new File(storagePath, propertyName)
+				final File outputFile = new File(storageDir, propertyName)
 
 				new File(outputFile.parent).mkdirs()
 
@@ -34,18 +35,18 @@ class AssetPipelineBootStrap {
 
 				outputFile.bytes = fileBytes
 
-				new File(storagePath, propertyValue).bytes = fileBytes
+				new File(storageDir, propertyValue).bytes = fileBytes
 
 				final Resource gzRes = parentContext.getResource("${assetPath}.gz")
 				if (gzRes.exists()) {
 					final byte[] gzBytes = gzRes.inputStream.bytes
 
-					new File(storagePath, "${propertyName}.gz" ).bytes = gzBytes
-					new File(storagePath, "${propertyValue}.gz").bytes = gzBytes
+					new File(storageDir, "${propertyName}.gz" ).bytes = gzBytes
+					new File(storageDir, "${propertyValue}.gz").bytes = gzBytes
 				}
 			}
 
-			manifest.store(new File(storagePath, 'manifest.properties').newWriter(), '')
+			manifest.store(new File(storageDir, 'manifest.properties').newWriter(), '')
 		}
 	}
 }
