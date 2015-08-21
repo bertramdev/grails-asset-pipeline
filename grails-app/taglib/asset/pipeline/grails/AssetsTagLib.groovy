@@ -25,10 +25,10 @@ class AssetsTagLib {
 		def extension
 
 		def conf = grailsApplication.config.grails.assets
-		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
-		def debugMode = (conf.allowDebugParam && debugParameter) ||  (!AssetPipelineConfigHolder.manifest && conf.bundle != true)
 
-		if(!debugMode) {
+		def nonBundledMode = (!AssetPipelineConfigHolder.manifest && conf.bundle != true && attrs.bundle != true)
+
+		if(!nonBundledMode) {
 			out << "<script src=\"${assetPath(src:src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
 		} else {
 			if (src.lastIndexOf(".") >= 0) {
@@ -66,10 +66,10 @@ class AssetsTagLib {
 		def conf = grailsApplication.config.grails.assets
 		def uri
 		def extension
-		def debugParameter = params."_debugResources" == 'y' || params."_debugAssets" == "y"
-	    def debugMode = (conf.allowDebugParam && debugParameter) ||  (!AssetPipelineConfigHolder.manifest && conf.bundle != true)
 
-		if(!debugMode) {
+	    def nonBundledMode = (!AssetPipelineConfigHolder.manifest && conf.bundle != true && attrs.bundle != true)
+
+		if(!nonBundledMode) {
 			out << link([rel: 'stylesheet', href:src] + attrs)
 		} else {
 			if (src.lastIndexOf(".") >= 0) {

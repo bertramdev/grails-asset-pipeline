@@ -67,7 +67,7 @@ Asset pipeline provides several new tag libs for including JavaScript and CSS in
 These helpers will automatically adjust to point to the cache-digested versions of the files when running in a non-development environment.
 
 {note}
-In development mode your stylesheets and scripts will be included as individual script tags. This is intended to make it easier for debugging. Bundling is enabled in all other environments and can be forced in development mode by adding @grails.assets.bundle=true@ to your @Config.groovy@.
+In development mode your stylesheets and scripts will be included as individual script tags. This is intended to make it easier for debugging. Bundling is enabled in all other environments and can be forced in development mode by adding @grails.assets.bundle=true@ to your @Config.groovy@ or setting the @bundle="true"@ attribute on the taglib.
 {note}
 
 h3. Using with Plugins
