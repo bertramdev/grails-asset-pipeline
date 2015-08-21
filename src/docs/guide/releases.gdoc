@@ -1,4 +1,6 @@
 h3. Release History
+* August 21, 2015
+** 2.5.1 Release - Added bundle=true attribute option to javascript and stylesheet taglib.
 * August 13, 2015
 ** 2.5.0 Release - Development Runtime cache is now persisted for faster load times! Gradle enhancements for resolvers and deduplicated plugins. Can also now include non digested files in war if needed. Added skipNonDigests config option.
 * July 29, 2015
