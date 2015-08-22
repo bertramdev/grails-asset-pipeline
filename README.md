@@ -12,6 +12,10 @@ Documentation
 -------------
 http://bertramdev.github.io/asset-pipeline
 
+Release Notes
+-------------
+https://bertramdev.github.io/asset-pipeline/guide/releases.html
+
 Things to be Done
 -----------------
 * Improve SourceMaps
