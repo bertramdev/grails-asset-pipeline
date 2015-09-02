@@ -56,6 +56,16 @@ class AssetsTagLibSpec extends Specification {
       tagLib.javascript(src: assetSrc) == '<script src="/assets/asset-pipeline/test/test.js" type="text/javascript" ></script>'
   }
 
+  void "should always return javascript link tag when bundle attr is 'true'"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = false
+      grailsApplication.config.grails.assets.allowDebugParam = true
+      params."_debugAssets" = "y"
+      def assetSrc = "asset-pipeline/test/test.js"
+    expect:
+      tagLib.javascript(src: assetSrc, bundle: 'true') == '<script src="/assets/asset-pipeline/test/test.js" type="text/javascript" ></script>'
+  }
+
   void "should return javascript link tag with seperated files when debugMode is on"() {
     given:
       grailsApplication.config.grails.assets.bundle = false
@@ -79,6 +89,16 @@ class AssetsTagLibSpec extends Specification {
       def assetSrc = "asset-pipeline/test/test.css"
     expect:
       tagLib.stylesheet(href: assetSrc) == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css"/>'
+  }
+
+  void "should always return stylesheet link tag when bundle attr is 'true'"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = false
+      grailsApplication.config.grails.assets.allowDebugParam = true
+      params."_debugAssets" = "y"
+      def assetSrc = "asset-pipeline/test/test.css"
+    expect:
+      tagLib.stylesheet(href: assetSrc, bundle: 'true') == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css"/>'
   }
 
   void "should return stylesheet link tag with seperated files when debugMode is on"() {
