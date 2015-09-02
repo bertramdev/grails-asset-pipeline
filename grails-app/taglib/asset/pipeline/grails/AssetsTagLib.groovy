@@ -22,6 +22,7 @@ class AssetsTagLib {
 	 */
 	def javascript = {attrs ->
 		def src = attrs.remove('src')
+		def attrBundle = attrs.remove('bundle')
 		attrs.remove('href')
 		src = "${AssetHelper.nameWithoutExtension(src)}.js"
 		def uri
@@ -29,7 +30,7 @@ class AssetsTagLib {
 
 		def conf = grailsApplication.config.grails.assets
 
-		def nonBundledMode = (!grailsApplication.warDeployed && conf.bundle != true && attrs.bundle != true)
+		def nonBundledMode = (!grailsApplication.warDeployed && conf.bundle != true && attrBundle != 'true')
 
 		if(!nonBundledMode) {
 			out << "<script src=\"${assetPath(src:src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
@@ -63,6 +64,7 @@ class AssetsTagLib {
 	 */
 	def stylesheet = {attrs ->
 		def src  = attrs.remove('src')
+		def attrBundle = attrs.remove('bundle')
 		def href = attrs.remove('href')
 		if (href) {
 			src = href
@@ -71,7 +73,7 @@ class AssetsTagLib {
 		def conf = grailsApplication.config.grails.assets
 		def uri
 		def extension
-		def nonBundledMode = (!grailsApplication.warDeployed && conf.bundle != true && attrs.bundle != true)
+		def nonBundledMode = (!grailsApplication.warDeployed && conf.bundle != true && attrBundle != 'true')
 
 		if(!nonBundledMode) {
 			out << link([rel: 'stylesheet', href:src] + attrs)
