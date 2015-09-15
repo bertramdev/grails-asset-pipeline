@@ -83,7 +83,7 @@ class AssetPipelineGrailsPlugin {
         }
 
         if(!assetsConfig.containsKey("precompiled")) {
-            assetsConfig.precompiled = application.warDeployed
+            assetsConfig.precompiled = application.warDeployed || assetsConfig.url
         }
 
 
