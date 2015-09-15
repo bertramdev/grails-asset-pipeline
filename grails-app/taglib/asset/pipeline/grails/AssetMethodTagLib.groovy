@@ -16,14 +16,17 @@ class AssetMethodTagLib {
 
 
 	def assetPath = {final def attrs ->
-		final def src
+		final def     src
 		final boolean absolute
+
 		if (attrs instanceof Map) {
 			src = attrs.src
-			absolute = attrs.containsKey('absolute') ? attrs.absolute : false
+
+			final def abs = attrs.absolute
+			absolute = abs != null ? abs : false
 		}
 		else {
-			src = attrs
+			src      = attrs
 			absolute = false
 		}
 
