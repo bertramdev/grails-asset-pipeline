@@ -16,6 +16,7 @@ class LinkGenerator extends DefaultLinkGenerator {
 	}
 
 
+	@Override
 	String resource(final Map attrs) {
 		asset(attrs) ?: super.resource(attrs)
 	}
@@ -26,5 +27,10 @@ class LinkGenerator extends DefaultLinkGenerator {
 	 */
 	String asset(final Map attrs) {
 		assetProcessorService.asset(attrs, this)
+	}
+
+	@Override
+	String makeServerURL() {
+		assetProcessorService.makeServerURL(this)
 	}
 }
