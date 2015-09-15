@@ -4,11 +4,15 @@ package asset.pipeline.grails
 import asset.pipeline.AssetPipelineConfigHolder
 import javax.servlet.http.HttpServletRequest
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 
 import static asset.pipeline.AssetHelper.fileForFullName
+import static asset.pipeline.grails.utils.net.HttpServletRequests.getBaseUrlWithScheme
 import static asset.pipeline.grails.utils.text.StringBuilders.ensureEndsWith
 import static asset.pipeline.utils.net.Urls.hasAuthority
+import static grails.util.Environment.isWarDeployed
 import static org.apache.commons.lang.StringUtils.trimToEmpty
+import static org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest.lookup
 
 
 class AssetProcessorService {
@@ -145,6 +149,21 @@ class AssetProcessorService {
 				.append(mapping)
 				.append('/' as char)
 				.toString()
+	}
+
+
+	String makeServerURL(final DefaultLinkGenerator linkGenerator) {
+		String serverUrl = linkGenerator.configuredServerBaseURL
+		if (! serverUrl) {
+			final GrailsWebRequest req = lookup()
+			if (req) {
+				serverUrl = getBaseUrlWithScheme(req.currentRequest).toString()
+				if (! serverUrl && ! warDeployed) {
+					serverUrl = "http://localhost:${System.getProperty('server.port') ?: '8080'}${linkGenerator.contextPath ?: ''}"
+				}
+			}
+		}
+		return serverUrl
 	}
 
 
