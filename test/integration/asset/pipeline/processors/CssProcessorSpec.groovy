@@ -22,6 +22,7 @@ import asset.pipeline.AssetCompiler
 import asset.pipeline.fs.FileSystemAssetResolver
 
 class CssProcessorSpec extends IntegrationSpec {
+
     def "replaces image urls with relative paths"() {
         given: "some css and a CssProcessor"
             def cssProcessor = new CssProcessor(null)

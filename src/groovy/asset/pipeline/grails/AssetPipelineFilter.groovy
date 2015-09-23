@@ -18,6 +18,9 @@ import asset.pipeline.AssetPipelineResponseBuilder
 
 @Slf4j
 class AssetPipelineFilter implements Filter {
+
+    public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
+
     def applicationContext
     def servletContext
     def warDeployed
@@ -57,6 +60,8 @@ class AssetPipelineFilter implements Filter {
                 if(responseBuilder.statusCode) {
                     response.status = responseBuilder.statusCode
                 }
+
+                response.setHeader('Last-Modified', new Date(file.lastModified()).format(HTTP_DATE_FORMAT))
 
                 if(responseBuilder.statusCode != 304) {
                     // Check for GZip
