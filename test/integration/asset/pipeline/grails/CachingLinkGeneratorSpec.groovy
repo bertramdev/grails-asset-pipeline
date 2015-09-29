@@ -17,6 +17,7 @@
 package asset.pipeline.grails
 
 import grails.test.spock.IntegrationSpec
+import asset.pipeline.AssetPipelineConfigHolder
 
 class CachingLinkGeneratorSpec extends IntegrationSpec {
     def grailsApplication
@@ -58,7 +59,7 @@ class CachingLinkGeneratorSpec extends IntegrationSpec {
             Properties manifestProperties = new Properties()
             manifestProperties.setProperty(filePath, "grails_logo-abcdefg.png")
             grailsApplication.config.grails.assets.manifest = manifestProperties
-
+            AssetPipelineConfigHolder.manifest = manifestProperties
         when:
             def resource = linkGenerator.resource(file: filePath)
         then:
