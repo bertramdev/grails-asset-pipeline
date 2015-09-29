@@ -1,6 +1,7 @@
 package asset.pipeline.grails
 
 import grails.util.Environment
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import javax.servlet.Filter
@@ -15,6 +16,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils
 import asset.pipeline.AssetPipeline
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetPipelineResponseBuilder
+
+import java.text.SimpleDateFormat
 
 @Slf4j
 class AssetPipelineFilter implements Filter {
@@ -61,7 +64,7 @@ class AssetPipelineFilter implements Filter {
                     response.status = responseBuilder.statusCode
                 }
 
-                response.setHeader('Last-Modified', new Date(file.lastModified()).format(HTTP_DATE_FORMAT))
+                response.setHeader('Last-Modified', getLastModifiedDate(file))
 
                 if(responseBuilder.statusCode != 304) {
                     // Check for GZip
@@ -129,6 +132,17 @@ class AssetPipelineFilter implements Filter {
         if (!response.committed) {
             chain.doFilter(request, response)
         }
+    }
+
+    @CompileStatic
+    public static String getLastModifiedDate(File file) {
+        final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Date currentTime = new Date()
+        if(file) {
+            currentTime = new Date(file.lastModified());
+        }
+        return sdf.format(currentTime)
     }
 
 }
