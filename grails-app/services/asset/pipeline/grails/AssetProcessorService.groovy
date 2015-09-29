@@ -4,6 +4,7 @@ package asset.pipeline.grails
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 
 import static asset.pipeline.AssetHelper.fileForFullName
+import asset.pipeline.AssetPipelineConfigHolder
 
 
 class AssetProcessorService {
@@ -35,20 +36,20 @@ class AssetProcessorService {
 
 
 	boolean shouldUseManifestPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
-		path && conf.precompiled
+		path && AssetPipelineConfigHolder.manifest
 	}
 
 
 	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		shouldUseManifestPath(path, conf) \
-			? conf.manifest.getProperty(path) ?: path
+			? AssetPipelineConfigHolder.manifest.getProperty(path) ?: path
 			: path
 	}
 
 
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		shouldUseManifestPath(path, conf) \
-			? conf.manifest.getProperty(path)
+			? AssetPipelineConfigHolder.manifest.getProperty(path)
 			: fileForFullName(path) != null \
 				? path
 				: null
@@ -57,7 +58,7 @@ class AssetProcessorService {
 
 	boolean isAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		shouldUseManifestPath(path, conf) \
-			? conf.manifest.getProperty(path)
+			? AssetPipelineConfigHolder.manifest.getProperty(path)
 			: path && fileForFullName(path) != null
 	}
 
