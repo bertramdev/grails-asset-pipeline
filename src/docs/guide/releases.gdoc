@@ -1,4 +1,6 @@
 h3. Release History
+* September 29, 2015
+** 2.5.2 Release - Add Last Modified Header as well as fixes to assetPathExists taglib
 * August 21, 2015
 ** 2.5.1 Release - Added bundle=true attribute option to javascript and stylesheet taglib.
 * August 13, 2015
