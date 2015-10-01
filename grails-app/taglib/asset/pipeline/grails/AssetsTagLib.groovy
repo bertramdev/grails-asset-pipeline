@@ -22,9 +22,10 @@ class AssetsTagLib {
 	 * @attr src REQUIRED
 	 */
 	def javascript = {final attrs ->
+		final GrailsPrintWriter outPw = out
 		attrs.remove('href')
 		element(attrs, 'js', 'application/javascript', null) {final String src, final outputAttrs, final String endOfLine ->
-			out << '<script type="text/javascript" src="' << src << '" ' << paramsToHtmlAttr(outputAttrs) << '></script>' << endOfLine
+			outPw << '<script type="text/javascript" src="' << src << '" ' << paramsToHtmlAttr(outputAttrs) << '></script>' << endOfLine
 		}
 	}
 
@@ -33,12 +34,13 @@ class AssetsTagLib {
 	 * @attr src OPTIONAL alternative to href
 	 */
 	def stylesheet = {final attrs ->
+		final GrailsPrintWriter outPw = out
 		element(attrs, 'css', 'text/css', Objects.toString(attrs.remove('href'), null)) {final String src, final outputAttrs, final String endOfLine ->
-			if (''.equals(endOfLine)) {
-				out << link([rel: 'stylesheet', href: src] + outputAttrs)
+			if (endOfLine) {
+				outPw << '<link rel="stylesheet" href="' << src << '" ' << paramsToHtmlAttr(outputAttrs) << '/>' << endOfLine
 			}
 			else {
-				out << '<link rel="stylesheet" href="' << src << '" ' << paramsToHtmlAttr(outputAttrs) << '/>' << endOfLine
+				outPw << link([rel: 'stylesheet', href: src] + outputAttrs)
 			}
 		}
 	}
