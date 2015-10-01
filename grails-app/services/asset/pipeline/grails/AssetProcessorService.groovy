@@ -76,7 +76,7 @@ class AssetProcessorService {
 	}
 
 
-	boolean isAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
+	boolean isAssetPath(final String path) {
 		final String relativePath = trimLeadingSlash(path)
 		relativePath &&
 		(
