@@ -30,8 +30,10 @@ class AssetsTagLib {
 	}
 
 	/**
-	 * @attr href OPTIONAL alternative to src
-	 * @attr src OPTIONAL alternative to href
+	 * At least one of {@code href} and {@code src} must be supplied
+	 *
+	 * @attr href OPTIONAL standard URL attribute
+	 * @attr src  OPTIONAL alternate URL attribute, only used if {@code href} isn't supplied, or if {@code href} is Groovy false
 	 */
 	def stylesheet = {final attrs ->
 		final GrailsPrintWriter outPw = out
