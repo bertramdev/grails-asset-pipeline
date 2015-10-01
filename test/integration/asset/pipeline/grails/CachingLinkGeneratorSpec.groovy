@@ -25,7 +25,6 @@ class CachingLinkGeneratorSpec extends IntegrationSpec {
 
     def "finds assets when calling for resource in dev mode"() {
         given: "A LinkGenerator and an image"
-            grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new CachingLinkGenerator("http://localhost:8080")
             linkGenerator.assetProcessorService = assetProcessorService
 
@@ -38,7 +37,6 @@ class CachingLinkGeneratorSpec extends IntegrationSpec {
 
     def "finds assets with absolute path when calling for resource in dev mode"() {
         given: "A LinkGenerator and an image"
-            grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new CachingLinkGenerator("http://localhost:8080")
             linkGenerator.assetProcessorService = assetProcessorService
 
@@ -52,7 +50,6 @@ class CachingLinkGeneratorSpec extends IntegrationSpec {
 
     def "finds asset in precompiled (prod) mode"() {
         given: "A LinkGenerator and an image"
-            grailsApplication.config.grails.assets.precompiled = true
             def linkGenerator = new CachingLinkGenerator("http://localhost:8080")
             linkGenerator.assetProcessorService = assetProcessorService
             def filePath = "grails_logo.png"
@@ -68,7 +65,6 @@ class CachingLinkGeneratorSpec extends IntegrationSpec {
 
     def "falls back to standard resource lookup if not found in asset pipeline"() {
         given: "A LinkGenerator and an image"
-            grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new CachingLinkGenerator("http://localhost:8080")
             linkGenerator.assetProcessorService = assetProcessorService
 
