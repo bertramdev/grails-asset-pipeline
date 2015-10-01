@@ -142,7 +142,6 @@ class AssetsTagLibSpec extends Specification {
   void "test if asset path exists in dev mode"() {
     given:
       def fileUri = "asset-pipeline/test/test.css"
-      grailsApplication.config.grails.assets.precompiled = false
     expect:
       tagLib.assetPathExists([src: fileUri])
   }
@@ -150,7 +149,6 @@ class AssetsTagLibSpec extends Specification {
   void "test if asset path is missing in dev mode"() {
     given:
       def fileUri = "asset-pipeline/test/missing.css"
-      grailsApplication.config.grails.assets.precompiled = false
     expect:
       !tagLib.assetPathExists([src: fileUri])
   }
@@ -158,7 +156,6 @@ class AssetsTagLibSpec extends Specification {
   void "test if asset path exists in dev mode and closure renders the body"() {
     given:
       def fileUri = "asset-pipeline/test/test.css"
-      grailsApplication.config.grails.assets.precompiled = false
     expect:
       applyTemplate( "<asset:assetPathExists src=\"$fileUri\">text to render</asset:assetPathExists>" ) == 'text to render'
   }
@@ -166,7 +163,6 @@ class AssetsTagLibSpec extends Specification {
   void "test if asset path is missing in dev mode and closure doesn't render the body"() {
     given:
       def fileUri = "asset-pipeline/test/missing.css"
-      grailsApplication.config.grails.assets.precompiled = false
     expect:
       applyTemplate( "<asset:assetPathExists src=\"$fileUri\">text to render</asset:assetPathExists>" ) == ''
   }
@@ -177,7 +173,6 @@ class AssetsTagLibSpec extends Specification {
       Properties manifestProperties = new Properties()
       manifestProperties.setProperty(fileUri,fileUri)
 
-      grailsApplication.config.grails.assets.precompiled = true
       grailsApplication.config.grails.assets.manifest = manifestProperties
     expect:
       tagLib.assetPathExists([src: fileUri])
@@ -186,7 +181,6 @@ class AssetsTagLibSpec extends Specification {
   void "asset path should not exist in dev mode"() {
     given:
       def fileUri = "asset-pipeline/test/notfound.css"
-      grailsApplication.config.grails.assets.precompiled = false
     expect:
       !tagLib.assetPathExists([src: fileUri])
   }
