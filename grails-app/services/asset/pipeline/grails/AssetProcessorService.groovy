@@ -1,12 +1,12 @@
 package asset.pipeline.grails
 
 
-import asset.pipeline.AssetPipelineConfigHolder
 import javax.servlet.http.HttpServletRequest
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 
 import static asset.pipeline.AssetHelper.fileForFullName
+import static asset.pipeline.AssetPipelineConfigHolder.manifest
 import static asset.pipeline.grails.utils.net.HttpServletRequests.getBaseUrlWithScheme
 import static asset.pipeline.grails.utils.text.StringBuilders.ensureEndsWith
 import static asset.pipeline.utils.net.Urls.hasAuthority
@@ -54,8 +54,8 @@ class AssetProcessorService {
 
 	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		relativePath && AssetPipelineConfigHolder.manifest && isEnableDigests(conf) \
-			? AssetPipelineConfigHolder.manifest.getProperty(relativePath) ?: relativePath
+		relativePath && manifest && isEnableDigests(conf) \
+			? manifest.getProperty(relativePath) ?: relativePath
 			: relativePath
 	}
 
@@ -63,10 +63,10 @@ class AssetProcessorService {
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
 		relativePath \
-			? AssetPipelineConfigHolder.manifest \
+			? manifest \
 				? isEnableDigests(conf) \
-					? AssetPipelineConfigHolder.manifest.getProperty(relativePath)
-					: AssetPipelineConfigHolder.manifest.getProperty(relativePath) \
+					? manifest.getProperty(relativePath)
+					: manifest.getProperty(relativePath) \
 						? relativePath
 						: null
 				: fileForFullName(relativePath) != null \
@@ -80,8 +80,8 @@ class AssetProcessorService {
 		final String relativePath = trimLeadingSlash(path)
 		relativePath &&
 		(
-			AssetPipelineConfigHolder.manifest \
-				? AssetPipelineConfigHolder.manifest.getProperty(relativePath)
+			manifest \
+				? manifest.getProperty(relativePath)
 				: fileForFullName(relativePath) != null
 		)
 	}
