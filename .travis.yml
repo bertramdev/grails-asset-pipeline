@@ -1,4 +1,3 @@
 language: groovy
 sudo: false
-script: ./grailsw refresh-dependencies
-     && ./grailsw test-app
+script: ./grailsw test-app --refresh-dependencies
