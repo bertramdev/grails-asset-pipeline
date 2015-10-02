@@ -26,7 +26,7 @@ import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.fs.SpringResourceAssetResolver
 
 class AssetPipelineGrailsPlugin {
-    def version         = "2.5.2"
+    def version         = "2.5.4"
     def grailsVersion   = "2.2 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
