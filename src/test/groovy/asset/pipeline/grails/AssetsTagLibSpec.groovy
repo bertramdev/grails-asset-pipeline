@@ -27,7 +27,7 @@ import asset.pipeline.AssetPipelineConfigHolder
 @TestFor(AssetsTagLib)
 class AssetsTagLibSpec extends Specification {
   private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
-  AssetProcessorService assetProcessorServiceMock = Mock(AssetProcessorService)
+  AssetProcessorService assetProcessorService = new AssetProcessorService()
 
   def setup() {
     AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))
@@ -125,8 +125,6 @@ class AssetsTagLibSpec extends Specification {
       tagLib.image(src: assetSrc, width:'200',height:200) == '<img src="/assets/grails_logo.png" width="200" height="200"/>'
   }
 
-<<<<<<< HEAD:src/test/groovy/asset/pipeline/grails/AssetsTagLibSpec.groovy
-=======
   void "should return image tag with absolute path"() {
     given:
       def assetSrc = "grails_logo.png"
@@ -135,7 +133,6 @@ class AssetsTagLibSpec extends Specification {
       tagLib.image(src: assetSrc, absolute: true) == "<img src=\"$MOCK_BASE_SERVER_URL/assets/grails_logo.png\" />"
   }
 
->>>>>>> master:test/unit/asset/pipeline/grails/AssetsTagLibSpec.groovy
   void "should return link tag"() {
     given:
       def assetSrc = "grails_logo.png"
