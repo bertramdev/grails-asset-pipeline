@@ -63,7 +63,7 @@ class AssetPipelineFilter implements Filter {
 				if(responseBuilder.statusCode) {
 					response.status = responseBuilder.statusCode
 				}
-				response.setHeader('Last-Modified', new Date(attributeCache.lastModified()).format(HTTP_DATE_FORMAT))
+				response.setHeader('Last-Modified', attributeCache.getLastModified().format(HTTP_DATE_FORMAT))
 				if(responseBuilder.statusCode != 304) {
 					def acceptsEncoding = request.getHeader("Accept-Encoding")
 					if(acceptsEncoding?.split(",")?.contains("gzip") && attributeCache.gzipExists()) {
