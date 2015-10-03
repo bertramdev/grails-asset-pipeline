@@ -21,8 +21,13 @@ class AssetResourceLocator extends DefaultResourceLocator {
 	Resource findAssetForURI(String uri) {
 		Resource resource
 		if(warDeployed) {
+			uri = manifest?.getProperty(uri, uri)
+
 			def assetUri = "assets/${uri}"
 			Resource defaultResource = defaultResourceLoader.getResource(assetUri)
+			if (!defaultResource?.exists()) {
+				defaultResource = defaultResourceLoader.getResource("classpath:${assetUri}")
+			}
 			if (defaultResource?.exists()) {
 				resource = defaultResource
 			}
