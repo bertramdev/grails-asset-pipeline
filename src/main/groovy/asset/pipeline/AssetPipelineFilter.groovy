@@ -12,7 +12,6 @@ import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetPipelineResponseBuilder
 import java.net.URI
 
-<<<<<<< HEAD:src/main/groovy/asset/pipeline/AssetPipelineFilter.groovy
 @Commons
 @CompileStatic
 class AssetPipelineFilter extends OncePerRequestFilter {
