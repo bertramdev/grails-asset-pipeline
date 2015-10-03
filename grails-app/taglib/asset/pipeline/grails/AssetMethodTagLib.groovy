@@ -13,7 +13,7 @@ class AssetMethodTagLib {
 
 
 	def assetProcessorService
-	def grailsApplication
+	GrailsApplication grailsApplication
 	def grailsLinkGenerator
 
 

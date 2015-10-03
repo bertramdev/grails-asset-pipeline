@@ -1,7 +1,7 @@
 package asset.pipeline.grails
 
 
-import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
+import org.grails.web.mapping.DefaultLinkGenerator
 
 import static asset.pipeline.AssetHelper.fileForFullName
 import asset.pipeline.AssetPipelineConfigHolder

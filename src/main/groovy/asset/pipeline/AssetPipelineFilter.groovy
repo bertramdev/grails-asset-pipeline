@@ -10,6 +10,8 @@ import groovy.transform.*
 import asset.pipeline.grails.AssetProcessorService
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetPipelineResponseBuilder
+import asset.pipeline.grails.AssetAttributes
+import asset.pipeline.grails.ProductionAssetCache
 import java.net.URI
 
 @Commons
@@ -59,7 +61,7 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 				if(responseBuilder.statusCode) {
 					response.status = responseBuilder.statusCode
 				}
-				response.setHeader('Last-Modified', new Date(attributeCache.lastModified()).format(HTTP_DATE_FORMAT))
+				response.setHeader('Last-Modified', attributeCache.getLastModified().format(HTTP_DATE_FORMAT))
 				if(responseBuilder.statusCode != 304) {
 					def acceptsEncoding = request.getHeader("Accept-Encoding")
 					if(acceptsEncoding?.split(",")?.contains("gzip") && attributeCache.gzipExists()) {
@@ -112,7 +114,7 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 					}
 
 					AssetAttributes newCache = new AssetAttributes(true, gzipFile.exists(), false, file.contentLength(), gzipFile.contentLength(), new Date(file.lastModified()), file, gzipFile)
-					attributeCache.put(fileUri, newCache)
+					fileCache.put(fileUri, newCache)
 
 					if(responseBuilder.statusCode != 304) {
 						// Check for GZip
@@ -146,7 +148,7 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 					}
 				} else {
 					AssetAttributes newCache = new AssetAttributes(false, false, false, null, null, null, null, null)
-					attributeCache.put(fileUri, newCache)
+					fileCache.put(fileUri, newCache)
 					response.status = 404
 					response.flushBuffer()
 				}
