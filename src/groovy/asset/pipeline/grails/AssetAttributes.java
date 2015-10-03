@@ -17,6 +17,7 @@
 package asset.pipeline.grails;
 
 import org.springframework.core.io.Resource;
+import java.util.Date;
 
 public class AssetAttributes {
 	private boolean gzipExists = false;
@@ -26,15 +27,21 @@ public class AssetAttributes {
 	private boolean isDirectory = false;
 	private Long fileSize;
 	private Long gzipFileSize;
+	private Date lastModified;
 
-	public AssetAttributes(boolean exists, Boolean gzipExists, Boolean isDirectory, Long fileSize, Long gzipFileSize, Resource resource, Resource gzipResource) {
+	public AssetAttributes(boolean exists, Boolean gzipExists, Boolean isDirectory, Long fileSize, Long gzipFileSize, Date lastModified, Resource resource, Resource gzipResource) {
 		this.gzipExists = gzipExists;
 		this.exists = exists;
 		this.fileSize = fileSize;
 		this.isDirectory = isDirectory;
 		this.gzipFileSize = gzipFileSize;
 		this.resource = resource;
+		this.lastModified = lastModified;
 		this.gzipResource = gzipResource;
+	}
+
+	public Date getLastModified() {
+		return this.lastModified;
 	}
 
 	public Resource getResource() {
