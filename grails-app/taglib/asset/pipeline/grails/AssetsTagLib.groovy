@@ -1,13 +1,9 @@
 package asset.pipeline.grails
 
-<<<<<<< HEAD
 import grails.util.Environment
 import grails.core.GrailsApplication
 import asset.pipeline.AssetPipeline
 import asset.pipeline.AssetPipelineConfigHolder
-=======
-
->>>>>>> master
 import asset.pipeline.AssetHelper
 import asset.pipeline.AssetPipeline
 
