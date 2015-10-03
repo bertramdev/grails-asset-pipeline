@@ -121,6 +121,21 @@ The Grails Asset-Pipeline is a plugin used for managing and processing static as
 <h1 id="releases">2 Release Notes</h1>
 <h3>Release History</h3>
 <ul class="star">
+<li>October 3, 2015</li>
+<ul class="star">
+<li>3.0.9 Release - Asset Compiler is now streaming for binary files. Lower memory usage, faster builds. Production asset serving now caches resources for more speed. Fixed AssetResourceLocator in production mode</li>
+<li>2.5.6 Release - Fixing bug in asset filter for cache</li>
+<li>2.5.6 Release - Fixing bug in asset filter for cache</li>
+<li>2.5.5 Release - Asset Compiler is now streaming for binary files. Lower memory usage, faster builds. Production asset serving now caches resources for more speed. Fixed AssetResourceLocator in production mode</li>
+</ul>
+<li>October 2, 2015</li>
+<ul class="star">
+<li>2.5.4 Release - More enhancements to Last Modified headers, also fixes for jar resolution.</li>
+</ul>
+<li>September 29, 2015</li>
+<ul class="star">
+<li>2.5.2 Release - Add Last Modified Header as well as fixes to assetPathExists taglib</li>
+</ul>
 <li>August 21, 2015</li>
 <ul class="star">
 <li>3.0.8 Release - Added bundle=true attribute option to javascript and stylesheet taglib.</li>
@@ -294,7 +309,7 @@ The new asset-pipeline brings with it a host of new features and improvements. T
 <h1 id="configuration">3 Configuration</h1>
 Asset-Pipeline has several customizable options to tweak the compiler to suit your needs. Below is a list of the various configuration options and explanations for how to use them<p class="paragraph"/><h3>Excludes and Includes</h3><p class="paragraph"/>Certain files are not needed for compilation in production. This can be configured globally or for a specific plugin by using the provided configuration options:<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th></tr><tr class="table-odd"><td>grails.assets.excludes</td><td>&#91;"tiny_mce/src/&#42;.js"]</td></tr><tr class="table-even"><td>grails.assets.plugin."twitter-bootstrap".excludes</td><td>&#91;"&#42;&#42;/&#42;.less"]</td></tr><tr class="table-odd"><td>grails.assets.plugin."twitter-bootstrap".includes</td><td>&#91;"bootstrap.less"]</td></tr></table><p class="paragraph"/>Above you will notice the use of an includes. An includes allows you to override a specific file after the excludes scan has already been performed. The above example makes sure the <code>bootstrap.less</code> file can be compiled from the <code>twitter-bootstrap plugin</code>.<p class="paragraph"/><h3>Minification</h3><p class="paragraph"/>The Asset-pipeline comes with the newer version of Closure Compiler to minify your JavaScript assets. This is great for compression and a few options are provided to tune the minifier. Closure can be enabled/disabled entirely as well as configured via various options.<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Property</strong></th><th><strong class="bold">Value</strong></th><th><strong class="bold">Default</strong></th></tr><tr class="table-odd"><td>grails.assets.minifyJs</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td><td><strong class="bold">true</strong></td></tr><tr class="table-even"><td>grails.assets.minifyCss</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td><td><strong class="bold">true</strong></td></tr><tr class="table-odd"><td>grails.assets.enableSourceMaps</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td><td><strong class="bold">true</strong></td></tr><tr class="table-even"><td>grails.assets.minifyOptions</td><td><strong class="bold">Map</strong></td><td>(see below)</td></tr><tr class="table-odd"><td>grails.assets.skipNonDigests</td><td><strong class="bold">true</strong> or <strong class="bold">false</strong></td><td><strong class="bold">true</strong></td></tr></table><p class="paragraph"/>
 <blockquote class="note">
-It is not necessary for you to normally turn off 'skipNonDigets'. Tomcat will automatically still serve files by non digest name and will copy them out using storagePath via the `manifest.properties` alias map.
+It is not necessary for you to normally turn off 'skipNonDigests'. Tomcat will automatically still serve files by non digest name and will copy them out using storagePath via the `manifest.properties` alias map.
 This simply cuts storage in half. However, if you are attempting to do things like upload to a cdn outside of the cdn-asset-pipeline plugin and via the contents of 'target/assets'. This may still be useful.
 </blockquote><p class="paragraph"/><div class="code"><pre>grails.assets.minifyOptions = &#91;
     languageMode: 'ES5',
