@@ -27,6 +27,7 @@ import asset.pipeline.AssetPipelineConfigHolder
 @TestFor(AssetsTagLib)
 class AssetsTagLibSpec extends Specification {
   private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
+  private static MOCK_BASE_SERVER_URL = 'http://localhost:8080/foo'
   AssetProcessorService assetProcessorService = new AssetProcessorService()
 
   def setup() {
