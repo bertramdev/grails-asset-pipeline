@@ -1,0 +1,24 @@
+<plugin name='assetPipeline' version='3.0.7' grailsVersion='3.0 &gt; *'>
+  <type>asset.pipeline.AssetPipelineGrailsPlugin</type>
+  <authorEmail>destes@bcap.com</authorEmail>
+  <developers>[[name:Brian Wheeler]]</developers>
+  <author>David Estes</author>
+  <documentation>http://bertramdev.github.io/asset-pipeline</documentation>
+  <description>The Asset-Pipeline is a plugin used for managing and processing static assets in Grails applications. Asset-Pipeline functions include processing and minification of both CSS and JavaScript files. It is also capable of being extended to compile custom static assets, such as CoffeeScript.</description>
+  <title>Asset Pipeline Plugin</title>
+  <version />
+  <grailsVersion>3.0 &gt; *</grailsVersion>
+  <loadAfter>[url-mappings]</loadAfter>
+  <license>APACHE</license>
+  <issueManagement system='GITHUB' url='http://github.com/bertramdev/asset-pipeline/issues' />
+  <pluginExcludes>[grails-app/assets/**, test/dummy/**]</pluginExcludes>
+  <organization name='Bertram Capital' url='http://www.bertramcapital.com/' />
+  <name>asset-pipeline</name>
+  <scm url='http://github.com/bertramdev/asset-pipeline' />
+  <resources>
+    <resource>asset.pipeline.AssetPipelineBootStrap</resource>
+    <resource>asset.pipeline.grails.AssetProcessorService</resource>
+    <resource>asset.pipeline.grails.AssetMethodTagLib</resource>
+    <resource>asset.pipeline.grails.AssetsTagLib</resource>
+  </resources>
+</plugin>
