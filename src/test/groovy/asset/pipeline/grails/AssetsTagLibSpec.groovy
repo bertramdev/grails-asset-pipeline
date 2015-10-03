@@ -31,9 +31,15 @@ class AssetsTagLibSpec extends Specification {
 
   def setup() {
     AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))
-    assetProcessorServiceMock.getAssetMapping() >> { "assets" }
+
+    assetProcessorService.grailsApplication = grailsApplication
+
     def assetMethodTagLibMock = mockTagLib(AssetMethodTagLib)
-    assetMethodTagLibMock.assetProcessorService = assetProcessorServiceMock
+
+    assetMethodTagLibMock.assetProcessorService = assetProcessorService
+    assetMethodTagLibMock.grailsLinkGenerator   = [serverBaseURL: MOCK_BASE_SERVER_URL]
+
+    tagLib.assetProcessorService = assetProcessorService
   }
 
   void "should return assetPath"() {
@@ -49,6 +55,16 @@ class AssetsTagLibSpec extends Specification {
       def assetSrc = "asset-pipeline/test/test.js"
     expect:
       tagLib.javascript(src: assetSrc) == '<script src="/assets/asset-pipeline/test/test.js" type="text/javascript" ></script>'
+  }
+
+  void "should always return javascript link tag when bundle attr is 'true'"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = false
+      grailsApplication.config.grails.assets.allowDebugParam = true
+      params."_debugAssets" = "y"
+      def assetSrc = "asset-pipeline/test/test.js"
+    expect:
+      tagLib.javascript(src: assetSrc, bundle: 'true') == '<script src="/assets/asset-pipeline/test/test.js" type="text/javascript" ></script>'
   }
 
   void "should return javascript link tag with seperated files when debugMode is on"() {
@@ -76,6 +92,16 @@ class AssetsTagLibSpec extends Specification {
       tagLib.stylesheet(href: assetSrc) == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css"/>'
   }
 
+  void "should always return stylesheet link tag when bundle attr is 'true'"() {
+    given:
+      grailsApplication.config.grails.assets.bundle = false
+      grailsApplication.config.grails.assets.allowDebugParam = true
+      params."_debugAssets" = "y"
+      def assetSrc = "asset-pipeline/test/test.css"
+    expect:
+      tagLib.stylesheet(href: assetSrc, bundle: 'true') == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css"/>'
+  }
+
   void "should return stylesheet link tag with seperated files when debugMode is on"() {
     given:
       grailsApplication.config.grails.assets.bundle = false
@@ -88,10 +114,8 @@ class AssetsTagLibSpec extends Specification {
     when:
       // tagLib.out = stringWriter
       output = tagLib.stylesheet(src: assetSrc)
-
     then:
-      output == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css?compile=false"  />' + LINE_BREAK + '<link rel="stylesheet" href="/assets/asset-pipeline/test/test2.css?compile=false"  />' + LINE_BREAK
-
+      output == '<link rel="stylesheet" href="/assets/asset-pipeline/test/test.css?compile=false" />' + LINE_BREAK + '<link rel="stylesheet" href="/assets/asset-pipeline/test/test2.css?compile=false" />' + LINE_BREAK
   }
 
   void "should return image tag"() {
@@ -101,6 +125,17 @@ class AssetsTagLibSpec extends Specification {
       tagLib.image(src: assetSrc, width:'200',height:200) == '<img src="/assets/grails_logo.png" width="200" height="200"/>'
   }
 
+<<<<<<< HEAD:src/test/groovy/asset/pipeline/grails/AssetsTagLibSpec.groovy
+=======
+  void "should return image tag with absolute path"() {
+    given:
+      def assetSrc = "grails_logo.png"
+
+    expect:
+      tagLib.image(src: assetSrc, absolute: true) == "<img src=\"$MOCK_BASE_SERVER_URL/assets/grails_logo.png\" />"
+  }
+
+>>>>>>> master:test/unit/asset/pipeline/grails/AssetsTagLibSpec.groovy
   void "should return link tag"() {
     given:
       def assetSrc = "grails_logo.png"

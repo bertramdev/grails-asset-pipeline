@@ -1,66 +1,55 @@
 package asset.pipeline.grails
-
 import grails.util.Environment
 import grails.core.*
 import asset.pipeline.AssetPipelineConfigHolder
 import org.apache.commons.lang.StringUtils
+import static org.apache.commons.lang.StringUtils.trimToEmpty
+
 
 class AssetMethodTagLib {
 
-    static namespace = "g"
-    static returnObjectForTags = ['assetPath']
-
-    GrailsApplication grailsApplication
-    def assetProcessorService
-    def grailsLinkGenerator
-
-    def assetPath = { attrs ->
-        def src
-        //unused
-        def ignorePrefix = false
-        def absolute = false
-        if (attrs instanceof Map) {
-            
-            src = attrs.src
-            //unused
-            ignorePrefix = attrs.containsKey('ignorePrefix')? attrs.ignorePrefix : false
-            absolute = attrs.containsKey('absolute') ? attrs.absolute : false
-        } else {
-            
-            src = attrs
-        }
-       
-        def conf = grailsApplication.config.grails.assets
-
-        def assetUrl = assetUriRootPath(grailsApplication, request, absolute)
-        if(AssetPipelineConfigHolder.manifest && src) {
-
-            def realPath = AssetPipelineConfigHolder.manifest.getProperty(src)
-            if(realPath) {
-                return "${assetUrl}${realPath}"
-            }
-        }
-        return "${assetUrl}${src}"
-    }
+	static namespace = 'g'
+	static returnObjectForTags = ['assetPath']
 
 
-    private assetUriRootPath(grailsApplication, request, absolute=false) {
-        def context = grailsApplication.mainContext //unused
-        def conf    = grailsApplication.config.grails.assets
-        def mapping = assetProcessorService.assetMapping
-        def configUrl = conf.url
-        if(conf.url && conf.url instanceof Closure) {
-            configUrl = conf.url.call(request)
-            if(configUrl){
-                return configUrl
-            }
-        } 
-        if(absolute && !configUrl){
-            return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
-        }
-        def contextPath = StringUtils.trimToEmpty(grailsLinkGenerator?.contextPath)
-        String relativePathToResource = (contextPath + "${contextPath?.endsWith('/') ? '' : '/'}$mapping/" )
-        return configUrl ?: relativePathToResource
+	def assetProcessorService
+	def grailsApplication
+	def grailsLinkGenerator
 
-    }
+
+	def assetPath = {final def attrs ->
+		final def src
+		final boolean absolute
+		if (attrs instanceof Map) {
+			src = attrs.src
+			absolute = attrs.containsKey('absolute') ? attrs.absolute : false
+		}
+		else {
+			src = attrs
+			absolute = false
+		}
+
+		return assetUriRootPath(absolute) + assetProcessorService.getAssetPath(src)
+	}
+
+	private String assetUriRootPath(final boolean absolute) {
+		final String mapping = assetProcessorService.assetMapping
+
+		def configUrl = grailsApplication.config.grails.assets.url
+
+		if (configUrl instanceof Closure) {
+			configUrl = configUrl.call(request)
+		}
+
+		if (configUrl) {
+			return configUrl
+		}
+		else if (absolute) {
+			return [grailsLinkGenerator.serverBaseURL, "$mapping/"].join('/')
+		}
+
+		final String contextPath = trimToEmpty(grailsLinkGenerator.contextPath)
+
+		return contextPath + "${contextPath.endsWith('/') ? '' : '/'}$mapping/"
+	}
 }

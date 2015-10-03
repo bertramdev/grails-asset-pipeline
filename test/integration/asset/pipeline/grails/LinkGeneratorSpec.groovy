@@ -17,6 +17,7 @@
 package asset.pipeline.grails
 
 import grails.test.spock.IntegrationSpec
+import asset.pipeline.AssetPipelineConfigHolder
 
 class LinkGeneratorSpec extends IntegrationSpec {
     def grailsApplication
@@ -24,9 +25,9 @@ class LinkGeneratorSpec extends IntegrationSpec {
 
     def "finds assets when calling for resource in dev mode"() {
         given: "A LinkGenerator and an image"
+            AssetPipelineConfigHolder.manifest = null
             grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new LinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
 
             def filePath = "grails_logo.png"
@@ -39,9 +40,9 @@ class LinkGeneratorSpec extends IntegrationSpec {
 
     def "finds assets with absolute path when calling for resource in dev mode"() {
         given: "A LinkGenerator and an image"
+            AssetPipelineConfigHolder.manifest = null
             grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new LinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
 
             def filePath = "grails_logo.png"
@@ -55,12 +56,12 @@ class LinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = true
             def linkGenerator = new LinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
             def filePath = "grails_logo.png"
             Properties manifestProperties = new Properties()
             manifestProperties.setProperty(filePath, "grails_logo-abcdefg.png")
             grailsApplication.config.grails.assets.manifest = manifestProperties
+            AssetPipelineConfigHolder.manifest = manifestProperties
 
         when:
             def resource = linkGenerator.resource(file: filePath)
@@ -72,7 +73,6 @@ class LinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new LinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
 
             def filePath = "fake_image.png"

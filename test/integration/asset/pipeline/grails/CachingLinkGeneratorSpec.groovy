@@ -17,6 +17,7 @@
 package asset.pipeline.grails
 
 import grails.test.spock.IntegrationSpec
+import asset.pipeline.AssetPipelineConfigHolder
 
 class CachingLinkGeneratorSpec extends IntegrationSpec {
     def grailsApplication
@@ -26,7 +27,6 @@ class CachingLinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new CachingLinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
 
             def filePath = "grails_logo.png"
@@ -40,7 +40,6 @@ class CachingLinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new CachingLinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
 
             def filePath = "grails_logo.png"
@@ -55,13 +54,12 @@ class CachingLinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = true
             def linkGenerator = new CachingLinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
             def filePath = "grails_logo.png"
             Properties manifestProperties = new Properties()
             manifestProperties.setProperty(filePath, "grails_logo-abcdefg.png")
             grailsApplication.config.grails.assets.manifest = manifestProperties
-
+            AssetPipelineConfigHolder.manifest = manifestProperties
         when:
             def resource = linkGenerator.resource(file: filePath)
         then:
@@ -72,7 +70,6 @@ class CachingLinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             grailsApplication.config.grails.assets.precompiled = false
             def linkGenerator = new CachingLinkGenerator("http://localhost:8080")
-            linkGenerator.grailsApplication = grailsApplication
             linkGenerator.assetProcessorService = assetProcessorService
 
             def filePath = "fake_image.png"
