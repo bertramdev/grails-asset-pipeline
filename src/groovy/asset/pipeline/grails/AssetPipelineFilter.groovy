@@ -115,7 +115,7 @@ class AssetPipelineFilter implements Filter {
 						gzipFile = applicationContext.getResource("classpath:assets/${fileUri}.gz")
 					}
 
-					AssetAttributes newCache = new AssetAttributes(true, gzipFile.exists(), false, file.contentLength(), gzipFile.contentLength(), new Date(file.lastModified()), file, gzipFile)
+					AssetAttributes newCache = new AssetAttributes(true, gzipFile.exists(), false, file.contentLength(), gzipFile.exists() ? gzipFile.contentLength() : null, new Date(file.lastModified()), file, gzipFile)
 					fileCache.put(fileUri, newCache)
 
 					if(responseBuilder.statusCode != 304) {
