@@ -1,6 +1,6 @@
 h3. Release History
 * October 3, 2015
-** 2.5.5 Release - Asset Compiler is now streaming for binary files. Lower memory usage, faster builds. Production asset serving now caches resources for more speed.
+** 2.5.5 Release - Asset Compiler is now streaming for binary files. Lower memory usage, faster builds. Production asset serving now caches resources for more speed. Fixed AssetResourceLocator in production mode
 * October 2, 2015
 ** 2.5.4 Release - More enhancements to Last Modified headers, also fixes for jar resolution.
 * September 29, 2015
