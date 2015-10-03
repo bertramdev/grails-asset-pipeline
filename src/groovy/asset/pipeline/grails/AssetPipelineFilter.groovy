@@ -116,7 +116,7 @@ class AssetPipelineFilter implements Filter {
 					}
 
 					AssetAttributes newCache = new AssetAttributes(true, gzipFile.exists(), false, file.contentLength(), gzipFile.contentLength(), new Date(file.lastModified()), file, gzipFile)
-					attributeCache.put(fileUri, newCache)
+					fileCache.put(fileUri, newCache)
 
 					if(responseBuilder.statusCode != 304) {
 						// Check for GZip
@@ -150,7 +150,7 @@ class AssetPipelineFilter implements Filter {
 					}
 				} else {
 					AssetAttributes newCache = new AssetAttributes(false, false, false, null, null, null, null, null)
-					attributeCache.put(fileUri, newCache)
+					fileCache.put(fileUri, newCache)
 					response.status = 404
 					response.flushBuffer()
 				}
