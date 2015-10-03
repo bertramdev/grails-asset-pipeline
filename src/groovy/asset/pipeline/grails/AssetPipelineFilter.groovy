@@ -20,6 +20,7 @@ import asset.pipeline.AssetPipelineResponseBuilder
 class AssetPipelineFilter implements Filter {
 
     public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
+    public static final ProductionAssetCache fileCache = new ProductionAssetCache();
 
     def applicationContext
     def servletContext
