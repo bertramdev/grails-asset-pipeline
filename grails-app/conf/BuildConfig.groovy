@@ -29,10 +29,7 @@ grails {
 
 				plugins {
 					test    name: 'code-coverage',       version: '1.2.7',  {export = false}
-					compile name: 'jquery',              version: '1.11.1', {export = false}
-					compile name: 'jquery-ui',           version: '1.10.4', {export = false}
 					build   name: 'release',             version: '3.1.1',  {export = false}
-					compile name: 'resources',           version: '1.2.14', {export = false}
 					build   name: 'rest-client-builder', version: '2.0.1',  {export = false}
 					compile name: 'webxml',              version: '1.4.1'
 				}
