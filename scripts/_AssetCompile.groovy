@@ -28,13 +28,14 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	event("AssetPrecompileStart", [assetConfig])
 
-	assetConfig.minifyJs         = config.grails.assets.containsKey('minifyJs')  ? config.grails.assets.minifyJs  : (argsMap.containsKey('minifyJs')  ? argsMap.minifyJs  == 'true' : true)
-	assetConfig.minifyCss        = config.grails.assets.containsKey('minifyCss') ? config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
+	assetConfig.minifyJs         = config.grails.assets.containsKey('minifyJs')         ? config.grails.assets.minifyJs  : (argsMap.containsKey('minifyJs')  ? argsMap.minifyJs  == 'true' : true)
+	assetConfig.minifyCss        = config.grails.assets.containsKey('minifyCss')        ? config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
 	assetConfig.minifyOptions    = config.grails.assets.minifyOptions
 	assetConfig.compileDir       = "${basedir}/target/assets"
 	assetConfig.excludesGzip     = config.grails.assets.excludesGzip
 	assetConfig.enableSourceMaps = config.grails.assets.containsKey('enableSourceMaps') ? config.grails.assets.enableSourceMaps : true
 	assetConfig.skipNonDigests   = config.grails.assets.containsKey('skipNonDigests')   ? config.grails.assets.skipNonDigests   : true
+	assetConfig.enableDigests    = config.grails.assets.containsKey('enableDigests')    ? config.grails.assets.enableDigests    : true
 
 	//Add Resolvers for Grails
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application',"${basedir}/grails-app/assets"))

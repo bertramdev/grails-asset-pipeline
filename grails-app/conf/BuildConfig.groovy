@@ -1,39 +1,39 @@
-grails.project.work.dir = 'target'
+grails {
+	project {
+		source.level = 1.7
+		target.level = 1.7
 
-grails.project.dependency.resolver = "maven"
-grails.project.target.level = 1.7
-grails.project.source.level = 1.7
+		work.dir = 'target'
 
-grails.project.dependency.resolution = {
+		dependency {
+			resolver = 'maven'
 
-    inherits 'global'
-    log 'warn'
+			resolution = {
+				inherits 'global'
+				log      'warn'
 
-    repositories {
-        mavenLocal()
-        grailsCentral()
-        mavenCentral()
-        jcenter()
-        mavenRepo "http://dl.bintray.com/bertramlabs/asset-pipeline"
-    }
+				repositories {
+					mavenLocal()
+					grailsCentral()
+					mavenCentral()
+					jcenter()
+					mavenRepo 'http://dl.bintray.com/bertramlabs/asset-pipeline'
+				}
 
-    dependencies {
-        runtime 'org.mozilla:rhino:1.7R4'
-        compile("com.bertramlabs.plugins:asset-pipeline-core:2.5.8")
-        //Temporary inclusion due to bug in 2.4.2
-        compile("cglib:cglib-nodep:2.2.2") {
-            export = false
-        }
-    }
+				dependencies {
+					// Temporary inclusion due to bug in 2.4.2
+					compile group: 'cglib',                   name: 'cglib-nodep',         version: '2.2.2', {export = false}
+					compile group: 'com.bertramlabs.plugins', name: 'asset-pipeline-core', version: '2.5.8'
+					runtime group: 'org.mozilla',             name: 'rhino',               version: '1.7R4'
+				}
 
-    plugins {
-        compile(":webxml:1.4.1")
-
-        build ':release:3.1.1', ':rest-client-builder:2.0.1', {
-            export = false
-        }
-        test ":code-coverage:1.2.7", {
-            export = false
-        }
-    }
+				plugins {
+					test    name: 'code-coverage',       version: '1.2.7',  {export = false}
+					build   name: 'release',             version: '3.1.1',  {export = false}
+					build   name: 'rest-client-builder', version: '2.0.1',  {export = false}
+					compile name: 'webxml',              version: '1.4.1'
+				}
+			}
+		}
+	}
 }
