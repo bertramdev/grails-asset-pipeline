@@ -1,4 +1,6 @@
 h3. Release History
+* October 5, 2015
+** 2.5.8 Release - More features for Last Modified date and If-Last-Modified headers. Also core bump with fixes for build phase
 * October 3, 2015
 ** 2.5.5 Release - Asset Compiler is now streaming for binary files. Lower memory usage, faster builds. Production asset serving now caches resources for more speed. Fixed AssetResourceLocator in production mode
 * October 2, 2015
