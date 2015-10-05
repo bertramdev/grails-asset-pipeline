@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat
 @Slf4j
 class AssetPipelineFilter implements Filter {
 	public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
+	private final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
 	public static final ProductionAssetCache fileCache = new ProductionAssetCache();
 
 	def applicationContext
