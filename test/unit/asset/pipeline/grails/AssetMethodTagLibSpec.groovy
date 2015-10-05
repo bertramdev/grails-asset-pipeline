@@ -13,33 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package asset.pipeline.grails
 
-import grails.test.mixin.TestFor
-import spock.lang.Specification
+
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.fs.FileSystemAssetResolver
+import grails.test.mixin.TestFor
+import spock.lang.Specification
+
 
 /**
  * @author David Estes
  */
 @TestFor(AssetMethodTagLib)
 class AssetMethodTagLibSpec extends Specification {
-  AssetProcessorService assetProcessorService = new AssetProcessorService()
 
-  def setup() {
-    AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
+	private static final MOCK_BASE_SERVER_URL = 'http://localhost:8080/foo'
 
-    assetProcessorService.grailsApplication = grailsApplication
 
-    tagLib.assetProcessorService = assetProcessorService
-  }
+	AssetProcessorService assetProcessorService = new AssetProcessorService()
 
-  void "should return assetPath"() {
-    given:
-      def assetSrc = "asset-pipeline/test/test.css"
-    expect:
-      tagLib.assetPath(src: assetSrc) == '/assets/asset-pipeline/test/test.css'
-  }
+
+	def setup() {
+		AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
+
+		assetProcessorService.grailsApplication   = grailsApplication
+		assetProcessorService.grailsLinkGenerator = [serverBaseURL: MOCK_BASE_SERVER_URL]
+
+		tagLib.assetProcessorService = assetProcessorService
+	}
+
+	void "should return assetPath"() {
+		given:
+          final def assetSrc = "asset-pipeline/test/test.css"
+		expect:
+			tagLib.assetPath(src: assetSrc) == '/assets/asset-pipeline/test/test.css'
+	}
 }
