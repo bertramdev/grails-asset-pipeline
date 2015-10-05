@@ -24,8 +24,8 @@ class AssetsTagLib {
 	def javascript = {final attrs ->
 		final GrailsPrintWriter outPw = out
 		attrs.remove('href')
-		element(attrs, 'js', 'application/javascript', null) {final String src, final outputAttrs, final String endOfLine ->
-			outPw << '<script type="text/javascript" src="' << src << '" ' << paramsToHtmlAttr(outputAttrs) << '></script>' << endOfLine
+		element(attrs, 'js', 'application/javascript', null) {final String src, final String queryString, final outputAttrs, final String endOfLine ->
+			outPw << '<script type="text/javascript" src="' << assetPath(src: src) << queryString << '" ' << paramsToHtmlAttr(outputAttrs) << '></script>' << endOfLine
 		}
 	}
 
@@ -37,12 +37,12 @@ class AssetsTagLib {
 	 */
 	def stylesheet = {final attrs ->
 		final GrailsPrintWriter outPw = out
-		element(attrs, 'css', 'text/css', Objects.toString(attrs.remove('href'), null)) {final String src, final outputAttrs, final String endOfLine ->
+		element(attrs, 'css', 'text/css', Objects.toString(attrs.remove('href'), null)) {final String src, final String queryString, final outputAttrs, final String endOfLine ->
 			if (endOfLine) {
-				outPw << '<link rel="stylesheet" href="' << src << '" ' << paramsToHtmlAttr(outputAttrs) << '/>' << endOfLine
+				outPw << '<link rel="stylesheet" href="' << assetPath(src: src) << queryString << '" ' << paramsToHtmlAttr(outputAttrs) << '/>' << endOfLine
 			}
 			else {
-				outPw << link([rel: 'stylesheet', href: src] + outputAttrs)
+				outPw << link([rel: 'stylesheet', href: src] + outputAttrs) << queryString
 			}
 		}
 	}
@@ -56,7 +56,7 @@ class AssetsTagLib {
 
 		final def nonBundledMode = (!grailsApplication.warDeployed && grailsApplication.config.grails.assets.bundle != true && attrs.remove('bundle') != 'true')
 		if (! nonBundledMode) {
-			output(assetPath(src: src), attrs, '')
+			output(src, '', attrs, '')
 		}
 		else {
 			final int lastDotIndex = src.lastIndexOf('.')
@@ -70,12 +70,12 @@ class AssetsTagLib {
 				uri       = src
 				extension = ext
 			}
-			final def modifierParams = ['compile=false']
-			if (attrs.charset) {
-				modifierParams << "encoding=${attrs.charset}"
-			}
+			final String queryString =
+				attrs.charset \
+					? "?compile=false&encoding=${attrs.charset}"
+					: '?compile=false'
 			AssetPipeline.getDependencyList(uri, contentType, extension).each {
-				output("${assetPath([src: "${it.path}", ignorePrefix: true])}?${modifierParams.join('&')}", attrs, LINE_BREAK)
+				output("${it.path}", queryString, attrs, LINE_BREAK)
 			}
 		}
 	}
