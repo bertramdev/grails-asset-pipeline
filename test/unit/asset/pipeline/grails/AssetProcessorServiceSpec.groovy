@@ -13,99 +13,109 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package asset.pipeline.grails
 
-import grails.test.mixin.TestFor
-import spock.lang.Specification
+
 import asset.pipeline.AssetPipeline
 import asset.pipeline.AssetPipelineConfigHolder
+import asset.pipeline.fs.FileSystemAssetResolver
+import grails.test.mixin.TestFor
+import spock.lang.Specification
+
 
 /**
  * @author Tommy Barker
  */
 @TestFor(AssetProcessorService)
 class AssetProcessorServiceSpec extends Specification {
-    def setup() {
-        AssetPipelineConfigHolder.registerResolver(new asset.pipeline.fs.FileSystemAssetResolver('application','grails-app/assets'))
-    }
-    void "asset mapping can be configured"() {
-        given:
-            def path
-            def goodConfig = new ConfigObject()
-            goodConfig.grails.assets.mapping = "foo"
-            def badConfig = new ConfigObject()
-            badConfig.grails.assets.mapping = "foo/bar"
 
-        when: "retrieving mapping with no configuration"
-            path = service.assetMapping
+	private static final MOCK_BASE_SERVER_URL = 'http://localhost:8080/foo'
 
-        then:
-            "assets" == path
-            noExceptionThrown()
 
-        when: "mapping set to 'foo'"
-            service.grailsApplication.config = goodConfig
-            path = service.assetMapping
+	def setup() {
+		AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
+		service.grailsLinkGenerator = [serverBaseURL: MOCK_BASE_SERVER_URL]
+	}
 
-        then:
-            "foo" == path
-            noExceptionThrown()
+	void "asset mapping can be configured"() {
+		given:
+			def path
+			final def goodConfig = new ConfigObject()
+			goodConfig.grails.assets.mapping = "foo"
+			final def badConfig = new ConfigObject()
+			badConfig.grails.assets.mapping = "foo/bar"
 
-        when: "mapping set to 'foo/bar'"
-            service.grailsApplication.config = badConfig
-            service.assetMapping
+		when: "retrieving mapping with no configuration"
+			path = service.assetMapping
+		then:
+			"assets" == path
+			noExceptionThrown()
 
-        then: "error is thrown since only one level is supported"
-            thrown(IllegalArgumentException)
-    }
+		when: "mapping set to 'foo'"
+			service.grailsApplication.config = goodConfig
+			path = service.assetMapping
+		then:
+			"foo" == path
+			noExceptionThrown()
 
-    void "can get flattened dependency list"() {
-        given:
-            def fileUri = "asset-pipeline/test/test"
-            def extension = "js"
-            def contentType = "application/javascript"
-            def depList
-        when:
-            depList = AssetPipeline.getDependencyList(fileUri, contentType, extension)
-        then:
-            depList?.size() > 0
+		when: "mapping set to 'foo/bar'"
+			service.grailsApplication.config = badConfig
+			service.assetMapping
+		then: "error is thrown since only one level is supported"
+			thrown(IllegalArgumentException)
+	}
 
-        when:
-            depList = AssetPipeline.getDependencyList("unknownfile", contentType, extension)
-        then:
-            depList == null
-    }
+	void "can get flattened dependency list"() {
+		given:
+			final def fileUri = "asset-pipeline/test/test"
+			final def extension = "js"
+			final def contentType = "application/javascript"
+			def depList
 
-    void "can serve unprocessed asset for dev debug"() {
-        given:
-            def fileUri = "asset-pipeline/test/test"
-            def extension = "js"
-            def contentType = "application/javascript"
-            def uncompiledFile
-        when:
-            uncompiledFile = AssetPipeline.serveUncompiledAsset(fileUri, contentType, extension)
-        then:
-            !(new String(uncompiledFile)).contains("This is File A")
-        when:
-            uncompiledFile = AssetPipeline.serveUncompiledAsset('unknownfile', contentType, extension)
-        then:
-            uncompiledFile == null
-    }
+		when:
+			depList = AssetPipeline.getDependencyList(fileUri, contentType, extension)
+		then:
+			depList?.size() > 0
 
-    void "can serve compiled assets"() {
-        given:
-            def fileUri = "asset-pipeline/test/test"
-            def extension = "js"
-            def contentType = "application/javascript"
-            def uncompiledFile
-        when:
-            uncompiledFile = AssetPipeline.serveAsset(fileUri, contentType, extension)
-        then:
-            (new String(uncompiledFile)).contains("This is File A")
-        when:
-            uncompiledFile = AssetPipeline.serveAsset('unknownfile', contentType, extension)
-        then:
-            uncompiledFile == null
-    }
+		when:
+			depList = AssetPipeline.getDependencyList("unknownfile", contentType, extension)
+		then:
+			depList == null
+	}
+
+	void "can serve unprocessed asset for dev debug"() {
+		given:
+			final def fileUri = "asset-pipeline/test/test"
+			final def extension = "js"
+			final def contentType = "application/javascript"
+			def uncompiledFile
+
+		when:
+			uncompiledFile = AssetPipeline.serveUncompiledAsset(fileUri, contentType, extension)
+		then:
+			!(new String(uncompiledFile)).contains("This is File A")
+
+		when:
+			uncompiledFile = AssetPipeline.serveUncompiledAsset('unknownfile', contentType, extension)
+		then:
+			uncompiledFile == null
+	}
+
+	void "can serve compiled assets"() {
+		given:
+			final def fileUri = "asset-pipeline/test/test"
+			final def extension = "js"
+			final def contentType = "application/javascript"
+			def uncompiledFile
+
+		when:
+			uncompiledFile = AssetPipeline.serveAsset(fileUri, contentType, extension)
+		then:
+			(new String(uncompiledFile)).contains("This is File A")
+
+		when:
+			uncompiledFile = AssetPipeline.serveAsset('unknownfile', contentType, extension)
+		then:
+			uncompiledFile == null
+	}
 }
