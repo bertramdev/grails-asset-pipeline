@@ -74,8 +74,8 @@ class AssetsTagLib {
 				attrs.charset \
 					? "?compile=false&encoding=${attrs.charset}"
 					: '?compile=false'
-			AssetPipeline.getDependencyList(uri, contentType, extension).each {
-				output("${it.path}", queryString, attrs, LINE_BREAK)
+			AssetPipeline.getDependencyList(uri, contentType, extension)?.each {
+				output(it.path, queryString, attrs, LINE_BREAK)
 			}
 		}
 	}
