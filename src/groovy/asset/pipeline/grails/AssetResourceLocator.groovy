@@ -1,6 +1,7 @@
 package asset.pipeline.grails
 
 import asset.pipeline.AssetHelper
+import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.DirectiveProcessor
 import asset.pipeline.GenericAssetFile
 import org.codehaus.groovy.grails.core.io.DefaultResourceLocator
