@@ -21,6 +21,7 @@ class AssetResourceLocator extends DefaultResourceLocator {
 	Resource findAssetForURI(String uri) {
 		Resource resource
 		if(warDeployed) {
+			def manifest = AssetPipelineConfigHolder.manifest
 			uri = manifest?.getProperty(uri, uri)
 
 			def assetUri = "assets/${uri}"
