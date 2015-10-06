@@ -1,1 +1,2 @@
-asset.pipeline.grails
+asset.pipeline.grails.utils.net
+asset.pipeline.grails.utils.text
