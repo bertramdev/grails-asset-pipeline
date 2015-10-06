@@ -1,4 +1,6 @@
 h3. Release History
+* October 6, 2015
+** 2.5.9 Release - More fixes to AssetResourceLocator
 * October 5, 2015
 ** 2.5.8 Release - More features for Last Modified date and If-Last-Modified headers. Also core bump with fixes for build phase
 * October 3, 2015
