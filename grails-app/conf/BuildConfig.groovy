@@ -25,9 +25,9 @@ grails {
 				}
 
 				plugins {
-					test    name: 'code-coverage',       version: '1.2.7',  {export = false}
-					build   name: 'release',             version: '3.1.1',  {export = false}
-					build   name: 'rest-client-builder', version: '2.0.1',  {export = false}
+					test    name: 'code-coverage',       version: '2.0.3-3', {export = false}
+					build   name: 'release',             version: '3.1.1',   {export = false}
+					build   name: 'rest-client-builder', version: '2.1.1',   {export = false}
 					compile name: 'webxml',              version: '1.4.1'
 				}
 			}
