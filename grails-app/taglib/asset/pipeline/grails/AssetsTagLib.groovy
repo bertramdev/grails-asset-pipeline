@@ -42,7 +42,7 @@ class AssetsTagLib {
 				outPw << '<link rel="stylesheet" href="' << assetPath(src: src) << queryString << '" ' << paramsToHtmlAttr(outputAttrs) << '/>' << endOfLine
 			}
 			else {
-				outPw << link([rel: 'stylesheet', href: src] + outputAttrs) << queryString
+				outPw << link([rel: 'stylesheet', href: src] + outputAttrs)
 			}
 		}
 	}
