@@ -52,7 +52,6 @@ class AssetProcessorService {
 
 	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		println "Fetching asset Path ${relativePath}"
 		if(relativePath && manifest && isEnableDigests(conf)) {
 
 			manifest.getProperty(relativePath,relativePath)
