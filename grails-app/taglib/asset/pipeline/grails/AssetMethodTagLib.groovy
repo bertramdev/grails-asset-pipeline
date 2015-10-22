@@ -21,7 +21,6 @@ class AssetMethodTagLib {
 			src      = attrs
 			absolute = false
 		}
-		println "Fetching Base URL ${src}"
 		return assetProcessorService.assetBaseUrl(request, absolute) + assetProcessorService.getAssetPath(src)
 	}
 }
