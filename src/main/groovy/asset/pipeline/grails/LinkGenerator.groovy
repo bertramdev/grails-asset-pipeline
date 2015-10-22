@@ -18,6 +18,7 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 	}
 
 
+	@Override
 	String resource(final Map attrs) {
 		asset(attrs) ?: super.resource(attrs)
 	}
@@ -28,5 +29,10 @@ class LinkGenerator extends DefaultLinkGenerator implements GrailsApplicationAwa
 	 */
 	String asset(final Map attrs) {
 		assetProcessorService.asset(attrs, this)
+	}
+
+	@Override
+	String makeServerURL() {
+		assetProcessorService.makeServerURL(this)
 	}
 }

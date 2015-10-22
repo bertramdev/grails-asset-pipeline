@@ -1,3 +1,4 @@
+
 package asset.pipeline
 
 import org.springframework.context.*
@@ -13,11 +14,14 @@ import asset.pipeline.AssetPipelineResponseBuilder
 import asset.pipeline.grails.AssetAttributes
 import asset.pipeline.grails.ProductionAssetCache
 import java.net.URI
+import java.util.TimeZone
+import java.text.SimpleDateFormat
 
 @Commons
 @CompileStatic
 class AssetPipelineFilter extends OncePerRequestFilter {
 	public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
+	
 	public static final ProductionAssetCache fileCache = new ProductionAssetCache();
     ApplicationContext applicationContext
     ServletContext servletContext
@@ -27,6 +31,7 @@ class AssetPipelineFilter extends OncePerRequestFilter {
         def config = filterConfig
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.servletContext)
         servletContext = config.servletContext
+
     }
 
     void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -54,15 +59,19 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 
 			if(attributeCache) {
 				def file = attributeCache.resource
-				def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'))
+				def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
+				response.setHeader('Last-Modified', getLastModifiedDate(attributeCache.getLastModified()))
 				responseBuilder.headers.each { header ->
 					response.setHeader(header.key,header.value)
 				}
-				if(responseBuilder.statusCode) {
+				if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, attributeCache.getLastModified())) {
+					response.status = 304
+				}
+				else if(responseBuilder.statusCode) {
 					response.status = responseBuilder.statusCode
 				}
-				response.setHeader('Last-Modified', attributeCache.getLastModified().format(HTTP_DATE_FORMAT))
-				if(responseBuilder.statusCode != 304) {
+
+				if(response.status != 304) {
 					def acceptsEncoding = request.getHeader("Accept-Encoding")
 					if(acceptsEncoding?.split(",")?.contains("gzip") && attributeCache.gzipExists()) {
 						file = attributeCache.getGzipResource()
@@ -99,24 +108,27 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 				}
 
 				if(file.exists()) {
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'))
+					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
+					response.setHeader('Last-Modified', getLastModifiedDate(new Date(file.lastModified())))
+					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, new Date(file.lastModified()))) {
+						response.status = 304
+					} else if(responseBuilder.statusCode) {
+						response.status = responseBuilder.statusCode
+					}
 					responseBuilder.headers.each { header ->
 						response.setHeader(header.key,header.value)
 					}
-					if(responseBuilder.statusCode) {
-						response.status = responseBuilder.statusCode
-					}
-					response.setHeader('Last-Modified', new Date(file.lastModified()).format(HTTP_DATE_FORMAT))
+					
+					
 
 					def gzipFile = applicationContext.getResource("assets/${fileUri}.gz")
 					if(!gzipFile.exists()) {
 						gzipFile = applicationContext.getResource("classpath:assets/${fileUri}.gz")
 					}
-
-					AssetAttributes newCache = new AssetAttributes(true, gzipFile.exists(), false, file.contentLength(), gzipFile.contentLength(), new Date(file.lastModified()), file, gzipFile)
+					AssetAttributes newCache = new AssetAttributes(true, gzipFile.exists(), false, file.contentLength(), gzipFile.exists() ? gzipFile.contentLength() : null, new Date(file.lastModified()), file, gzipFile)
 					fileCache.put(fileUri, newCache)
 
-					if(responseBuilder.statusCode != 304) {
+					if(response.status != 304) {
 						// Check for GZip
 						def acceptsEncoding = request.getHeader("Accept-Encoding")
 						if(acceptsEncoding?.split(",")?.contains("gzip")) {
@@ -185,4 +197,30 @@ class AssetPipelineFilter extends OncePerRequestFilter {
             chain.doFilter(request, response)
         }
     }
+
+	boolean hasNotChanged(String ifModifiedSince, Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		boolean hasNotChanged = false
+		if (ifModifiedSince) {
+			try {
+				hasNotChanged = date <= sdf.parse(ifModifiedSince)
+			} catch (Exception e) {
+				log.debug("Could not parse date time or file modified date", e)
+			}
+		}
+		return hasNotChanged
+	}
+	private String getLastModifiedDate(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		String lastModifiedDateTimeString = sdf.format(new Date())
+		try {
+			lastModifiedDateTimeString = sdf.format(date)
+		} catch (Exception e) {
+			log.debug("Could not get last modified date time for file", e)
+		}
+
+		return lastModifiedDateTimeString
+	}
 }

@@ -6,6 +6,7 @@ import asset.pipeline.AssetPipeline
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetHelper
 import asset.pipeline.AssetPipeline
+import org.grails.buffer.GrailsPrintWriter
 
 
 class AssetsTagLib {
@@ -21,82 +22,63 @@ class AssetsTagLib {
 	/**
 	 * @attr src REQUIRED
 	 */
-	def javascript = {attrs ->
-		def src = attrs.remove('src')
-		def attrBundle = attrs.remove('bundle')
+	def javascript = {final attrs ->
+		final GrailsPrintWriter outPw = out
 		attrs.remove('href')
-		src = "${AssetHelper.nameWithoutExtension(src)}.js"
-		def uri
-		def extension
-
-		def conf = grailsApplication.config.grails.assets
-
-		def nonBundledMode = (!AssetPipelineConfigHolder.manifest && conf.bundle != true && attrBundle != 'true')
-
-		if(!nonBundledMode) {
-			out << "<script src=\"${assetPath(src:src)}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>"
-		}
-		else {
-			if (src.lastIndexOf('.') >= 0) {
-				uri = src.substring(0, src.lastIndexOf('.'))
-				extension = src.substring(src.lastIndexOf('.') + 1)
-			}
-			else {
-				uri = src
-				extension = 'js'
-			}
-			// def startTime = new Date().time
-			def list = AssetPipeline.getDependencyList(uri, 'application/javascript', extension)
-			def modifierParams = ['compile=false']
-			if (attrs.charset) {
-				modifierParams << "encoding=${attrs.charset}"
-			}
-			list.each {dep ->
-				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<script src=\"${depAssetPath}?${modifierParams.join('&')}\" type=\"text/javascript\" ${paramsToHtmlAttr(attrs)}></script>${LINE_BREAK}"
-			}
-			// println "Fetching Dev Mode Dependency List Time ${new Date().time - startTime}"
+		element(attrs, 'js', 'application/javascript', null) { final String src, final String queryString, final outputAttrs, final String endOfLine ->
+			outPw << '<script type="text/javascript" src="' << assetPath(src: src) << queryString << '" ' << paramsToHtmlAttr(outputAttrs) << '></script>' << endOfLine
 		}
 	}
 
 	/**
-	 * @attr href OPTIONAL alternative to src
-	 * @attr src OPTIONAL alternative to href
+	 * At least one of {@code href} and {@code src} must be supplied
+	 *
+	 * @attr href OPTIONAL standard URL attribute
+	 * @attr src  OPTIONAL alternate URL attribute, only used if {@code href} isn't supplied, or if {@code href} is Groovy false
 	 */
-	def stylesheet = {attrs ->
-		def src  = attrs.remove('src')
-		def attrBundle = attrs.remove('bundle')
-		def href = attrs.remove('href')
-		if (href) {
-			src = href
+	def stylesheet = {final attrs ->
+		final GrailsPrintWriter outPw = out
+		element(attrs, 'css', 'text/css', Objects.toString(attrs.remove('href'), null)) {final String src, final String queryString, final outputAttrs, final String endOfLine ->
+			if (endOfLine) {
+				outPw << '<link rel="stylesheet" href="' << assetPath(src: src) << queryString << '" ' << paramsToHtmlAttr(outputAttrs) << '/>' << endOfLine
+			}
+			else {
+				outPw << link([rel: 'stylesheet', href: src] + outputAttrs)
+			}
+		}
+	}
+
+	private void element(final attrs, final String ext, final String contentType, final String srcOverride, final Closure<GrailsPrintWriter> output) {
+		def src = attrs.remove('src')
+		if (srcOverride) {
+			src = srcOverride
 		}
 		src = "${AssetHelper.nameWithoutExtension(src)}.css"
 		def conf = grailsApplication.config.grails.assets
-		def uri
-		def extension
 
-		def nonBundledMode = (!AssetPipelineConfigHolder.manifest && conf.bundle != true && attrBundle != 'true')
-
-		if(!nonBundledMode) {
-			out << link([rel: 'stylesheet', href:src] + attrs)
+		final def nonBundledMode = (!AssetPipelineConfigHolder.manifest && conf.bundle != true && attrs.remove('bundle') != 'true')
+		
+		if (! nonBundledMode) {
+			output(src, '', attrs, '')
 		}
 		else {
-			if (src.lastIndexOf('.') >= 0) {
-				uri = src.substring(0, src.lastIndexOf('.'))
-				extension = src.substring(src.lastIndexOf('.') + 1)
+			final int lastDotIndex = src.lastIndexOf('.')
+			final def uri
+			final def extension
+			if (lastDotIndex >= 0) {
+				uri       = src.substring(0, lastDotIndex)
+				extension = src.substring(lastDotIndex + 1)
 			}
 			else {
-				uri = src
-				extension = 'css'
+				uri       = src
+				extension = ext
 			}
-			def list = AssetPipeline.getDependencyList(uri, 'text/css', extension)
-			def modifierParams = ['compile=false']
-			if (attrs.charset) {
-				modifierParams << "encoding=${attrs.charset}"
-			}
-			list.each {dep ->
-				def depAssetPath = assetPath([src: "${dep.path}", ignorePrefix:true])
-				out << "<link rel=\"stylesheet\" href=\"${depAssetPath}?${modifierParams.join('&')}\" ${paramsToHtmlAttr(attrs)}/>${LINE_BREAK}"
+			final String queryString =
+				attrs.charset \
+					? "?compile=false&encoding=${attrs.charset}"
+					: '?compile=false'
+			AssetPipeline.getDependencyList(uri, contentType, extension)?.each {
+				output(it.path, queryString, attrs, LINE_BREAK)
 			}
 		}
 	}

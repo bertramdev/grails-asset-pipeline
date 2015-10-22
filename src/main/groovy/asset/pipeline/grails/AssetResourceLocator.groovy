@@ -1,6 +1,7 @@
 package asset.pipeline.grails
 
 import asset.pipeline.AssetHelper
+import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.DirectiveProcessor
 import asset.pipeline.GenericAssetFile
 import org.grails.core.io.DefaultResourceLocator
@@ -21,6 +22,7 @@ class AssetResourceLocator extends DefaultResourceLocator {
 	Resource findAssetForURI(String uri) {
 		Resource resource
 		if(warDeployed) {
+			def manifest = AssetPipelineConfigHolder.manifest
 			uri = manifest?.getProperty(uri, uri)
 
 			def assetUri = "assets/${uri}"
