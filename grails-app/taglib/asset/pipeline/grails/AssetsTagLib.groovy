@@ -53,7 +53,7 @@ class AssetsTagLib {
 		if (srcOverride) {
 			src = srcOverride
 		}
-		src = "${AssetHelper.nameWithoutExtension(src)}.css"
+		src = "${AssetHelper.nameWithoutExtension(src)}.${ext}"
 		def conf = grailsApplication.config.grails.assets
 
 		final def nonBundledMode = (!AssetPipelineConfigHolder.manifest && conf.bundle != true && attrs.remove('bundle') != 'true')
