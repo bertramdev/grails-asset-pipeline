@@ -58,49 +58,55 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 			AssetAttributes attributeCache = fileCache.get(fileUri)
 
 			if(attributeCache) {
-				def file = attributeCache.resource
-				def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
-				response.setHeader('Last-Modified', getLastModifiedDate(attributeCache.getLastModified()))
-				responseBuilder.headers.each { header ->
-					response.setHeader(header.key,header.value)
-				}
-				if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, attributeCache.getLastModified())) {
-					response.status = 304
-				}
-				else if(responseBuilder.statusCode) {
-					response.status = responseBuilder.statusCode
-				}
+                if(attributeCache.exists()) {
+                    def file = attributeCache.resource
+                    def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
+                    response.setHeader('Last-Modified', getLastModifiedDate(attributeCache.getLastModified()))
+                    responseBuilder.headers.each { header ->
+                        response.setHeader(header.key,header.value)
+                    }
+                    if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, attributeCache.getLastModified())) {
+                        response.status = 304
+                    }
+                    else if(responseBuilder.statusCode) {
+                        response.status = responseBuilder.statusCode
+                    }
 
-				if(response.status != 304) {
-					def acceptsEncoding = request.getHeader("Accept-Encoding")
-					if(acceptsEncoding?.split(",")?.contains("gzip") && attributeCache.gzipExists()) {
-						file = attributeCache.getGzipResource()
-						response.setHeader('Content-Encoding','gzip')
-						response.setHeader('Content-Length', attributeCache.getGzipFileSize().toString())
-					} else {
-						response.setHeader('Content-Length', attributeCache.getFileSize().toString())
-					}
-					if(encoding) {
-						response.setCharacterEncoding(encoding)
-					}
+                    if(response.status != 304) {
+                        def acceptsEncoding = request.getHeader("Accept-Encoding")
+                        if(acceptsEncoding?.split(",")?.contains("gzip") && attributeCache.gzipExists()) {
+                            file = attributeCache.getGzipResource()
+                            response.setHeader('Content-Encoding','gzip')
+                            response.setHeader('Content-Length', attributeCache.getGzipFileSize().toString())
+                        } else {
+                            response.setHeader('Content-Length', attributeCache.getFileSize().toString())
+                        }
+                        if(encoding) {
+                            response.setCharacterEncoding(encoding)
+                        }
 
-					response.setContentType(format)
+                        response.setContentType(format)
 
-					try {
-						byte[] buffer = new byte[102400];
-						int len;
-						def inputStream = file.inputStream
-						def out = response.outputStream
-						while ((len = inputStream.read(buffer)) != -1) {
-							out.write(buffer, 0, len);
-						}
-						response.flushBuffer()
-					} catch(e) {
-						log.debug("File Transfer Aborted (Probably by the user)",e)
-					}
-				} else {
-					response.flushBuffer()
-				}
+                        try {
+                            byte[] buffer = new byte[102400];
+                            int len;
+                            def inputStream = file.inputStream
+                            def out = response.outputStream
+                            while ((len = inputStream.read(buffer)) != -1) {
+                                out.write(buffer, 0, len);
+                            }
+                            response.flushBuffer()
+                        } catch(e) {
+                            log.debug("File Transfer Aborted (Probably by the user)",e)
+                        }
+                    } else {
+                        response.flushBuffer()
+                    }
+                } else {
+                    response.status = 404
+                    response.flushBuffer()
+                }
+				
 			} else {
 				def file = applicationContext.getResource("assets/${fileUri}")
 				if(!file.exists()) {
