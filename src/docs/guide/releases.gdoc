@@ -1,7 +1,8 @@
 h3. Release History
 
 * November 16, 2015
-** 3.0.13 (grails3) Release - Fixes a bug in SpringClassPath Resolver related to require_tree
+** 3.0.14 (grails3) Release - Fixes a bug in SpringClassPath Resolver related to require_tree
+** 2.6.6 Release - Fixes a bug in SpringClassPath resolver related to require_tree
 ** 3.0.12 (grails3) Release - Fixes to compile time performance and runtime using stream buffers
 ** 2.6.4 Release - Improved compile time performance
 * November 11, 2015
