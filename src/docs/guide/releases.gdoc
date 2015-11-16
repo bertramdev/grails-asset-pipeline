@@ -1,5 +1,10 @@
 h3. Release History
 
+* November 16, 2015
+** 3.0.12 (grails3) Release - Fixes to compile time performance and runtime using stream buffers
+** 2.6.4 Release - Improved compile time performance
+* November 11, 2015
+** 3.0.11 (grails3) Release - Fixes to thread safety, and compile static fixes.
 * October 22, 2015
 ** 3.0.10 (grails3) Release - Cleaned up debug output
 ** 3.0.9 (grails3) Release - Asset Compiler is now streaming for binary files. Lower memory usage, faster builds. Production asset serving now caches resources for more speed. Fixed AssetResourceLocator in production mode
