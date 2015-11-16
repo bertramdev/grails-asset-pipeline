@@ -139,7 +139,7 @@ class SpringResourceAssetResolver extends AbstractAssetResolver<Resource> {
                 }
                 resources = filesToScan.findAll { it ->
                     def filePath = it.value.URL.path
-                    !filePath.endsWith('/') &&extensions.any { ext -> res.filename.endsWith(".$ext") }
+                    !filePath.endsWith('/') &&extensions.any { ext -> it.filename.endsWith(".$ext") }
                 }?.collect{it.value}
 
             } 
