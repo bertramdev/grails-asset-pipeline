@@ -1,5 +1,7 @@
 h3. Release History
-
+* Nobember 24, 2015
+** 2.6.7 Release - Core version bump with fixes for less4j and regex excludes support
+** 3.0.15 (grails3) Release - Core version bump with fixes for less4j and regex excludes support
 * November 16, 2015
 ** 3.0.14 (grails3) Release - Fixes a bug in SpringClassPath Resolver related to require_tree
 ** 2.6.6 Release - Fixes a bug in SpringClassPath resolver related to require_tree
