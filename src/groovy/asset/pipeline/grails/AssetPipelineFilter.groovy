@@ -14,14 +14,14 @@ import java.text.SimpleDateFormat
 @Slf4j
 class AssetPipelineFilter implements Filter {
 	public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
-	private final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
+	
 	public static final ProductionAssetCache fileCache = new ProductionAssetCache();
 
 	def applicationContext
 	def servletContext
 	def warDeployed
 	void init(FilterConfig config) throws ServletException {
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+
 		applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.servletContext)
 		servletContext = config.servletContext
 		warDeployed = Environment.isWarDeployed()
@@ -201,6 +201,8 @@ class AssetPipelineFilter implements Filter {
 	boolean hasNotChanged(String ifModifiedSince, Date date) {
 		boolean hasNotChanged = false
 		if (ifModifiedSince) {
+			final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
+			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 			try {
 				hasNotChanged = new Date(file?.lastModified()) <= sdf.parse(ifModifiedSince)
 			} catch (Exception e) {
@@ -210,6 +212,8 @@ class AssetPipelineFilter implements Filter {
 		return hasNotChanged
 	}
 	private String getLastModifiedDate(Date date) {
+		final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 		String lastModifiedDateTimeString = sdf.format(new Date())
 		try {
 			lastModifiedDateTimeString = sdf.format(date)
