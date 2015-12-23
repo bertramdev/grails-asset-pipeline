@@ -32,6 +32,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	assetConfig.minifyCss        = config.grails.assets.containsKey('minifyCss')        ? config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
 	assetConfig.minifyOptions    = config.grails.assets.minifyOptions
 	assetConfig.compileDir       = "${basedir}/target/assets"
+	assetConfig.enableGzip       = config.grails.assets.enableGzip
 	assetConfig.excludesGzip     = config.grails.assets.excludesGzip
 	assetConfig.enableSourceMaps = config.grails.assets.containsKey('enableSourceMaps') ? config.grails.assets.enableSourceMaps : true
 	assetConfig.skipNonDigests   = config.grails.assets.containsKey('skipNonDigests')   ? config.grails.assets.skipNonDigests   : true
@@ -62,8 +63,6 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name,dep.path,'META-INF/resources'))
 		}
 	}
-
-	
 
 	event("StatusUpdate",["Precompiling Assets!"])
 
