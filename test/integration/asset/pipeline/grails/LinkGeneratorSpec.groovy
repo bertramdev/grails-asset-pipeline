@@ -20,15 +20,17 @@ import grails.test.spock.IntegrationSpec
 import asset.pipeline.AssetPipelineConfigHolder
 
 class LinkGeneratorSpec extends IntegrationSpec {
+
     def grailsApplication
     def assetProcessorService
 
     def "finds assets when calling for resource in dev mode"() {
         given: "A LinkGenerator and an image"
-            AssetPipelineConfigHolder.manifest = null
             def linkGenerator = new LinkGenerator("http://localhost:8080")
             linkGenerator.assetProcessorService = assetProcessorService
+            linkGenerator.grailsApplication     = grailsApplication
 
+            AssetPipelineConfigHolder.manifest = null
             def filePath = "grails_logo.png"
         when:
             def resource = linkGenerator.resource(file: filePath)
@@ -39,10 +41,11 @@ class LinkGeneratorSpec extends IntegrationSpec {
 
     def "finds assets with absolute path when calling for resource in dev mode"() {
         given: "A LinkGenerator and an image"
-            AssetPipelineConfigHolder.manifest = null
             def linkGenerator = new LinkGenerator("http://localhost:8080")
             linkGenerator.assetProcessorService = assetProcessorService
+            linkGenerator.grailsApplication     = grailsApplication
 
+            AssetPipelineConfigHolder.manifest = null
             def filePath = "grails_logo.png"
         when:
             def resource = linkGenerator.resource(file: filePath,absolute:true)
@@ -54,6 +57,8 @@ class LinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             def linkGenerator = new LinkGenerator("http://localhost:8080")
             linkGenerator.assetProcessorService = assetProcessorService
+            linkGenerator.grailsApplication     = grailsApplication
+
             def filePath = "grails_logo.png"
             Properties manifestProperties = new Properties()
             manifestProperties.setProperty(filePath, "grails_logo-abcdefg.png")
@@ -70,6 +75,7 @@ class LinkGeneratorSpec extends IntegrationSpec {
         given: "A LinkGenerator and an image"
             def linkGenerator = new LinkGenerator("http://localhost:8080")
             linkGenerator.assetProcessorService = assetProcessorService
+            linkGenerator.grailsApplication     = grailsApplication
 
             def filePath = "fake_image.png"
         when:
