@@ -9,6 +9,7 @@ import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 class LinkGenerator extends DefaultLinkGenerator {
 
 	def assetProcessorService
+	def grailsApplication
 
 
 	LinkGenerator(final String serverUrl) {
@@ -18,7 +19,7 @@ class LinkGenerator extends DefaultLinkGenerator {
 
 	@Override
 	String resource(final Map attrs) {
-		asset(attrs) ?: super.resource(attrs)
+		! grailsApplication.config.grails.assets.useGrailsResourceMethod && asset(attrs) ?: super.resource(attrs)
 	}
 
 	/**
