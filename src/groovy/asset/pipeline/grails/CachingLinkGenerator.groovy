@@ -22,7 +22,14 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 
 	@Override
 	String resource(final Map attrs) {
-		! grailsApplication.config.grails.assets.useGrailsResourceMethod && asset(attrs) ?: super.resource(attrs)
+		if (! grailsApplication.config.grails.assets.useGrailsResourceMethod) {
+			final String url = asset(attrs)
+			if (url) {
+				return url
+			}
+		}
+
+		super.resource(attrs)
 	}
 
 	/**
