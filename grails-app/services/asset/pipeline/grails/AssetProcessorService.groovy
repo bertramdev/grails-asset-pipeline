@@ -44,47 +44,22 @@ class AssetProcessorService {
 	}
 
 
-	boolean isEnableDigests(final ConfigObject conf = grailsApplication.config.grails.assets) {
-		conf.containsKey('enableDigests') ? conf.enableDigests : true
-	}
-
-	boolean isSkipNonDigests(final ConfigObject conf = grailsApplication.config.grails.assets) {
-		conf.containsKey('skipNonDigests') ? conf.skipNonDigests : true
-	}
-
 
 	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		relativePath && manifest && isEnableDigests(conf) \
-			? manifest.getProperty(relativePath) ?: relativePath
-			: relativePath
+		return manifest?.getProperty(relativePath,relativePath) ?: relativePath
 	}
 
 
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		relativePath \
-			? manifest \
-				? isEnableDigests(conf) \
-					? manifest.getProperty(relativePath)
-					: manifest.getProperty(relativePath) \
-						? relativePath
-						: null
-				: fileForFullName(relativePath) != null \
-					? relativePath
-					: null
-			: null
+		manifest?.getProperty(relativePath,relativePath)
 	}
 
 
 	boolean isAssetPath(final String path) {
 		final String relativePath = trimLeadingSlash(path)
-		relativePath &&
-		(
-			manifest \
-				? manifest.getProperty(relativePath)
-				: fileForFullName(relativePath) != null
-		)
+		return relativePath && (manifest ? manifest.getProperty(relativePath) : fileForFullName(relativePath) != null)
 	}
 
 
@@ -101,19 +76,9 @@ class AssetProcessorService {
 			def absolutePath = linkGenerator.handleAbsolute(attrs)
 
 			if (absolutePath == null) {
-				final String contextPathAttribute = attrs.contextPath?.toString()
-
-				final String contextPath =
-					contextPathAttribute == null \
-						? linkGenerator.contextPath
-						: contextPathAttribute
-
-				absolutePath =
-					contextPath == null \
-						? linkGenerator.handleAbsolute(absolute: true) ?: ''
-						: contextPath
+				final String contextPath = attrs.contextPath?.toString() ?: linkGenerator.contextPath
+				absolutePath = contextPath ?: linkGenerator.handleAbsolute(absolute: true) ?: ''
 			}
-
 			url = absolutePath + url
 		}
 
@@ -122,11 +87,10 @@ class AssetProcessorService {
 
 	String getConfigBaseUrl(final HttpServletRequest req, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final def url = conf.url
-		url instanceof Closure \
-			? url(req)
-			: url \
-				? url
-				: null
+		if(url instanceof Closure) {
+			return url(req)
+		}
+		return url
 	}
 
 	String assetBaseUrl(final HttpServletRequest req, final UrlBase urlBase, final ConfigObject conf = grailsApplication.config.grails.assets) {
@@ -139,22 +103,18 @@ class AssetProcessorService {
 
 		final String baseUrl
 		switch (urlBase) {
-		case SERVER_BASE_URL:
-			baseUrl = grailsLinkGenerator.serverBaseURL ?: ''
-			break
-		case CONTEXT_PATH:
-			baseUrl = trimToEmpty(grailsLinkGenerator.contextPath)
-			break
-		case NONE:
-			baseUrl = ''
-			break
+			case SERVER_BASE_URL:
+				baseUrl = grailsLinkGenerator.serverBaseURL ?: ''
+				break
+			case CONTEXT_PATH:
+				baseUrl = trimToEmpty(grailsLinkGenerator.contextPath)
+				break
+			case NONE:
+				baseUrl = ''
+				break
 		}
 
-		return \
-			ensureEndsWith(
-				new StringBuilder(baseUrl.length() + mapping.length() + 2).append(baseUrl),
-				'/' as char
-			)
+		return ensureEndsWith(new StringBuilder(baseUrl.length() + mapping.length() + 2).append(baseUrl), '/' as char)
 				.append(mapping)
 				.append('/' as char)
 				.toString()
@@ -177,8 +137,9 @@ class AssetProcessorService {
 
 
 	private static String trimLeadingSlash(final String s) {
-		! s || s.charAt(0) != '/' as char \
-			? s
-			: s.substring(1)
+		if(!s || s[0] != '/') {
+			return s
+		}
+		return s.substring(1)
 	}
 }
