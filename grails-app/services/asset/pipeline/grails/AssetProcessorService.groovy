@@ -7,6 +7,7 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 
 import static asset.pipeline.AssetHelper.fileForFullName
 import static asset.pipeline.AssetPipelineConfigHolder.manifest
+import static asset.pipeline.grails.UrlBase.*
 import static asset.pipeline.grails.utils.net.HttpServletRequests.getBaseUrlWithScheme
 import static asset.pipeline.grails.utils.text.StringBuilders.ensureEndsWith
 import static asset.pipeline.utils.net.Urls.hasAuthority
@@ -94,7 +95,7 @@ class AssetProcessorService {
 			return null
 		}
 
-		url = assetBaseUrl(null, false) + url
+		url = assetBaseUrl(null, NONE) + url
 
 		if (! hasAuthority(url)) {
 			def absolutePath = linkGenerator.handleAbsolute(attrs)
@@ -128,7 +129,7 @@ class AssetProcessorService {
 				: null
 	}
 
-	String assetBaseUrl(final HttpServletRequest req, final boolean prependServerBaseUrlIfNoAssetBaseUrlSet, final ConfigObject conf = grailsApplication.config.grails.assets) {
+	String assetBaseUrl(final HttpServletRequest req, final UrlBase urlBase, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String url = getConfigBaseUrl(req, conf)
 		if (url) {
 			return url
@@ -136,10 +137,18 @@ class AssetProcessorService {
 
 		final String mapping = assetMapping
 
-		final String baseUrl =
-			prependServerBaseUrlIfNoAssetBaseUrlSet \
-				? grailsLinkGenerator.serverBaseURL ?: ''
-				: trimToEmpty(grailsLinkGenerator.contextPath)
+		final String baseUrl
+		switch (urlBase) {
+		case SERVER_BASE_URL:
+			baseUrl = grailsLinkGenerator.serverBaseURL ?: ''
+			break
+		case CONTEXT_PATH:
+			baseUrl = trimToEmpty(grailsLinkGenerator.contextPath)
+			break
+		case NONE:
+			baseUrl = ''
+			break
+		}
 
 		return \
 			ensureEndsWith(
