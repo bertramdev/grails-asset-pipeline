@@ -1,5 +1,8 @@
 package asset.pipeline.grails
 
+
+import static asset.pipeline.grails.UrlBase.*
+
 class AssetMethodTagLib {
 
 	static namespace = 'g'
@@ -9,18 +12,17 @@ class AssetMethodTagLib {
 
 	def assetPath = {final def attrs ->
 		final def     src
-		final boolean absolute
+		final UrlBase urlBase
 
 		if (attrs instanceof Map) {
-			src = attrs.src
-
-			final def abs = attrs.absolute
-			absolute = abs != null ? abs : false
+			src     = attrs.src
+			urlBase = attrs.absolute ? SERVER_BASE_URL : CONTEXT_PATH
 		}
 		else {
-			src      = attrs
-			absolute = false
+			src     = attrs
+			urlBase = CONTEXT_PATH
 		}
-		return assetProcessorService.assetBaseUrl(request, absolute) + assetProcessorService.getAssetPath(src)
+
+		return assetProcessorService.assetBaseUrl(request, urlBase) + assetProcessorService.getAssetPath(Objects.toString(src))
 	}
 }

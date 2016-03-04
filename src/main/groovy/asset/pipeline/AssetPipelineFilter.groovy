@@ -20,7 +20,6 @@ import java.text.SimpleDateFormat
 @Commons
 @CompileStatic
 class AssetPipelineFilter extends OncePerRequestFilter {
-	public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
 	
 	public static final ProductionAssetCache fileCache = new ProductionAssetCache();
     ApplicationContext applicationContext
@@ -60,15 +59,13 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 			if(attributeCache) {
                 if(attributeCache.exists()) {
                     def file = attributeCache.resource
-                    def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
-                    response.setHeader('Last-Modified', getLastModifiedDate(attributeCache.getLastModified()))
+                    def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'),attributeCache.getLastModified())
+                    
                     responseBuilder.headers.each { header ->
                         response.setHeader(header.key,header.value)
                     }
-                    if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, attributeCache.getLastModified())) {
-                        response.status = 304
-                    }
-                    else if(responseBuilder.statusCode) {
+                    
+                    if(responseBuilder.statusCode) {
                         response.status = responseBuilder.statusCode
                     }
 
@@ -114,18 +111,14 @@ class AssetPipelineFilter extends OncePerRequestFilter {
 				}
 
 				if(file.exists()) {
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
-					response.setHeader('Last-Modified', getLastModifiedDate(new Date(file.lastModified())))
-					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, new Date(file.lastModified()))) {
-						response.status = 304
-					} else if(responseBuilder.statusCode) {
+					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'),new Date(file.lastModified()))
+					
+					if(responseBuilder.statusCode) {
 						response.status = responseBuilder.statusCode
 					}
 					responseBuilder.headers.each { header ->
 						response.setHeader(header.key,header.value)
 					}
-					
-					
 
 					def gzipFile = applicationContext.getResource("assets/${fileUri}.gz")
 					if(!gzipFile.exists()) {
@@ -204,29 +197,5 @@ class AssetPipelineFilter extends OncePerRequestFilter {
         }
     }
 
-	boolean hasNotChanged(String ifModifiedSince, Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-		boolean hasNotChanged = false
-		if (ifModifiedSince) {
-			try {
-				hasNotChanged = date <= sdf.parse(ifModifiedSince)
-			} catch (Exception e) {
-				log.debug("Could not parse date time or file modified date", e)
-			}
-		}
-		return hasNotChanged
-	}
-	private String getLastModifiedDate(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-		String lastModifiedDateTimeString = sdf.format(new Date())
-		try {
-			lastModifiedDateTimeString = sdf.format(date)
-		} catch (Exception e) {
-			log.debug("Could not get last modified date time for file", e)
-		}
 
-		return lastModifiedDateTimeString
-	}
 }

@@ -4,8 +4,9 @@ import javax.servlet.http.HttpServletRequest
 import org.grails.web.mapping.DefaultLinkGenerator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 
-import static asset.pipeline.AssetHelper.fileForFullName
+import asset.pipeline.AssetHelper
 import static asset.pipeline.AssetPipelineConfigHolder.manifest
+import static asset.pipeline.grails.UrlBase.*
 import static asset.pipeline.grails.utils.net.HttpServletRequests.getBaseUrlWithScheme
 import static asset.pipeline.grails.utils.text.StringBuilders.ensureEndsWith
 import static asset.pipeline.utils.net.Urls.hasAuthority
@@ -41,50 +42,27 @@ class AssetProcessorService {
 	}
 
 
-	boolean isEnableDigests(final ConfigObject conf = grailsApplication.config.grails.assets) {
-		conf.containsKey('enableDigests') ? conf.enableDigests : true
-	}
-
-	boolean isSkipNonDigests(final ConfigObject conf = grailsApplication.config.grails.assets) {
-		conf.containsKey('skipNonDigests') ? conf.skipNonDigests : true
-	}
-
 
 	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		if(relativePath && manifest && isEnableDigests(conf)) {
-
-			manifest.getProperty(relativePath,relativePath)
-		} else {
-			relativePath
-		}
+		return manifest?.getProperty(relativePath,relativePath) ?: relativePath
 	}
 
 
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		relativePath \
-			? manifest \
-				? isEnableDigests(conf) \
-					? manifest.getProperty(relativePath)
-					: manifest.getProperty(relativePath) \
-						? relativePath
-						: null
-				: fileForFullName(relativePath) != null \
-					? relativePath
-					: null
-			: null
+		if(manifest) {
+			manifest?.getProperty(relativePath)
+		} else {
+			AssetHelper.fileForFullName(relativePath) != null ? relativePath : null
+		}
+		
 	}
 
 
 	boolean isAssetPath(final String path) {
 		final String relativePath = trimLeadingSlash(path)
-		relativePath &&
-		(
-			manifest \
-				? manifest.getProperty(relativePath)
-				: fileForFullName(relativePath) != null
-		)
+		return relativePath && (manifest ? manifest.getProperty(relativePath) : AssetHelper.fileForFullName(relativePath) != null)
 	}
 
 
@@ -95,25 +73,14 @@ class AssetProcessorService {
 			return null
 		}
 
-		url = assetBaseUrl(null, false) + url
-
+		url = assetBaseUrl(null, NONE) + url
 		if (! hasAuthority(url)) {
 			def absolutePath = linkGenerator.handleAbsolute(attrs)
 
 			if (absolutePath == null) {
-				final String contextPathAttribute = attrs.contextPath?.toString()
-
-				final String contextPath =
-					contextPathAttribute == null \
-						? linkGenerator.contextPath
-						: contextPathAttribute
-
-				absolutePath =
-					contextPath == null \
-						? linkGenerator.handleAbsolute(absolute: true) ?: ''
-						: contextPath
+				final String contextPath = attrs.contextPath?.toString() ?: linkGenerator.contextPath
+				absolutePath = contextPath ?: linkGenerator.handleAbsolute(attrs) ?: ''
 			}
-
 			url = absolutePath + url
 		}
 
@@ -122,14 +89,13 @@ class AssetProcessorService {
 
 	String getConfigBaseUrl(final HttpServletRequest req, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final def url = conf.url
-		url instanceof Closure \
-			? url(req)
-			: url \
-				? url
-				: null
+		if(url instanceof Closure) {
+			return url(req)
+		}
+		return url ?: null
 	}
 
-	String assetBaseUrl(final HttpServletRequest req, final boolean prependServerBaseUrlIfNoAssetBaseUrlSet, final ConfigObject conf = grailsApplication.config.grails.assets) {
+	String assetBaseUrl(final HttpServletRequest req, final UrlBase urlBase, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String url = getConfigBaseUrl(req, conf)
 		if (url) {
 			return url
@@ -137,19 +103,24 @@ class AssetProcessorService {
 
 		final String mapping = assetMapping
 
-		final String baseUrl =
-			prependServerBaseUrlIfNoAssetBaseUrlSet \
-				? grailsLinkGenerator.serverBaseURL ?: ''
-				: trimToEmpty(grailsLinkGenerator.contextPath)
+		final String baseUrl
+		switch (urlBase) {
+			case SERVER_BASE_URL:
+				baseUrl = grailsLinkGenerator.serverBaseURL ?: ''
+				break
+			case CONTEXT_PATH:
+				baseUrl = trimToEmpty(grailsLinkGenerator.contextPath)
+				break
+			case NONE:
+				baseUrl = ''
+				break
+		}
 
-		return \
-			ensureEndsWith(
-				new StringBuilder(baseUrl.length() + mapping.length() + 2).append(baseUrl),
-				'/' as char
-			)
+		def finalUrl = ensureEndsWith(new StringBuilder(baseUrl.length() + mapping.length() + 2).append(baseUrl), '/' as char)
 				.append(mapping)
 				.append('/' as char)
 				.toString()
+		return finalUrl
 	}
 
 
@@ -169,8 +140,9 @@ class AssetProcessorService {
 
 
 	private static String trimLeadingSlash(final String s) {
-		! s || s.charAt(0) != '/' as char \
-			? s
-			: s.substring(1)
+		if(!s || s[0] != '/') {
+			return s
+		}
+		return s.substring(1)
 	}
 }

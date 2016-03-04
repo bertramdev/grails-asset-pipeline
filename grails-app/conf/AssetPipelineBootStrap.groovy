@@ -41,9 +41,7 @@ class AssetPipelineBootStrap {
 
 					final byte[] fileBytes = parentContext.getResource(assetPath).inputStream.bytes
 
-					if (! skipNonDigests) {
-						outputFile.bytes = fileBytes
-					}
+					outputFile.bytes = fileBytes
 
 					if (enableDigests) {
 						new File(storageDir, propertyValue).bytes = fileBytes
@@ -53,9 +51,7 @@ class AssetPipelineBootStrap {
 					if (gzRes.exists()) {
 						final byte[] gzBytes = gzRes.inputStream.bytes
 
-						if (! skipNonDigests) {
-							new File(storageDir, "${propertyName}.gz" ).bytes = gzBytes
-						}
+						new File(storageDir, "${propertyName}.gz" ).bytes = gzBytes
 
 						if (enableDigests) {
 							new File(storageDir, "${propertyValue}.gz").bytes = gzBytes

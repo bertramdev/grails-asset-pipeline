@@ -10,3 +10,7 @@
 .logo {
 	background: url('../../../images/grails_logo.png');
 }
+
+.microsoft {
+	behavior: url(#default#VML);
+}
