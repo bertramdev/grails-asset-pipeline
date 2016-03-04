@@ -26,6 +26,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	def assetConfig               = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
 	assetPipelineConfigHolder.config = config.grails.assets
+	assetPipelineConfigHolder.config.cacheLocation = "target/.asscache"
 	event("AssetPrecompileStart", [assetConfig])
 
 	assetConfig.minifyJs         = config.grails.assets.containsKey('minifyJs')         ? config.grails.assets.minifyJs  : (argsMap.containsKey('minifyJs')  ? argsMap.minifyJs  == 'true' : true)

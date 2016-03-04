@@ -62,7 +62,8 @@ class AssetPipelineGrailsPlugin {
     }
 
     def doWithSpring = {
-        def assetsConfig = application.config.grails.assets
+        def assetsConfig = application.config.grails.assets ?: [:]
+        assetsConfig.cacheLocation = "target/.asscache"
         def manifestProps = new Properties()
         def manifestFile
         try {
