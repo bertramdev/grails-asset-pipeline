@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 
-import static asset.pipeline.AssetHelper.fileForFullName
+import asset.pipeline.AssetHelper
 import static asset.pipeline.AssetPipelineConfigHolder.manifest
 import static asset.pipeline.grails.UrlBase.*
 import static asset.pipeline.grails.utils.net.HttpServletRequests.getBaseUrlWithScheme
@@ -53,13 +53,18 @@ class AssetProcessorService {
 
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		manifest?.getProperty(relativePath,relativePath)
+		if(manifest) {
+			manifest?.getProperty(relativePath)
+		} else {
+			AssetHelper.fileForFullName(relativePath) != null ? relativePath : null
+		}
+		
 	}
 
 
 	boolean isAssetPath(final String path) {
 		final String relativePath = trimLeadingSlash(path)
-		return relativePath && (manifest ? manifest.getProperty(relativePath) : fileForFullName(relativePath) != null)
+		return relativePath && (manifest ? manifest.getProperty(relativePath) : AssetHelper.fileForFullName(relativePath) != null)
 	}
 
 
@@ -71,13 +76,12 @@ class AssetProcessorService {
 		}
 
 		url = assetBaseUrl(null, NONE) + url
-
 		if (! hasAuthority(url)) {
 			def absolutePath = linkGenerator.handleAbsolute(attrs)
 
 			if (absolutePath == null) {
 				final String contextPath = attrs.contextPath?.toString() ?: linkGenerator.contextPath
-				absolutePath = contextPath ?: linkGenerator.handleAbsolute(absolute: true) ?: ''
+				absolutePath = contextPath ?: linkGenerator.handleAbsolute(attrs) ?: ''
 			}
 			url = absolutePath + url
 		}
@@ -90,7 +94,7 @@ class AssetProcessorService {
 		if(url instanceof Closure) {
 			return url(req)
 		}
-		return url
+		return url ?: null
 	}
 
 	String assetBaseUrl(final HttpServletRequest req, final UrlBase urlBase, final ConfigObject conf = grailsApplication.config.grails.assets) {
@@ -114,10 +118,11 @@ class AssetProcessorService {
 				break
 		}
 
-		return ensureEndsWith(new StringBuilder(baseUrl.length() + mapping.length() + 2).append(baseUrl), '/' as char)
+		def finalUrl = ensureEndsWith(new StringBuilder(baseUrl.length() + mapping.length() + 2).append(baseUrl), '/' as char)
 				.append(mapping)
 				.append('/' as char)
 				.toString()
+		return finalUrl
 	}
 
 
