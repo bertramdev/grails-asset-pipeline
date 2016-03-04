@@ -16,7 +16,7 @@ plugins {
     id "com.jfrog.bintray" version "1.2"
 }
 
-version "3.0.15"
+version "3.1.0"
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
@@ -67,7 +67,7 @@ dependencies {
     provided 'javax.servlet:javax.servlet-api:3.1.0'
     provided "org.grails:grails-dependencies"
     runtime 'org.mozilla:rhino:1.7R4'
-    compile "com.bertramlabs.plugins:asset-pipeline-core:2.6.7"
+    compile "com.bertramlabs.plugins:asset-pipeline-core:2.7.0"
     testCompile "org.grails:grails-plugin-testing"
 
     testCompile "org.grails:grails-plugin-testing"
