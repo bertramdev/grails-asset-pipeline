@@ -33,6 +33,9 @@ apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/m
 ext {
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
+    websiteUrl = "https://bertramdev.github.io/grails-asset-pipeline/"
+    vcsUrl = "https://github.com/bertramdev/grails-asset-pipeline/tree/grails3"
+    issueTrackerUrl = "https://github.com/bertramdev/grails-asset-pipeline/issues"
 }
 
 sourceCompatibility = 1.7
