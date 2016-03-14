@@ -8,13 +8,13 @@ The Grails Asset-Pipeline is a plugin used for managing and processing static as
 
 For contributions to the core plugin please see the repository for the core plugin at [asset-pipeline-core](https://github.com/bertramdev/asset-pipeline-core)
 
-Documentation
+Code Documentation
 -------------
 http://bertramdev.github.io/asset-pipeline
 
-Release Notes
+User Guide
 -------------
-https://bertramdev.github.io/asset-pipeline/guide/releases.html
+https://bertramdev.github.io/grails-asset-pipeline/
 
 Things to be Done
 -----------------
