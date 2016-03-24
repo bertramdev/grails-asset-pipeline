@@ -1,8 +1,11 @@
 h3. Release History
-** March 9, 2015
+** March 24, 2016
+** 3.1.2 Release - More aggressive closing of open file handles in Servlet filter for more efficient use of resources
+** 2.7.2 Release - More aggressive closing of open file handles in Servlet filter for more efficient use of resources
+** March 9, 2016
 ** 3.1.1 Release - Improvements to compile time performance,fixed bootstrap bug, reducing open file handles
 ** 2.7.2 Release - Improvements to compile time performance, fixed bootstrap bug, and moving of .asscache to target folder
-** March 4, 2015
+** March 4, 2016
 ** 2.7.0 Release - Fixes bugs in filter and compiler
 ** 3.1.0 Release - 2.7.0 release of core for grails 3.1
 * Nobember 24, 2015
