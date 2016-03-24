@@ -57,6 +57,7 @@ class AssetPipelineGrailsPlugin extends grails.plugins.Plugin {
         def application = grailsApplication
         def config = application.config
         def assetsConfig = config.getProperty('grails.assets', Map, [:])
+
         def manifestProps = new Properties()
         def manifestFile
         
