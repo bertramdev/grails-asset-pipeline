@@ -79,11 +79,11 @@ class AssetPipelineFilter implements Filter {
 						}
 
 						response.setContentType(format)
-
+						def inputStream
 						try {
 							byte[] buffer = new byte[102400];
 							int len;
-							def inputStream = file.inputStream
+							inputStream = file.inputStream
 							def out = response.outputStream
 							while ((len = inputStream.read(buffer)) != -1) {
 								out.write(buffer, 0, len);
@@ -91,6 +91,8 @@ class AssetPipelineFilter implements Filter {
 							response.flushBuffer()
 						} catch(e) {
 							log.debug("File Transfer Aborted (Probably by the user)",e)
+						}finally {
+							try { inputStream?.close()} catch(ie){/*silent close fail*/}
 						}
 					} else {
 						response.flushBuffer()
@@ -142,11 +144,11 @@ class AssetPipelineFilter implements Filter {
 						}
 						response.setContentType(format)
 						response.setHeader('Content-Length', file.contentLength().toString())
-
+						def inputStream
 						try {
 							byte[] buffer = new byte[102400];
 							int len;
-							def inputStream = file.inputStream
+							inputStream = file.inputStream
 							def out = response.outputStream
 							while ((len = inputStream.read(buffer)) != -1) {
 								out.write(buffer, 0, len);
@@ -154,6 +156,8 @@ class AssetPipelineFilter implements Filter {
 							response.flushBuffer()
 						} catch(e) {
 							log.debug("File Transfer Aborted (Probably by the user)",e)
+						} finally {
+							try { inputStream?.close()} catch(ie){/*silent close fail*/}
 						}
 					} else {
 						response.flushBuffer()
