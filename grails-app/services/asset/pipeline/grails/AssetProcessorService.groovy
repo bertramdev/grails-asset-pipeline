@@ -140,9 +140,8 @@ class AssetProcessorService {
 
 
 	private static String trimLeadingSlash(final String s) {
-		if(!s || s[0] != '/') {
-			return s
-		}
-		return s.substring(1)
+		! s || s.charAt(0) != '/' as char \
+			? s
+			: s.substring(1)
 	}
 }
