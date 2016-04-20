@@ -50,6 +50,17 @@ class LinkGeneratorSpec extends IntegrationSpec {
             resource == "http://localhost:8080/assets/grails_logo.png"
     }
 
+    def "find asset path only with no file"() {
+        given: "A LinkGenerator pointed to a directory"
+           AssetPipelineConfigHolder.manifest = null
+            def linkGenerator = new LinkGenerator("http://localhost:8080")
+            linkGenerator.assetProcessorService = assetProcessorService
+        when:
+            def resource = linkGenerator.resource(dir: 'asset-pipeline/test')
+        then:
+            resource != null
+    }
+
     def "finds asset in precompiled (prod) mode"() {
         given: "A LinkGenerator and an image"
             def linkGenerator = new LinkGenerator("http://localhost:8080")
