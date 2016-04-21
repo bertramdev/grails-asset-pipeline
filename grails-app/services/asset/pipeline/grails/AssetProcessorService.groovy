@@ -3,6 +3,7 @@ package asset.pipeline.grails
 import javax.servlet.http.HttpServletRequest
 import org.grails.web.mapping.DefaultLinkGenerator
 import org.grails.web.servlet.mvc.GrailsWebRequest
+import grails.util.Environment
 
 import asset.pipeline.AssetHelper
 import static asset.pipeline.AssetPipelineConfigHolder.manifest
@@ -130,7 +131,7 @@ class AssetProcessorService {
 			final GrailsWebRequest req = lookup()
 			if (req) {
 				serverUrl = getBaseUrlWithScheme(req.currentRequest).toString()
-				if (! serverUrl && ! warDeployed) {
+				if (!serverUrl && !Environment.isWarDeployed()) {
 					serverUrl = "http://localhost:${System.getProperty('server.port') ?: '8080'}${linkGenerator.contextPath ?: ''}"
 				}
 			}
