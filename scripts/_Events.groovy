@@ -17,7 +17,7 @@ eventCreatePluginArchiveStart = { stagingDir ->
 	event("StatusUpdate",["Packaging Assets into Binary!"])
 	def fileSystemAssetResolver  = classLoader.loadClass('asset.pipeline.fs.FileSystemAssetResolver')
 
-	def fsResolver = fileSystemAssetResolver.newInstance("pluginPackage",new File(basedir, "grails-app/assets").canonicalPath).scanForFiles()
+	def fsResolver = fileSystemAssetResolver.newInstance("pluginPackage",new File(basedir, "grails-app/assets").canonicalPath)
 	def assetDirs = new File(basedir, "grails-app/assets")
 	def assetPathDir = new File(stagingDir, 'META-INF/assets')
 	assetPathDir.mkdirs()
