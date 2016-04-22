@@ -15,8 +15,7 @@
  */
 package asset.pipeline
 
-
-import grails.util.Environment
+import asset.pipeline.grails.AssetPipelineFilter
 import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.CachingLinkGenerator
 import asset.pipeline.grails.AssetResourceLocator
@@ -50,7 +49,6 @@ class AssetPipelineGrailsPlugin extends grails.plugins.Plugin {
         def ctx = applicationContext
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application',"${BuildSettings.BASE_DIR}/grails-app/assets"))    
         
-
         try {
             ctx.pluginManager.getAllPlugins()?.each { plugin ->
                 if(plugin instanceof BinaryGrailsPlugin) {
