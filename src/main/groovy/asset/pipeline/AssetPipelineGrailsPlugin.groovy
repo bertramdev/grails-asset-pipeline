@@ -25,6 +25,7 @@ import asset.pipeline.fs.*
 import asset.pipeline.*
 import grails.util.BuildSettings
 import org.springframework.boot.context.embedded.*
+import org.grails.plugins.BinaryGrailsPlugin
 
 class AssetPipelineGrailsPlugin extends grails.plugins.Plugin {
     def grailsVersion   = "3.0 > *"
@@ -48,9 +49,24 @@ class AssetPipelineGrailsPlugin extends grails.plugins.Plugin {
         //Register Plugin Paths
         def ctx = applicationContext
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application',"${BuildSettings.BASE_DIR}/grails-app/assets"))    
-        AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/assets'))
-        AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/static'))
-        AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/resources'))
+        
+
+        try {
+            ctx.pluginManager.getAllPlugins()?.each { plugin ->
+                if(plugin instanceof BinaryGrailsPlugin) {
+                    def projectDirectory = plugin.getProjectDirectory()
+                    if(projectDirectory) {
+                        String assetPath = new File(plugin.getProjectDirectory(),"grails-app/assets").canonicalPath 
+                        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))    
+                    }
+                }
+            }
+        } catch(ex) {
+            log.warn("Error loading exploded plugins ${ex}",ex)
+        }
+        AssetPipelineConfigHolder.registerResolver(new ClasspathAssetResolver('classpath', 'META-INF/assets','META-INF/assets.list'))
+        AssetPipelineConfigHolder.registerResolver(new ClasspathAssetResolver('classpath', 'META-INF/static'))
+        AssetPipelineConfigHolder.registerResolver(new ClasspathAssetResolver('classpath', 'META-INF/resources'))
     }
 
     Closure doWithSpring() {{->
@@ -84,7 +100,7 @@ class AssetPipelineGrailsPlugin extends grails.plugins.Plugin {
 
 
         AssetPipelineConfigHolder.config = assetsConfig
-
+        AssetPipelineConfigHolder.config.cacheLocation = new File(BuildSettings.TARGET_DIR,".asscache").canonicalPath
         // Register Link Generator
         String serverURL = config?.getProperty('grails.serverURL', String, null)
         boolean cacheUrls = config?.getProperty('grails.web.linkGenerator.useCache', Boolean, true)
