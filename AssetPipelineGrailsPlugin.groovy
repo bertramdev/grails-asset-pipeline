@@ -19,6 +19,7 @@ import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.fs.FileSystemAssetResolver
+import asset.pipeline.fs.ClasspathAssetResolver
 import asset.pipeline.grails.AssetPipelineFilter
 import asset.pipeline.grails.AssetResourceLocator
 import asset.pipeline.grails.CachingLinkGenerator
@@ -26,7 +27,7 @@ import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.fs.SpringResourceAssetResolver
 
 class AssetPipelineGrailsPlugin {
-    def version         = "2.7.4"
+    def version         = "2.8.0"
     def grailsVersion   = "2.2 > *"
     def title           = "Asset Pipeline Plugin"
     def author          = "David Estes"
@@ -49,9 +50,9 @@ class AssetPipelineGrailsPlugin {
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application','grails-app/assets'))
         def pluginManager = ctx.pluginManager
         if(!application.warDeployed) {
-            AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/assets'))
-            AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/static'))
-            AssetPipelineConfigHolder.registerResolver(new SpringResourceAssetResolver('classpath',ctx, 'META-INF/resources'))
+            AssetPipelineConfigHolder.registerResolver(new ClasspathAssetResolver('classpath', 'META-INF/assets','META-INF/assets.list'))
+            AssetPipelineConfigHolder.registerResolver(new ClasspathAssetResolver('classpath', 'META-INF/static'))
+            AssetPipelineConfigHolder.registerResolver(new ClasspathAssetResolver('classpath', 'META-INF/resources'))
             for(plugin in GrailsPluginUtils.pluginInfos) {
                 def assetPath = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
                 def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
