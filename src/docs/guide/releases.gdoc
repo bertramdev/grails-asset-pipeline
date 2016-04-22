@@ -1,4 +1,7 @@
 h3. Release History
+* April 22, 2016
+** 2.8.0 Release - Bug fixes, New classpath resolver for binary plugin require_tree support. New asset-defer option for javascript taglib.
+** 3.2.0 Release - Exploded plugin support, and jarTaskName support. Bug fixes, New classpath resolver for binary plugin require_tree support. New asset-defer option for javascript taglib.
 * November 24, 2015
 ** 2.6.7 Release - Bug fix in less4j bump to 1.15.2 for hte less module
 * October 21, 2015
