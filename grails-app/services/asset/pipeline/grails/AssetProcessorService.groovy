@@ -1,13 +1,8 @@
 package asset.pipeline.grails
 
 import javax.servlet.http.HttpServletRequest
-<<<<<<< HEAD
 import org.grails.web.mapping.DefaultLinkGenerator
 import org.grails.web.servlet.mvc.GrailsWebRequest
-=======
-import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
->>>>>>> master
 import grails.util.Environment
 
 import asset.pipeline.AssetHelper

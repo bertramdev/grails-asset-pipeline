@@ -15,7 +15,7 @@
  */
 package asset.pipeline
 
-import asset.pipeline.grails.AssetPipelineFilter
+import asset.pipeline.AssetPipelineFilter
 import asset.pipeline.grails.LinkGenerator
 import asset.pipeline.grails.CachingLinkGenerator
 import asset.pipeline.grails.AssetResourceLocator
