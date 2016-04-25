@@ -24,8 +24,11 @@ import asset.pipeline.fs.*
 import asset.pipeline.*
 import grails.util.BuildSettings
 import org.springframework.boot.context.embedded.*
+import groovy.util.logging.Commons
+
 import org.grails.plugins.BinaryGrailsPlugin
 
+@Commons
 class AssetPipelineGrailsPlugin extends grails.plugins.Plugin {
     def grailsVersion   = "3.0 > *"
     def title           = "Asset Pipeline Plugin"
