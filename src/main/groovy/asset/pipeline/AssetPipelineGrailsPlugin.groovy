@@ -52,19 +52,21 @@ class AssetPipelineGrailsPlugin extends grails.plugins.Plugin {
         def ctx = applicationContext
         AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver('application',"${BuildSettings.BASE_DIR}/grails-app/assets"))    
         
-        try {
+        
             ctx.pluginManager.getAllPlugins()?.each { plugin ->
-                if(plugin instanceof BinaryGrailsPlugin) {
-                    def projectDirectory = plugin.getProjectDirectory()
-                    if(projectDirectory) {
-                        String assetPath = new File(plugin.getProjectDirectory(),"grails-app/assets").canonicalPath 
-                        AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))    
+                try {
+                    if(plugin instanceof BinaryGrailsPlugin) {
+                        def projectDirectory = plugin.getProjectDirectory()
+                        if(projectDirectory) {
+                            String assetPath = new File(plugin.getProjectDirectory(),"grails-app/assets").canonicalPath 
+                            AssetPipelineConfigHolder.registerResolver(new FileSystemAssetResolver(plugin.name,assetPath))    
+                        }
                     }
+                } catch(ex) {
+                    log.warn("Error loading exploded plugins ${ex}",ex)
                 }
             }
-        } catch(ex) {
-            log.warn("Error loading exploded plugins ${ex}",ex)
-        }
+        
         AssetPipelineConfigHolder.registerResolver(new ClasspathAssetResolver('classpath', 'META-INF/assets','META-INF/assets.list'))
         AssetPipelineConfigHolder.registerResolver(new ClasspathAssetResolver('classpath', 'META-INF/static'))
         AssetPipelineConfigHolder.registerResolver(new ClasspathAssetResolver('classpath', 'META-INF/resources'))
