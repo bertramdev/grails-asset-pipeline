@@ -1,13 +1,15 @@
 package asset.pipeline.grails
 
+
 import asset.pipeline.AssetHelper
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.DirectiveProcessor
 import asset.pipeline.GenericAssetFile
+import groovy.util.logging.Slf4j
 import org.codehaus.groovy.grails.core.io.DefaultResourceLocator
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
-import groovy.util.logging.Slf4j
+
 
 @Slf4j
 class AssetResourceLocator extends DefaultResourceLocator {

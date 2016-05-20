@@ -1,12 +1,12 @@
 package asset.pipeline.grails
 
 
+import asset.pipeline.AssetHelper
+import grails.util.Environment
 import javax.servlet.http.HttpServletRequest
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
-import grails.util.Environment
 
-import asset.pipeline.AssetHelper
 import static asset.pipeline.AssetPipelineConfigHolder.manifest
 import static asset.pipeline.grails.UrlBase.*
 import static asset.pipeline.grails.utils.net.HttpServletRequests.getBaseUrlWithScheme
@@ -58,7 +58,7 @@ class AssetProcessorService {
 		} else {
 			AssetHelper.fileForFullName(relativePath) != null ? relativePath : null
 		}
-		
+
 	}
 
 
