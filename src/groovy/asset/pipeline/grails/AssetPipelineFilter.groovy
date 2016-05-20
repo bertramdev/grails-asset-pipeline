@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat
 class AssetPipelineFilter implements Filter {
 	public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
 
-	public static final ProductionAssetCache fileCache = new ProductionAssetCache();
+	public static final ProductionAssetCache fileCache = new ProductionAssetCache()
 
 	def applicationContext
 	def servletContext
@@ -82,12 +82,12 @@ class AssetPipelineFilter implements Filter {
 						response.setContentType(format)
 						def inputStream
 						try {
-							byte[] buffer = new byte[102400];
-							int len;
+							byte[] buffer = new byte[102400]
+							int len
 							inputStream = file.inputStream
 							def out = response.outputStream
 							while ((len = inputStream.read(buffer)) != -1) {
-								out.write(buffer, 0, len);
+								out.write(buffer, 0, len)
 							}
 							response.flushBuffer()
 						} catch(e) {
@@ -147,12 +147,12 @@ class AssetPipelineFilter implements Filter {
 						response.setHeader('Content-Length', file.contentLength().toString())
 						def inputStream
 						try {
-							byte[] buffer = new byte[102400];
-							int len;
+							byte[] buffer = new byte[102400]
+							int len
 							inputStream = file.inputStream
 							def out = response.outputStream
 							while ((len = inputStream.read(buffer)) != -1) {
-								out.write(buffer, 0, len);
+								out.write(buffer, 0, len)
 							}
 							response.flushBuffer()
 						} catch(e) {
@@ -206,8 +206,8 @@ class AssetPipelineFilter implements Filter {
 	boolean hasNotChanged(String ifModifiedSince, Date date) {
 		boolean hasNotChanged = false
 		if (ifModifiedSince) {
-			final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
-			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+			final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT)
+			sdf.setTimeZone(TimeZone.getTimeZone("GMT"))
 			try {
 				hasNotChanged = new Date(file?.lastModified()) <= sdf.parse(ifModifiedSince)
 			} catch (Exception e) {
@@ -217,8 +217,8 @@ class AssetPipelineFilter implements Filter {
 		return hasNotChanged
 	}
 	private String getLastModifiedDate(Date date) {
-		final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT)
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"))
 		String lastModifiedDateTimeString = sdf.format(new Date())
 		try {
 			lastModifiedDateTimeString = sdf.format(date)
