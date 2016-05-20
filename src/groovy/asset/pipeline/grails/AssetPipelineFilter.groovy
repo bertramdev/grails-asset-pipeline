@@ -1,5 +1,6 @@
 package asset.pipeline.grails
 
+
 import asset.pipeline.AssetPipeline
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetPipelineResponseBuilder
@@ -8,13 +9,13 @@ import groovy.util.logging.Slf4j
 import org.springframework.web.context.support.WebApplicationContextUtils
 
 import javax.servlet.*
-import java.util.TimeZone
 import java.text.SimpleDateFormat
+
 
 @Slf4j
 class AssetPipelineFilter implements Filter {
 	public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
-	
+
 	public static final ProductionAssetCache fileCache = new ProductionAssetCache();
 
 	def applicationContext
@@ -64,7 +65,7 @@ class AssetPipelineFilter implements Filter {
 					if(responseBuilder.statusCode) {
 						response.status = responseBuilder.statusCode
 					}
-					
+
 					if(responseBuilder.statusCode != 304) {
 						def acceptsEncoding = request.getHeader("Accept-Encoding")
 						if(acceptsEncoding?.split(",")?.contains("gzip") && attributeCache.gzipExists()) {
@@ -101,7 +102,7 @@ class AssetPipelineFilter implements Filter {
 					response.status = 404
 					response.flushBuffer()
 				}
-				
+
 			} else {
 				def file = applicationContext.getResource("assets/${fileUri}")
 				if(!file.exists()) {
@@ -120,7 +121,7 @@ class AssetPipelineFilter implements Filter {
 					if(responseBuilder.statusCode) {
 						response.status = responseBuilder.statusCode
 					}
-					
+
 
 					def gzipFile = applicationContext.getResource("assets/${fileUri}.gz")
 					if(!gzipFile.exists()) {
