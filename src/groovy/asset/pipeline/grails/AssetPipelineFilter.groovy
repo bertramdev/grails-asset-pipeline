@@ -25,15 +25,18 @@ class AssetPipelineFilter implements Filter {
 	def warDeployed
 
 
+	@Override
 	void init(FilterConfig config) throws ServletException {
 		applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.servletContext)
 		servletContext = config.servletContext
 		warDeployed = Environment.isWarDeployed()
 	}
 
+	@Override
 	void destroy() {
 	}
 
+	@Override
 	void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		def mapping = applicationContext.assetProcessorService.assetMapping
 

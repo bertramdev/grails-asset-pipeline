@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource
 @Slf4j
 class AssetResourceLocator extends DefaultResourceLocator {
 
+	@Override
 	Resource findResourceForURI(String uri) {
 		Resource resource = super.findResourceForURI(uri)
 		if(!resource) {
