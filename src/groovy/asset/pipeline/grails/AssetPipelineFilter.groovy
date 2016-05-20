@@ -6,6 +6,8 @@ import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetPipelineResponseBuilder
 import grails.util.Environment
 import groovy.util.logging.Slf4j
+import org.springframework.core.io.Resource
+import org.springframework.web.context.WebApplicationContext
 import org.springframework.web.context.support.WebApplicationContextUtils
 
 import javax.servlet.*
@@ -20,9 +22,9 @@ class AssetPipelineFilter implements Filter {
 	static final ProductionAssetCache fileCache = new ProductionAssetCache()
 
 
-	def applicationContext
-	def servletContext
-	def warDeployed
+	WebApplicationContext applicationContext
+	ServletContext        servletContext
+	boolean               warDeployed
 
 
 	@Override
@@ -38,18 +40,18 @@ class AssetPipelineFilter implements Filter {
 
 	@Override
 	void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		def mapping = applicationContext.assetProcessorService.assetMapping
+		String mapping = applicationContext.assetProcessorService.assetMapping
 
-		def fileUri = new URI(request.requestURI).path
-		def baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
-		def format = servletContext.getMimeType(fileUri)
-		def encoding = request.getParameter('encoding') ?: request.getCharacterEncoding()
+		String fileUri = new URI(request.requestURI).path
+		String baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
+		String format       = servletContext.getMimeType(fileUri)
+		String encoding     = request.getParameter('encoding') ?: request.getCharacterEncoding()
 		if(fileUri.startsWith(baseAssetUrl)) {
 			fileUri = fileUri.substring(baseAssetUrl.length())
 		}
 		if(warDeployed) {
-			def manifest = AssetPipelineConfigHolder.manifest
-			def manifestPath = fileUri
+			Properties manifest = AssetPipelineConfigHolder.manifest
+			String manifestPath = fileUri
 			if(fileUri.startsWith('/')) {
 			  manifestPath = fileUri.substring(1) //Omit forward slash
 			}
@@ -59,8 +61,12 @@ class AssetPipelineFilter implements Filter {
 
 			if(attributeCache) {
 				if(attributeCache.exists()) {
-					def file = attributeCache.resource
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri, request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
+					Resource file = attributeCache.resource
+					AssetPipelineResponseBuilder responseBuilder = new AssetPipelineResponseBuilder(
+						fileUri,
+						request.getHeader('If-None-Match'),
+						request.getHeader('If-Modified-Since')
+					)
 					response.setHeader('Last-Modified', getLastModifiedDate(attributeCache.getLastModified()))
 					responseBuilder.headers.each { header ->
 						response.setHeader(header.key, header.value)
@@ -73,7 +79,7 @@ class AssetPipelineFilter implements Filter {
 					}
 
 					if(responseBuilder.statusCode != 304) {
-						def acceptsEncoding = request.getHeader("Accept-Encoding")
+						String acceptsEncoding = request.getHeader("Accept-Encoding")
 						if(acceptsEncoding?.split(",")?.contains("gzip") && attributeCache.gzipExists()) {
 							file = attributeCache.getGzipResource()
 							response.setHeader('Content-Encoding', 'gzip')
@@ -86,12 +92,12 @@ class AssetPipelineFilter implements Filter {
 						}
 
 						response.setContentType(format)
-						def inputStream
+						InputStream inputStream
 						try {
 							byte[] buffer = new byte[102400]
 							int len
 							inputStream = file.inputStream
-							def out = response.outputStream
+							ServletOutputStream out = response.outputStream
 							while ((len = inputStream.read(buffer)) != -1) {
 								out.write(buffer, 0, len)
 							}
@@ -109,13 +115,17 @@ class AssetPipelineFilter implements Filter {
 					response.flushBuffer()
 				}
 			} else {
-				def file = applicationContext.getResource("assets/${fileUri}")
+				Resource file = applicationContext.getResource("assets/${fileUri}")
 				if(!file.exists()) {
 					file = applicationContext.getResource("classpath:assets/${fileUri}")
 				}
 
 				if(file.exists()) {
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri, request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
+					AssetPipelineResponseBuilder responseBuilder = new AssetPipelineResponseBuilder(
+						fileUri,
+						request.getHeader('If-None-Match'),
+						request.getHeader('If-Modified-Since')
+					)
 					response.setHeader('Last-Modified', getLastModifiedDate(new Date(file.lastModified())))
 					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, new Date(file.lastModified()))) {
 						responseBuilder.statusCode = 304
@@ -127,7 +137,7 @@ class AssetPipelineFilter implements Filter {
 						response.status = responseBuilder.statusCode
 					}
 
-					def gzipFile = applicationContext.getResource("assets/${fileUri}.gz")
+					Resource gzipFile = applicationContext.getResource("assets/${fileUri}.gz")
 					if(!gzipFile.exists()) {
 						gzipFile = applicationContext.getResource("classpath:assets/${fileUri}.gz")
 					}
@@ -137,7 +147,7 @@ class AssetPipelineFilter implements Filter {
 
 					if(responseBuilder.statusCode != 304) {
 						// Check for GZip
-						def acceptsEncoding = request.getHeader("Accept-Encoding")
+						String acceptsEncoding = request.getHeader("Accept-Encoding")
 						if(acceptsEncoding?.split(",")?.contains("gzip")) {
 							if(gzipFile.exists()) {
 								file = gzipFile
@@ -149,12 +159,12 @@ class AssetPipelineFilter implements Filter {
 						}
 						response.setContentType(format)
 						response.setHeader('Content-Length', file.contentLength().toString())
-						def inputStream
+						InputStream inputStream
 						try {
 							byte[] buffer = new byte[102400]
 							int len
 							inputStream = file.inputStream
-							def out = response.outputStream
+							ServletOutputStream out = response.outputStream
 							while ((len = inputStream.read(buffer)) != -1) {
 								out.write(buffer, 0, len)
 							}
@@ -175,7 +185,7 @@ class AssetPipelineFilter implements Filter {
 				}
 			}
 		} else {
-			def fileContents
+			byte[] fileContents
 			if(request.getParameter('compile') == 'false') {
 				fileContents = AssetPipeline.serveUncompiledAsset(fileUri, format, null, encoding)
 			} else {
