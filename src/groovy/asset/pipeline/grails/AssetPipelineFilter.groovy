@@ -98,7 +98,7 @@ class AssetPipelineFilter implements Filter {
 							response.flushBuffer()
 						} catch(e) {
 							log.debug("File Transfer Aborted (Probably by the user)", e)
-						}finally {
+						} finally {
 							try { inputStream?.close()} catch(ie){/*silent close fail*/}
 						}
 					} else {
