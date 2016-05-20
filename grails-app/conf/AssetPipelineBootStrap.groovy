@@ -21,8 +21,8 @@ class AssetPipelineBootStrap {
 		final Properties manifest = AssetPipelineConfigHolder.manifest
 
 		if (manifest) {
-			final boolean enableDigests  = true
-			final boolean skipNonDigests = true
+			final boolean enableDigests  = assetProcessorService.isEnableDigests(conf)
+			final boolean skipNonDigests = assetProcessorService.isSkipNonDigests(conf)
 
 			if (enableDigests || ! skipNonDigests) {
 				final File storageDir = new File((String) storagePath)
