@@ -44,17 +44,33 @@ class AssetProcessorService {
 	}
 
 
+	boolean isEnableDigests(final ConfigObject conf = grailsApplication.config.grails.assets) {
+		!conf.containsKey('enableDigests') || conf.enableDigests
+	}
+
+	boolean isSkipNonDigests(final ConfigObject conf = grailsApplication.config.grails.assets) {
+		!conf.containsKey('skipNonDigests') || conf.skipNonDigests
+	}
+
 
 	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		return manifest?.getProperty(relativePath) ?: relativePath
+		if(isEnableDigests(conf)) {
+			return manifest?.getProperty(relativePath) ?: relativePath
+		} else {
+			return relativePath
+		}
 	}
 
 
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
 		if(manifest) {
-			return manifest.getProperty(relativePath)
+			if(isEnableDigests(conf)) {
+				return manifest.getProperty(relativePath)
+			} else {
+				return manifest.getProperty(relativePath) ? relativePath : null
+			}
 		} else {
 			return AssetHelper.fileForFullName(relativePath) != null ? relativePath : null
 		}
