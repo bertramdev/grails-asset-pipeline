@@ -14,15 +14,18 @@ import java.text.SimpleDateFormat
 
 @Slf4j
 class AssetPipelineFilter implements Filter {
+
 	public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
 
 	public static final ProductionAssetCache fileCache = new ProductionAssetCache()
 
+
 	def applicationContext
 	def servletContext
 	def warDeployed
-	void init(FilterConfig config) throws ServletException {
 
+
+	void init(FilterConfig config) throws ServletException {
 		applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.servletContext)
 		servletContext = config.servletContext
 		warDeployed = Environment.isWarDeployed()
@@ -54,10 +57,10 @@ class AssetPipelineFilter implements Filter {
 			if(attributeCache) {
 				if(attributeCache.exists()) {
 					def file = attributeCache.resource
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
+					def responseBuilder = new AssetPipelineResponseBuilder(fileUri, request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
 					response.setHeader('Last-Modified', getLastModifiedDate(attributeCache.getLastModified()))
 					responseBuilder.headers.each { header ->
-						response.setHeader(header.key,header.value)
+						response.setHeader(header.key, header.value)
 					}
 					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, attributeCache.getLastModified())) {
 						responseBuilder.statusCode = 304
@@ -70,7 +73,7 @@ class AssetPipelineFilter implements Filter {
 						def acceptsEncoding = request.getHeader("Accept-Encoding")
 						if(acceptsEncoding?.split(",")?.contains("gzip") && attributeCache.gzipExists()) {
 							file = attributeCache.getGzipResource()
-							response.setHeader('Content-Encoding','gzip')
+							response.setHeader('Content-Encoding', 'gzip')
 							response.setHeader('Content-Length', attributeCache.getGzipFileSize().toString())
 						} else {
 							response.setHeader('Content-Length', attributeCache.getFileSize().toString())
@@ -91,7 +94,7 @@ class AssetPipelineFilter implements Filter {
 							}
 							response.flushBuffer()
 						} catch(e) {
-							log.debug("File Transfer Aborted (Probably by the user)",e)
+							log.debug("File Transfer Aborted (Probably by the user)", e)
 						}finally {
 							try { inputStream?.close()} catch(ie){/*silent close fail*/}
 						}
@@ -102,7 +105,6 @@ class AssetPipelineFilter implements Filter {
 					response.status = 404
 					response.flushBuffer()
 				}
-
 			} else {
 				def file = applicationContext.getResource("assets/${fileUri}")
 				if(!file.exists()) {
@@ -110,18 +112,17 @@ class AssetPipelineFilter implements Filter {
 				}
 
 				if(file.exists()) {
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
+					def responseBuilder = new AssetPipelineResponseBuilder(fileUri, request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
 					response.setHeader('Last-Modified', getLastModifiedDate(new Date(file.lastModified())))
 					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, new Date(file.lastModified()))) {
 						responseBuilder.statusCode = 304
 					}
 					responseBuilder.headers.each { header ->
-						response.setHeader(header.key,header.value)
+						response.setHeader(header.key, header.value)
 					}
 					if(responseBuilder.statusCode) {
 						response.status = responseBuilder.statusCode
 					}
-
 
 					def gzipFile = applicationContext.getResource("assets/${fileUri}.gz")
 					if(!gzipFile.exists()) {
@@ -137,7 +138,7 @@ class AssetPipelineFilter implements Filter {
 						if(acceptsEncoding?.split(",")?.contains("gzip")) {
 							if(gzipFile.exists()) {
 								file = gzipFile
-								response.setHeader('Content-Encoding','gzip')
+								response.setHeader('Content-Encoding', 'gzip')
 							}
 						}
 						if(encoding) {
@@ -156,7 +157,7 @@ class AssetPipelineFilter implements Filter {
 							}
 							response.flushBuffer()
 						} catch(e) {
-							log.debug("File Transfer Aborted (Probably by the user)",e)
+							log.debug("File Transfer Aborted (Probably by the user)", e)
 						} finally {
 							try { inputStream?.close()} catch(ie){/*silent close fail*/}
 						}
@@ -173,13 +174,12 @@ class AssetPipelineFilter implements Filter {
 		} else {
 			def fileContents
 			if(request.getParameter('compile') == 'false') {
-				fileContents = AssetPipeline.serveUncompiledAsset(fileUri,format, null, encoding)
+				fileContents = AssetPipeline.serveUncompiledAsset(fileUri, format, null, encoding)
 			} else {
-				fileContents = AssetPipeline.serveAsset(fileUri,format, null, encoding)
+				fileContents = AssetPipeline.serveAsset(fileUri, format, null, encoding)
 			}
 
 			if (fileContents != null) {
-
 				response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 				response.setHeader("Pragma", "no-cache") // HTTP 1.0.
 				response.setDateHeader("Expires", 0) // Proxies.
@@ -190,7 +190,7 @@ class AssetPipelineFilter implements Filter {
 					response.outputStream << fileContents
 					response.flushBuffer()
 				} catch(e) {
-					log.debug("File Transfer Aborted (Probably by the user)",e)
+					log.debug("File Transfer Aborted (Probably by the user)", e)
 				}
 			} else {
 				response.status = 404
@@ -198,11 +198,11 @@ class AssetPipelineFilter implements Filter {
 			}
 		}
 
-
 		if (!response.committed) {
 			chain.doFilter(request, response)
 		}
 	}
+
 	boolean hasNotChanged(String ifModifiedSince, Date date) {
 		boolean hasNotChanged = false
 		if (ifModifiedSince) {
@@ -216,6 +216,7 @@ class AssetPipelineFilter implements Filter {
 		}
 		return hasNotChanged
 	}
+
 	private String getLastModifiedDate(Date date) {
 		final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT)
 		sdf.setTimeZone(TimeZone.getTimeZone("GMT"))
@@ -228,5 +229,4 @@ class AssetPipelineFilter implements Filter {
 
 		return lastModifiedDateTimeString
 	}
-
 }
