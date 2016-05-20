@@ -2,7 +2,6 @@ package asset.pipeline.grails
 
 
 import asset.pipeline.AssetPipeline
-import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetPipelineResponseBuilder
 import grails.util.Environment
 import groovy.util.logging.Slf4j
@@ -51,12 +50,7 @@ class AssetPipelineFilter implements Filter {
 			fileUri = fileUri.substring(baseAssetUrl.length())
 		}
 		if(warDeployed) {
-			final Properties manifest = AssetPipelineConfigHolder.manifest
-			String manifestPath = fileUri
-			if(fileUri.startsWith('/')) {
-			  manifestPath = fileUri.substring(1) //Omit forward slash
-			}
-			fileUri = manifest?.getProperty(manifestPath, manifestPath)
+			fileUri = applicationContext.assetProcessorService.getAssetPath(fileUri)
 
 			final AssetAttributes attributeCache = fileCache.get(fileUri)
 

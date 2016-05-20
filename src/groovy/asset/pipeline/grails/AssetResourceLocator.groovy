@@ -3,9 +3,9 @@ package asset.pipeline.grails
 
 import asset.pipeline.AssetFile
 import asset.pipeline.AssetHelper
-import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.DirectiveProcessor
 import asset.pipeline.GenericAssetFile
+import grails.util.Holders
 import groovy.util.logging.Slf4j
 import org.codehaus.groovy.grails.core.io.DefaultResourceLocator
 import org.springframework.core.io.ByteArrayResource
@@ -27,8 +27,7 @@ class AssetResourceLocator extends DefaultResourceLocator {
 	Resource findAssetForURI(String uri) {
 		final Resource resource
 		if(warDeployed) {
-			final Properties manifest = AssetPipelineConfigHolder.manifest
-			uri = manifest?.getProperty(uri, uri)
+			uri = Holders.grailsApplication.mainContext.getBean(AssetProcessorService).getAssetPath(uri)
 
 			final String assetUri = "assets/${uri}"
 			Resource defaultResource = defaultResourceLoader.getResource(assetUri)
