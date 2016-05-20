@@ -85,7 +85,7 @@ if [ -z "$GRAILS_NO_PERMGEN" -a -f "${CLASSFILE_HEADER_FILE}" ]; then
   CLASSFILE_VERSION=`cat "${CLASSFILE_HEADER_FILE}" | grep "#define JVM_CLASSFILE_MAJOR_VERSION" | awk '{ print $3 }' 2> /dev/null`
   if [ 0$CLASSFILE_VERSION -ge 52 ]; then
     GRAILS_NO_PERMGEN=1
-  fi 
+  fi
 fi
 
 # Remove possible trailing slash (after possible cygwin correction)
@@ -132,7 +132,7 @@ fi
 if [ -z "$STARTER_CONF" ]; then
     STARTER_CONF="$GRAILS_HOME/conf/groovy-starter.conf"
 fi
-STARTER_CLASSPATH="wrapper/grails-wrapper-runtime-2.5.4.jar:wrapper:."
+STARTER_CLASSPATH="wrapper/grails-wrapper-runtime-2.5.3.jar:wrapper:."
 
 # Allow access to Cocoa classes on OS X
 if $darwin; then
@@ -200,7 +200,7 @@ if $mingw ; then
 fi
 
 if [ -z "$GRAILS_AGENT_CACHE_DIR" ]; then
-    GRAILS_AGENT_CACHE_DIR=~/.grails/2.5.4/
+    GRAILS_AGENT_CACHE_DIR=~/.grails/2.5.3/
 fi
 SPRINGLOADED_PARAMS=profile=grails\;cacheDir=$GRAILS_AGENT_CACHE_DIR
 if [ ! -d "$GRAILS_AGENT_CACHE_DIR" ]; then
