@@ -47,14 +47,14 @@ class AssetProcessorService {
 
 	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		return manifest?.getProperty(relativePath, relativePath) ?: relativePath
+		return manifest?.getProperty(relativePath) ?: relativePath
 	}
 
 
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
 		if(manifest) {
-			manifest?.getProperty(relativePath)
+			manifest.getProperty(relativePath)
 		} else {
 			AssetHelper.fileForFullName(relativePath) != null ? relativePath : null
 		}
