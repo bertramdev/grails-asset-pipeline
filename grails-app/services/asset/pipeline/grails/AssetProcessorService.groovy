@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 
+import static asset.pipeline.AssetPipelineConfigHolder.config
 import static asset.pipeline.AssetPipelineConfigHolder.manifest
 import static asset.pipeline.grails.UrlBase.*
 import static asset.pipeline.grails.utils.net.HttpServletRequests.getBaseUrlWithScheme
@@ -21,7 +22,6 @@ class AssetProcessorService {
 	static transactional = false
 
 
-	def grailsApplication
 	def grailsLinkGenerator
 
 
@@ -33,7 +33,7 @@ class AssetProcessorService {
 	 * @throws IllegalArgumentException if the path contains <code>/</code>
 	 */
 	String getAssetMapping() {
-		final String mapping = grailsApplication.config?.grails?.assets?.mapping ?: 'assets'
+		final String mapping = config.mapping ?: 'assets'
 		if (mapping.contains('/')) {
 			throw new IllegalArgumentException(
 				'The property [grails.assets.mapping] can only be one level deep.  ' +
@@ -45,13 +45,13 @@ class AssetProcessorService {
 
 
 
-	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
+	String getAssetPath(final String path) {
 		final String relativePath = trimLeadingSlash(path)
 		return manifest?.getProperty(relativePath) ?: relativePath
 	}
 
 
-	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
+	String getResolvedAssetPath(final String path) {
 		final String relativePath = trimLeadingSlash(path)
 		if(manifest) {
 			return manifest.getProperty(relativePath)
@@ -88,16 +88,16 @@ class AssetProcessorService {
 		return url
 	}
 
-	String getConfigBaseUrl(final HttpServletRequest req, final ConfigObject conf = grailsApplication.config.grails.assets) {
-		final def url = conf.url
+	String getConfigBaseUrl(final HttpServletRequest req) {
+		final def url = config.url
 		if(url instanceof Closure) {
 			return url(req)
 		}
 		return url ?: null
 	}
 
-	String assetBaseUrl(final HttpServletRequest req, final UrlBase urlBase, final ConfigObject conf = grailsApplication.config.grails.assets) {
-		final String url = getConfigBaseUrl(req, conf)
+	String assetBaseUrl(final HttpServletRequest req, final UrlBase urlBase) {
+		final String url = getConfigBaseUrl(req)
 		if (url) {
 			return url
 		}
