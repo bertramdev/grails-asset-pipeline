@@ -27,19 +27,21 @@ target(assetCompile: 'Precompiles assets in the application as specified by the 
 
 	final Map<String, Object> assetConfig = [specs: []] // Additional Asset Specs (Asset File formats) to process
 
-	assetPipelineConfigHolder.config = config.grails.assets
+	final ConfigObject grailsConfig = config.grails.assets
+
+	assetPipelineConfigHolder.config = grailsConfig
 	assetPipelineConfigHolder.config.cacheLocation = 'target/.asscache'
 	event('AssetPrecompileStart', [assetConfig])
 
-	assetConfig.minifyJs         = config.grails.assets.containsKey('minifyJs')         ? config.grails.assets.minifyJs  : (argsMap.containsKey('minifyJs')  ? argsMap.minifyJs  == 'true' : true)
-	assetConfig.minifyCss        = config.grails.assets.containsKey('minifyCss')        ? config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
-	assetConfig.minifyOptions    = config.grails.assets.minifyOptions
+	assetConfig.minifyJs         = grailsConfig.containsKey('minifyJs')         ? grailsConfig.minifyJs  : (argsMap.containsKey('minifyJs')  ? argsMap.minifyJs  == 'true' : true)
+	assetConfig.minifyCss        = grailsConfig.containsKey('minifyCss')        ? grailsConfig.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
+	assetConfig.minifyOptions    = grailsConfig.minifyOptions
 	assetConfig.compileDir       = "${basedir}/target/assets"
-	assetConfig.enableGzip       = config.grails.assets.enableGzip
-	assetConfig.excludesGzip     = config.grails.assets.excludesGzip
-	assetConfig.enableSourceMaps = config.grails.assets.containsKey('enableSourceMaps') ? config.grails.assets.enableSourceMaps : true
-	assetConfig.skipNonDigests   = config.grails.assets.containsKey('skipNonDigests')   ? config.grails.assets.skipNonDigests   : true
-	assetConfig.enableDigests    = config.grails.assets.containsKey('enableDigests')    ? config.grails.assets.enableDigests    : true
+	assetConfig.enableGzip       = grailsConfig.enableGzip
+	assetConfig.excludesGzip     = grailsConfig.excludesGzip
+	assetConfig.enableSourceMaps = grailsConfig.containsKey('enableSourceMaps') ? grailsConfig.enableSourceMaps : true
+	assetConfig.skipNonDigests   = grailsConfig.containsKey('skipNonDigests')   ? grailsConfig.skipNonDigests   : true
+	assetConfig.enableDigests    = grailsConfig.containsKey('enableDigests')    ? grailsConfig.enableDigests    : true
 
 	// Add Resolvers for Grails
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application', "${basedir}/grails-app/assets"))
@@ -71,11 +73,11 @@ target(assetCompile: 'Precompiles assets in the application as specified by the 
 
 	final def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: "${basedir}/target/assets", classLoader: classLoader], eventListener)
 
-	assetCompiler.excludeRules.default = config.grails.assets.excludes
-	assetCompiler.includeRules.default = config.grails.assets.includes
+	assetCompiler.excludeRules.default = grailsConfig.excludes
+	assetCompiler.includeRules.default = grailsConfig.includes
 
 	// Initialize Exclude/Include Rules
-	config.grails.assets.plugin.each { final pluginName, final value ->
+	grailsConfig.plugin.each { final pluginName, final value ->
 		if (value.excludes) {
 			assetCompiler.excludeRules[pluginName] = value.excludes
 		}
