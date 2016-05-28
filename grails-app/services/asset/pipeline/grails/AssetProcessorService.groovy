@@ -39,7 +39,6 @@ class AssetProcessorService {
 	}
 
 
-
 	String getAssetPath(final String path) {
 		final String relativePath = trimLeadingSlash(path)
 		return manifest?.getProperty(relativePath) ?: relativePath
