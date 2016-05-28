@@ -2,19 +2,19 @@ import org.codehaus.groovy.grails.plugins.GrailsPluginInfo
 import org.codehaus.groovy.grails.plugins.GrailsPluginUtils
 
 
-includeTargets << grailsScript("_PackagePlugins")
-includeTargets << grailsScript("_GrailsBootstrap")
+includeTargets << grailsScript('_PackagePlugins')
+includeTargets << grailsScript('_GrailsBootstrap')
 
-target(assetClean: "Cleans Compiled Assets Directory") {
+target(assetClean: 'Cleans Compiled Assets Directory') {
 	// Clear compiled assets folder
 	println "Asset Precompiler Args ${argsMap}"
-	final File assetDir = new File(argsMap.target ?: "target/assets")
+	final File assetDir = new File(argsMap.target ?: 'target/assets')
 	if (assetDir.exists()) {
 		assetDir.deleteDir()
 	}
 }
 
-target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
+target(assetCompile: 'Precompiles assets in the application as specified by the precompile glob!') {
 	depends(configureProxy,compile)
 
 	final Class<?> assetPipelineConfigHolder = classLoader.loadClass('asset.pipeline.AssetPipelineConfigHolder')
@@ -28,8 +28,8 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	final Map<String, Object> assetConfig = [specs: []] // Additional Asset Specs (Asset File formats) to process
 
 	assetPipelineConfigHolder.config = config.grails.assets
-	assetPipelineConfigHolder.config.cacheLocation = "target/.asscache"
-	event("AssetPrecompileStart", [assetConfig])
+	assetPipelineConfigHolder.config.cacheLocation = 'target/.asscache'
+	event('AssetPrecompileStart', [assetConfig])
 
 	assetConfig.minifyJs         = config.grails.assets.containsKey('minifyJs')         ? config.grails.assets.minifyJs  : (argsMap.containsKey('minifyJs')  ? argsMap.minifyJs  == 'true' : true)
 	assetConfig.minifyCss        = config.grails.assets.containsKey('minifyCss')        ? config.grails.assets.minifyCss : (argsMap.containsKey('minifyCss') ? argsMap.minifyCss == 'true' : true)
@@ -45,8 +45,8 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application', "${basedir}/grails-app/assets"))
 
 	for (final GrailsPluginInfo plugin in GrailsPluginUtils.pluginInfos) {
-		final String assetPath    = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
-		final String fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
+		final String assetPath    = [plugin.pluginDir.getPath(), 'grails-app', 'assets'].join(File.separator)
+		final String fallbackPath = [plugin.pluginDir.getPath(), 'web-app'].join(File.separator)
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name, assetPath))
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name, fallbackPath, true))
 	}
@@ -67,7 +67,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		}
 	}
 
-	event("StatusUpdate", ["Precompiling Assets!"])
+	event('StatusUpdate', ['Precompiling Assets!'])
 
 	final def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: "${basedir}/target/assets", classLoader: classLoader], eventListener)
 
@@ -84,5 +84,5 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		}
 	}
 	assetCompiler.compile()
-	event("AssetPrecompileComplete", [assetConfig])
+	event('AssetPrecompileComplete', [assetConfig])
 }
