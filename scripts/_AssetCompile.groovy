@@ -7,7 +7,7 @@ includeTargets << grailsScript("_GrailsBootstrap")
 target(assetClean: "Cleans Compiled Assets Directory") {
 	// Clear compiled assets folder
 	println "Asset Precompiler Args ${argsMap}"
-	def assetDir = new File(argsMap.target ?: "target/assets")
+	final def assetDir = new File(argsMap.target ?: "target/assets")
 	if (assetDir.exists()) {
 		assetDir.deleteDir()
 	}
@@ -16,15 +16,15 @@ target(assetClean: "Cleans Compiled Assets Directory") {
 target(assetCompile: "Precompiles assets in the application as specified by the precompile glob!") {
 	depends(configureProxy,compile)
 
-	def assetPipelineConfigHolder = classLoader.loadClass('asset.pipeline.AssetPipelineConfigHolder')
-	def defaultResourceLoader     = classLoader.loadClass('org.springframework.core.io.DefaultResourceLoader').newInstance(classLoader)
-	def fileSystemAssetResolver   = classLoader.loadClass('asset.pipeline.fs.FileSystemAssetResolver')
-	def jarAssetResolver          = classLoader.loadClass('asset.pipeline.fs.JarAssetResolver')
-	def assetHelper               = classLoader.loadClass('asset.pipeline.AssetHelper')
-	def assetCompilerClass        = classLoader.loadClass('asset.pipeline.AssetCompiler')
-	def directiveProcessorClass   = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
+	final def assetPipelineConfigHolder = classLoader.loadClass('asset.pipeline.AssetPipelineConfigHolder')
+	final def defaultResourceLoader     = classLoader.loadClass('org.springframework.core.io.DefaultResourceLoader').newInstance(classLoader)
+	final def fileSystemAssetResolver   = classLoader.loadClass('asset.pipeline.fs.FileSystemAssetResolver')
+	final def jarAssetResolver          = classLoader.loadClass('asset.pipeline.fs.JarAssetResolver')
+	final def assetHelper               = classLoader.loadClass('asset.pipeline.AssetHelper')
+	final def assetCompilerClass        = classLoader.loadClass('asset.pipeline.AssetCompiler')
+	final def directiveProcessorClass   = classLoader.loadClass('asset.pipeline.DirectiveProcessor')
 
-	def assetConfig               = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
+	final def assetConfig               = [specs:[]] //Additional Asset Specs (Asset File formats) that we want to process.
 	assetPipelineConfigHolder.config = config.grails.assets
 	assetPipelineConfigHolder.config.cacheLocation = "target/.asscache"
 	event("AssetPrecompileStart", [assetConfig])
@@ -42,14 +42,14 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	//Add Resolvers for Grails
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application', "${basedir}/grails-app/assets"))
 
-	for (plugin in GrailsPluginUtils.pluginInfos) {
+	for (final plugin in GrailsPluginUtils.pluginInfos) {
 		def assetPath    = [plugin.pluginDir.getPath(), "grails-app", "assets"].join(File.separator)
 		def fallbackPath = [plugin.pluginDir.getPath(), "web-app"].join(File.separator)
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name, assetPath))
 		assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance(plugin.name, fallbackPath, true))
 	}
 
-	grailsSettings.runtimeDependencies.each { dep ->
+	grailsSettings.runtimeDependencies.each { final dep ->
 		if (dep.name.endsWith('.jar')) {
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name, dep.path, 'META-INF/assets'))
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name, dep.path, 'META-INF/static'))
@@ -57,7 +57,7 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 		}
 	}
 
-	grailsSettings.providedDependencies.each { dep ->
+	grailsSettings.providedDependencies.each { final dep ->
 		if (dep.name.endsWith('.jar')) {
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name, dep.path, 'META-INF/assets'))
 			assetPipelineConfigHolder.registerResolver(jarAssetResolver.newInstance(dep.name, dep.path, 'META-INF/static'))
@@ -67,13 +67,13 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 
 	event("StatusUpdate", ["Precompiling Assets!"])
 
-	def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: "${basedir}/target/assets", classLoader: classLoader],  eventListener)
+	final def assetCompiler = assetCompilerClass.newInstance(assetConfig + [compileDir: "${basedir}/target/assets", classLoader: classLoader],  eventListener)
 
 	assetCompiler.excludeRules.default = config.grails.assets.excludes
 	assetCompiler.includeRules.default = config.grails.assets.includes
 
 	// Initialize Exclude/Include Rules
-	config.grails.assets.plugin.each { pluginName, value ->
+	config.grails.assets.plugin.each { final pluginName, final value ->
 		if (value.excludes) {
 			assetCompiler.excludeRules[pluginName] = value.excludes
 		}
