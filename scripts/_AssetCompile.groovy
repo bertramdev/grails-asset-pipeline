@@ -30,7 +30,9 @@ target(assetCompile: 'Precompiles assets in the application as specified by the 
 	final ConfigObject grailsConfig = config.grails.assets
 
 	assetPipelineConfigHolder.config = grailsConfig
-	assetPipelineConfigHolder.config.cacheLocation = 'target/.asscache'
+
+	grailsConfig.cacheLocation = 'target/.asscache'
+
 	event('AssetPrecompileStart', [assetConfig])
 
 	assetConfig.minifyJs         = grailsConfig.containsKey('minifyJs')         ? grailsConfig.minifyJs  : (argsMap.containsKey('minifyJs')  ? argsMap.minifyJs  == 'true' : true)
