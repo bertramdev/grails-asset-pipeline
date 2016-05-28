@@ -1,62 +1,70 @@
 package asset.pipeline.grails
 
+
 import asset.pipeline.AssetPipeline
-import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetPipelineResponseBuilder
 import grails.util.Environment
 import groovy.util.logging.Slf4j
+import org.springframework.core.io.Resource
+import org.springframework.web.context.WebApplicationContext
 import org.springframework.web.context.support.WebApplicationContextUtils
 
 import javax.servlet.*
-import java.util.TimeZone
 import java.text.SimpleDateFormat
+
 
 @Slf4j
 class AssetPipelineFilter implements Filter {
-	public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
-	
-	public static final ProductionAssetCache fileCache = new ProductionAssetCache();
 
-	def applicationContext
-	def servletContext
-	def warDeployed
-	void init(FilterConfig config) throws ServletException {
+	static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
 
+	static final ProductionAssetCache fileCache = new ProductionAssetCache()
+
+
+	WebApplicationContext applicationContext
+	ServletContext        servletContext
+	boolean               warDeployed
+
+
+	@Override
+	void init(final FilterConfig config) throws ServletException {
 		applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.servletContext)
 		servletContext = config.servletContext
 		warDeployed = Environment.isWarDeployed()
 	}
 
+	@Override
 	void destroy() {
 	}
 
-	void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		def mapping = applicationContext.assetProcessorService.assetMapping
+	@Override
+	void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+		final String mapping = applicationContext.assetProcessorService.assetMapping
 
-		def fileUri = new URI(request.requestURI).path
-		def baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
-		def format = servletContext.getMimeType(fileUri)
-		def encoding = request.getParameter('encoding') ?: request.getCharacterEncoding()
+		String fileUri = new URI(request.requestURI).path
+
+		final String baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
+		final String format       = servletContext.getMimeType(fileUri)
+		final String encoding     = request.getParameter('encoding') ?: request.getCharacterEncoding()
 		if(fileUri.startsWith(baseAssetUrl)) {
 			fileUri = fileUri.substring(baseAssetUrl.length())
 		}
 		if(warDeployed) {
-			def manifest = AssetPipelineConfigHolder.manifest
-			def manifestPath = fileUri
-			if(fileUri.startsWith('/')) {
-			  manifestPath = fileUri.substring(1) //Omit forward slash
-			}
-			fileUri = manifest?.getProperty(manifestPath, manifestPath)
+			fileUri = applicationContext.assetProcessorService.getAssetPath(fileUri)
 
-			AssetAttributes attributeCache = fileCache.get(fileUri)
+			final AssetAttributes attributeCache = fileCache.get(fileUri)
 
 			if(attributeCache) {
 				if(attributeCache.exists()) {
-					def file = attributeCache.resource
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
+					Resource file = attributeCache.resource
+					final AssetPipelineResponseBuilder responseBuilder = new AssetPipelineResponseBuilder(
+						fileUri,
+						request.getHeader('If-None-Match'),
+						request.getHeader('If-Modified-Since')
+					)
 					response.setHeader('Last-Modified', getLastModifiedDate(attributeCache.getLastModified()))
-					responseBuilder.headers.each { header ->
-						response.setHeader(header.key,header.value)
+					responseBuilder.headers.each { final header ->
+						response.setHeader(header.key, header.value)
 					}
 					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, attributeCache.getLastModified())) {
 						responseBuilder.statusCode = 304
@@ -64,12 +72,12 @@ class AssetPipelineFilter implements Filter {
 					if(responseBuilder.statusCode) {
 						response.status = responseBuilder.statusCode
 					}
-					
+
 					if(responseBuilder.statusCode != 304) {
-						def acceptsEncoding = request.getHeader("Accept-Encoding")
+						final String acceptsEncoding = request.getHeader("Accept-Encoding")
 						if(acceptsEncoding?.split(",")?.contains("gzip") && attributeCache.gzipExists()) {
 							file = attributeCache.getGzipResource()
-							response.setHeader('Content-Encoding','gzip')
+							response.setHeader('Content-Encoding', 'gzip')
 							response.setHeader('Content-Length', attributeCache.getGzipFileSize().toString())
 						} else {
 							response.setHeader('Content-Length', attributeCache.getFileSize().toString())
@@ -79,20 +87,20 @@ class AssetPipelineFilter implements Filter {
 						}
 
 						response.setContentType(format)
-						def inputStream
+						final InputStream inputStream
 						try {
-							byte[] buffer = new byte[102400];
-							int len;
+							final byte[] buffer = new byte[102400]
+							int len
 							inputStream = file.inputStream
-							def out = response.outputStream
+							final ServletOutputStream out = response.outputStream
 							while ((len = inputStream.read(buffer)) != -1) {
-								out.write(buffer, 0, len);
+								out.write(buffer, 0, len)
 							}
 							response.flushBuffer()
-						} catch(e) {
-							log.debug("File Transfer Aborted (Probably by the user)",e)
-						}finally {
-							try { inputStream?.close()} catch(ie){/*silent close fail*/}
+						} catch(final e) {
+							log.debug("File Transfer Aborted (Probably by the user)", e)
+						} finally {
+							try { inputStream?.close()} catch(final ie){/*silent close fail*/}
 						}
 					} else {
 						response.flushBuffer()
@@ -101,42 +109,53 @@ class AssetPipelineFilter implements Filter {
 					response.status = 404
 					response.flushBuffer()
 				}
-				
 			} else {
-				def file = applicationContext.getResource("assets/${fileUri}")
+				Resource file = applicationContext.getResource("assets/${fileUri}")
 				if(!file.exists()) {
 					file = applicationContext.getResource("classpath:assets/${fileUri}")
 				}
 
 				if(file.exists()) {
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
+					final AssetPipelineResponseBuilder responseBuilder = new AssetPipelineResponseBuilder(
+						fileUri,
+						request.getHeader('If-None-Match'),
+						request.getHeader('If-Modified-Since')
+					)
 					response.setHeader('Last-Modified', getLastModifiedDate(new Date(file.lastModified())))
 					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, new Date(file.lastModified()))) {
 						responseBuilder.statusCode = 304
 					}
-					responseBuilder.headers.each { header ->
-						response.setHeader(header.key,header.value)
+					responseBuilder.headers.each { final header ->
+						response.setHeader(header.key, header.value)
 					}
 					if(responseBuilder.statusCode) {
 						response.status = responseBuilder.statusCode
 					}
-					
 
-					def gzipFile = applicationContext.getResource("assets/${fileUri}.gz")
+					Resource gzipFile = applicationContext.getResource("assets/${fileUri}.gz")
 					if(!gzipFile.exists()) {
 						gzipFile = applicationContext.getResource("classpath:assets/${fileUri}.gz")
 					}
 
-					AssetAttributes newCache = new AssetAttributes(true, gzipFile.exists(), false, file.contentLength(), gzipFile.exists() ? gzipFile.contentLength() : null, new Date(file.lastModified()), file, gzipFile)
+					final AssetAttributes newCache = new AssetAttributes(
+						true,
+						gzipFile.exists(),
+						false,
+						file.contentLength(),
+						gzipFile.exists() ? gzipFile.contentLength() : null,
+						new Date(file.lastModified()),
+						file,
+						gzipFile
+					)
 					fileCache.put(fileUri, newCache)
 
 					if(responseBuilder.statusCode != 304) {
 						// Check for GZip
-						def acceptsEncoding = request.getHeader("Accept-Encoding")
+						final String acceptsEncoding = request.getHeader("Accept-Encoding")
 						if(acceptsEncoding?.split(",")?.contains("gzip")) {
 							if(gzipFile.exists()) {
 								file = gzipFile
-								response.setHeader('Content-Encoding','gzip')
+								response.setHeader('Content-Encoding', 'gzip')
 							}
 						}
 						if(encoding) {
@@ -144,41 +163,40 @@ class AssetPipelineFilter implements Filter {
 						}
 						response.setContentType(format)
 						response.setHeader('Content-Length', file.contentLength().toString())
-						def inputStream
+						final InputStream inputStream
 						try {
-							byte[] buffer = new byte[102400];
-							int len;
+							final byte[] buffer = new byte[102400]
+							int len
 							inputStream = file.inputStream
-							def out = response.outputStream
+							final ServletOutputStream out = response.outputStream
 							while ((len = inputStream.read(buffer)) != -1) {
-								out.write(buffer, 0, len);
+								out.write(buffer, 0, len)
 							}
 							response.flushBuffer()
-						} catch(e) {
-							log.debug("File Transfer Aborted (Probably by the user)",e)
+						} catch(final e) {
+							log.debug("File Transfer Aborted (Probably by the user)", e)
 						} finally {
-							try { inputStream?.close()} catch(ie){/*silent close fail*/}
+							try { inputStream?.close()} catch(final ie){/*silent close fail*/}
 						}
 					} else {
 						response.flushBuffer()
 					}
 				} else {
-					AssetAttributes newCache = new AssetAttributes(false, false, false, null, null, null, null, null)
+					final AssetAttributes newCache = new AssetAttributes(false, false, false, null, null, null, null, null)
 					fileCache.put(fileUri, newCache)
 					response.status = 404
 					response.flushBuffer()
 				}
 			}
 		} else {
-			def fileContents
+			final byte[] fileContents
 			if(request.getParameter('compile') == 'false') {
-				fileContents = AssetPipeline.serveUncompiledAsset(fileUri,format, null, encoding)
+				fileContents = AssetPipeline.serveUncompiledAsset(fileUri, format, null, encoding)
 			} else {
-				fileContents = AssetPipeline.serveAsset(fileUri,format, null, encoding)
+				fileContents = AssetPipeline.serveAsset(fileUri, format, null, encoding)
 			}
 
 			if (fileContents != null) {
-
 				response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 				response.setHeader("Pragma", "no-cache") // HTTP 1.0.
 				response.setDateHeader("Expires", 0) // Proxies.
@@ -188,8 +206,8 @@ class AssetPipelineFilter implements Filter {
 				try {
 					response.outputStream << fileContents
 					response.flushBuffer()
-				} catch(e) {
-					log.debug("File Transfer Aborted (Probably by the user)",e)
+				} catch(final e) {
+					log.debug("File Transfer Aborted (Probably by the user)", e)
 				}
 			} else {
 				response.status = 404
@@ -197,35 +215,35 @@ class AssetPipelineFilter implements Filter {
 			}
 		}
 
-
 		if (!response.committed) {
 			chain.doFilter(request, response)
 		}
 	}
-	boolean hasNotChanged(String ifModifiedSince, Date date) {
+
+	boolean hasNotChanged(final String ifModifiedSince, final Date date) {
 		boolean hasNotChanged = false
 		if (ifModifiedSince) {
-			final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
-			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+			final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT)
+			sdf.setTimeZone(TimeZone.getTimeZone("GMT"))
 			try {
 				hasNotChanged = new Date(file?.lastModified()) <= sdf.parse(ifModifiedSince)
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				log.debug("Could not parse date time or file modified date", e)
 			}
 		}
 		return hasNotChanged
 	}
-	private String getLastModifiedDate(Date date) {
-		final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+	private String getLastModifiedDate(final Date date) {
+		final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT)
+		sdf.setTimeZone(TimeZone.getTimeZone("GMT"))
 		String lastModifiedDateTimeString = sdf.format(new Date())
 		try {
 			lastModifiedDateTimeString = sdf.format(date)
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.debug("Could not get last modified date time for file", e)
 		}
 
 		return lastModifiedDateTimeString
 	}
-
 }
