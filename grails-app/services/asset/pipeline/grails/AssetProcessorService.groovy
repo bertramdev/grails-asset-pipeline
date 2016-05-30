@@ -1,12 +1,12 @@
 package asset.pipeline.grails
 
 
+import asset.pipeline.AssetHelper
+import grails.util.Environment
 import javax.servlet.http.HttpServletRequest
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
-import grails.util.Environment
 
-import asset.pipeline.AssetHelper
 import static asset.pipeline.AssetPipelineConfigHolder.manifest
 import static asset.pipeline.grails.UrlBase.*
 import static asset.pipeline.grails.utils.net.HttpServletRequests.getBaseUrlWithScheme
@@ -33,7 +33,7 @@ class AssetProcessorService {
 	 * @throws IllegalArgumentException if the path contains <code>/</code>
 	 */
 	String getAssetMapping() {
-		final def mapping = grailsApplication.config?.grails?.assets?.mapping ?: 'assets'
+		final String mapping = grailsApplication.config?.grails?.assets?.mapping ?: 'assets'
 		if (mapping.contains('/')) {
 			throw new IllegalArgumentException(
 				'The property [grails.assets.mapping] can only be one level deep.  ' +
@@ -47,18 +47,17 @@ class AssetProcessorService {
 
 	String getAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
-		return manifest?.getProperty(relativePath,relativePath) ?: relativePath
+		return manifest?.getProperty(relativePath) ?: relativePath
 	}
 
 
 	String getResolvedAssetPath(final String path, final ConfigObject conf = grailsApplication.config.grails.assets) {
 		final String relativePath = trimLeadingSlash(path)
 		if(manifest) {
-			manifest?.getProperty(relativePath)
+			return manifest.getProperty(relativePath)
 		} else {
-			AssetHelper.fileForFullName(relativePath) != null ? relativePath : null
+			return AssetHelper.fileForFullName(relativePath) != null ? relativePath : null
 		}
-		
 	}
 
 
@@ -77,7 +76,7 @@ class AssetProcessorService {
 
 		url = assetBaseUrl(null, NONE) + url
 		if (! hasAuthority(url)) {
-			def absolutePath = linkGenerator.handleAbsolute(attrs)
+			String absolutePath = linkGenerator.handleAbsolute(attrs)
 
 			if (absolutePath == null) {
 				final String contextPath = attrs.contextPath?.toString() ?: linkGenerator.contextPath
@@ -118,10 +117,10 @@ class AssetProcessorService {
 				break
 		}
 
-		def finalUrl = ensureEndsWith(new StringBuilder(baseUrl.length() + mapping.length() + 2).append(baseUrl), '/' as char)
-				.append(mapping)
-				.append('/' as char)
-				.toString()
+		final String finalUrl = ensureEndsWith(new StringBuilder(baseUrl.length() + mapping.length() + 2).append(baseUrl), '/' as char)
+			.append(mapping)
+			.append('/' as char)
+			.toString()
 		return finalUrl
 	}
 
