@@ -47,14 +47,16 @@ class AssetPipelineFilter implements Filter {
 		final String baseAssetUrl = request.contextPath == "/" ? "/$mapping" : "${request.contextPath}/${mapping}"
 		final String format       = servletContext.getMimeType(fileUri)
 		final String encoding     = request.getParameter('encoding') ?: request.getCharacterEncoding()
+
 		if(fileUri.startsWith(baseAssetUrl)) {
 			fileUri = fileUri.substring(baseAssetUrl.length())
 		}
+
 		if(warDeployed) {
 			final Properties manifest = AssetPipelineConfigHolder.manifest
 			String manifestPath = fileUri
 			if(fileUri.startsWith('/')) {
-			  manifestPath = fileUri.substring(1) //Omit forward slash
+				manifestPath = fileUri.substring(1) //Omit forward slash
 			}
 			fileUri = manifest?.getProperty(manifestPath, manifestPath)
 
@@ -68,6 +70,7 @@ class AssetPipelineFilter implements Filter {
 						request.getHeader('If-None-Match'),
 						request.getHeader('If-Modified-Since')
 					)
+
 					response.setHeader('Last-Modified', getLastModifiedDate(attributeCache.getLastModified()))
 					responseBuilder.headers.each { final header ->
 						response.setHeader(header.key, header.value)
@@ -75,6 +78,7 @@ class AssetPipelineFilter implements Filter {
 					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, attributeCache.getLastModified())) {
 						responseBuilder.statusCode = 304
 					}
+
 					if(responseBuilder.statusCode) {
 						response.status = responseBuilder.statusCode
 					}
@@ -99,14 +103,14 @@ class AssetPipelineFilter implements Filter {
 							int len
 							inputStream = file.inputStream
 							final ServletOutputStream out = response.outputStream
-							while ((len = inputStream.read(buffer)) != -1) {
+							while((len = inputStream.read(buffer)) != -1) {
 								out.write(buffer, 0, len)
 							}
 							response.flushBuffer()
 						} catch(final e) {
 							log.debug("File Transfer Aborted (Probably by the user)", e)
 						} finally {
-							try { inputStream?.close()} catch(final ie){/*silent close fail*/}
+							try { inputStream?.close() } catch(final ie) { /* silent fail */ }
 						}
 					} else {
 						response.flushBuffer()
@@ -127,6 +131,7 @@ class AssetPipelineFilter implements Filter {
 						request.getHeader('If-None-Match'),
 						request.getHeader('If-Modified-Since')
 					)
+
 					response.setHeader('Last-Modified', getLastModifiedDate(new Date(file.lastModified())))
 					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, new Date(file.lastModified()))) {
 						responseBuilder.statusCode = 304
@@ -168,21 +173,21 @@ class AssetPipelineFilter implements Filter {
 							response.setCharacterEncoding(encoding)
 						}
 						response.setContentType(format)
-						response.setHeader('Content-Length', file.contentLength().toString())
+						response.setHeader('Content-Length', String.valueOf(file.contentLength()))
 						final InputStream inputStream
 						try {
 							final byte[] buffer = new byte[102400]
 							int len
 							inputStream = file.inputStream
 							final ServletOutputStream out = response.outputStream
-							while ((len = inputStream.read(buffer)) != -1) {
+							while((len = inputStream.read(buffer)) != -1) {
 								out.write(buffer, 0, len)
 							}
 							response.flushBuffer()
 						} catch(final e) {
 							log.debug("File Transfer Aborted (Probably by the user)", e)
 						} finally {
-							try { inputStream?.close()} catch(final ie){/*silent close fail*/}
+							try { inputStream?.close() } catch(final ie) { /* silent fail */ }
 						}
 					} else {
 						response.flushBuffer()
@@ -202,11 +207,11 @@ class AssetPipelineFilter implements Filter {
 				fileContents = AssetPipeline.serveAsset(fileUri, format, null, encoding)
 			}
 
-			if (fileContents != null) {
+			if(fileContents != null) {
 				response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 				response.setHeader("Pragma", "no-cache") // HTTP 1.0.
 				response.setDateHeader("Expires", 0) // Proxies.
-				response.setHeader('Content-Length', fileContents.size().toString())
+				response.setHeader('Content-Length', String.valueOf(fileContents.size()))
 
 				response.setContentType(format)
 				try {
@@ -221,7 +226,7 @@ class AssetPipelineFilter implements Filter {
 			}
 		}
 
-		if (!response.committed) {
+		if(!response.committed) {
 			chain.doFilter(request, response)
 		}
 	}
