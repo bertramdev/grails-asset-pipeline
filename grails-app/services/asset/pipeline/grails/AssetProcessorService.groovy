@@ -99,6 +99,7 @@ class AssetProcessorService {
 		return relativePath && (manifest ? manifest.getProperty(relativePath) : AssetHelper.fileForFullName(relativePath) != null)
 	}
 
+
 	String getConfigBaseUrl(final HttpServletRequest req) {
 		final def url = config.url
 		if(url instanceof Closure) {
@@ -106,6 +107,7 @@ class AssetProcessorService {
 		}
 		return url ?: null
 	}
+
 
 	String assetBaseUrl(final HttpServletRequest req, final String baseUrl) {
 		final String url = getConfigBaseUrl(req)
