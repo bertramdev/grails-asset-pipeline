@@ -2,6 +2,7 @@ package asset.pipeline.grails
 
 
 import asset.pipeline.AssetHelper
+import asset.pipeline.AssetPaths
 import asset.pipeline.AssetPipeline
 import org.codehaus.groovy.grails.web.util.GrailsPrintWriter
 
@@ -14,7 +15,6 @@ class AssetsTagLib {
 	private static final LINE_BREAK = System.getProperty('line.separator') ?: '\n'
 
 
-	def assetProcessorService
 	def grailsApplication
 
 
@@ -136,7 +136,7 @@ class AssetsTagLib {
 	}
 
 	boolean isAssetPath(src) {
-		assetProcessorService.isAssetPath(src)
+		AssetPaths.isAssetPath(src)
 	}
 
 	private paramsToHtmlAttr(attrs) {
