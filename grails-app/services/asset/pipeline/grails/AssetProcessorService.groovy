@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest
 import org.codehaus.groovy.grails.web.mapping.DefaultLinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 
-import static asset.pipeline.AssetPipelineConfigHolder.config
+import static asset.pipeline.AssetPipelineConfigHolder.getConfig
 import static asset.pipeline.AssetPipelineConfigHolder.manifest
 import static asset.pipeline.grails.utils.net.HttpServletRequests.getBaseUrlWithScheme
 import static asset.pipeline.grails.utils.text.StringBuilders.ensureEndsWith
