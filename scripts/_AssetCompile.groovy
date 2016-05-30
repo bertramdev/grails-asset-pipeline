@@ -15,7 +15,7 @@ target(assetClean: 'Cleans Compiled Assets Directory') {
 }
 
 target(assetCompile: 'Precompiles assets in the application as specified by the precompile glob!') {
-	depends(configureProxy,compile)
+	depends(configureProxy, compile)
 
 	final Class<?> assetPipelineConfigHolder = classLoader.loadClass('asset.pipeline.AssetPipelineConfigHolder')
 	final def      defaultResourceLoader     = classLoader.loadClass('org.springframework.core.io.DefaultResourceLoader').newInstance(classLoader)
