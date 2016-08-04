@@ -23,7 +23,7 @@ grails {
 				dependencies {
 					// Temporary inclusion due to bug in 2.4.2
 					compile group: 'cglib',                   name: 'cglib-nodep',         version: '2.2.2', {export = false}
-					compile group: 'com.bertramlabs.plugins', name: 'asset-pipeline-core', version: '2.9.1'
+					compile group: 'com.bertramlabs.plugins', name: 'asset-pipeline-core', version: '2.10.1'
 					runtime group: 'org.mozilla',             name: 'rhino',               version: '1.7R4'
 				}
 
