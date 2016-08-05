@@ -205,7 +205,7 @@ class AssetPipelineFilter implements Filter {
 	boolean hasNotChanged(String ifModifiedSince, Date date) {
 		boolean hasNotChanged = false
 		if (ifModifiedSince) {
-			final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
+			final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
 			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 			try {
 				hasNotChanged = new Date(file?.lastModified()) <= sdf.parse(ifModifiedSince)
@@ -216,7 +216,7 @@ class AssetPipelineFilter implements Filter {
 		return hasNotChanged
 	}
 	private String getLastModifiedDate(Date date) {
-		final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT);
+		final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
 		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 		String lastModifiedDateTimeString = sdf.format(new Date())
 		try {
