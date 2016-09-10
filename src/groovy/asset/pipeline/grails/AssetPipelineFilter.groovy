@@ -58,8 +58,7 @@ class AssetPipelineFilter implements Filter {
 					responseBuilder.headers.each { header ->
 						response.setHeader(header.key,header.value)
 					}
-                    if (file?.exists() && responseBuilder.ifModifiedSinceHeader && hasNotChanged(responseBuilder
-                            .ifModifiedSinceHeader, file)) {
+                    if (file?.exists() && responseBuilder.ifModifiedSinceHeader && hasNotChanged(responseBuilder.ifModifiedSinceHeader, file)) {
 						responseBuilder.statusCode = 304
 					}
 					if(responseBuilder.statusCode) {
@@ -113,7 +112,7 @@ class AssetPipelineFilter implements Filter {
 					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
 					response.setHeader('Last-Modified', getLastModifiedDate(new Date(file.lastModified())))
                     def modifiedSinceHeader = responseBuilder.ifModifiedSinceHeader 
-                    if (modifiedSinceHeader && hasNotChanged(ifModifiedSinceHeader, file )) {
+                    if (modifiedSinceHeader && hasNotChanged(modifiedSinceHeader, file )) {
 						responseBuilder.statusCode = 304
 					}
 					responseBuilder.headers.each { header ->
@@ -204,7 +203,7 @@ class AssetPipelineFilter implements Filter {
 			chain.doFilter(request, response)
 		}
 	}
-	boolean hasNotChanged(String ifModifiedSince, File file) {
+	boolean hasNotChanged(String ifModifiedSince, file) {
 		boolean hasNotChanged = false
 		if (ifModifiedSince) {
 			final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
