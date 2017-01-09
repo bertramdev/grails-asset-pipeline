@@ -5,15 +5,13 @@ import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.AssetPipelineResponseBuilder
 import grails.util.Environment
 import groovy.util.logging.Slf4j
+import org.springframework.core.io.Resource
 import org.springframework.web.context.support.WebApplicationContextUtils
 
 import javax.servlet.*
-import java.util.TimeZone
-import java.text.SimpleDateFormat
 
 @Slf4j
 class AssetPipelineFilter implements Filter {
-	public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz"
 	
 	public static final ProductionAssetCache fileCache = new ProductionAssetCache();
 
@@ -53,13 +51,9 @@ class AssetPipelineFilter implements Filter {
 			if(attributeCache) {
 				if(attributeCache.exists()) {
 					def file = attributeCache.resource
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
-					response.setHeader('Last-Modified', getLastModifiedDate(attributeCache.getLastModified()))
+					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'), attributeCache.lastModified)
 					responseBuilder.headers.each { header ->
 						response.setHeader(header.key,header.value)
-					}
-					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, attributeCache.getLastModified())) {
-						responseBuilder.statusCode = 304
 					}
 					if(responseBuilder.statusCode) {
 						response.status = responseBuilder.statusCode
@@ -103,17 +97,15 @@ class AssetPipelineFilter implements Filter {
 				}
 				
 			} else {
-				def file = applicationContext.getResource("assets/${fileUri}")
+				Resource file = applicationContext.getResource("assets/${fileUri}")
 				if(!file.exists()) {
 					file = applicationContext.getResource("classpath:assets/${fileUri}")
 				}
 
 				if(file.exists()) {
-					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'))
-					response.setHeader('Last-Modified', getLastModifiedDate(new Date(file.lastModified())))
-					if (hasNotChanged(responseBuilder.ifModifiedSinceHeader, new Date(file.lastModified()))) {
-						responseBuilder.statusCode = 304
-					}
+					def fileLastModified = new Date(file.lastModified())
+					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'), fileLastModified)
+
 					responseBuilder.headers.each { header ->
 						response.setHeader(header.key,header.value)
 					}
@@ -127,7 +119,7 @@ class AssetPipelineFilter implements Filter {
 						gzipFile = applicationContext.getResource("classpath:assets/${fileUri}.gz")
 					}
 
-					AssetAttributes newCache = new AssetAttributes(true, gzipFile.exists(), false, file.contentLength(), gzipFile.exists() ? gzipFile.contentLength() : null, new Date(file.lastModified()), file, gzipFile)
+					AssetAttributes newCache = new AssetAttributes(true, gzipFile.exists(), false, file.contentLength(), gzipFile.exists() ? gzipFile.contentLength() : null, fileLastModified, file, gzipFile)
 					fileCache.put(fileUri, newCache)
 
 					if(responseBuilder.statusCode != 304) {
@@ -201,31 +193,6 @@ class AssetPipelineFilter implements Filter {
 		if (!response.committed) {
 			chain.doFilter(request, response)
 		}
-	}
-	boolean hasNotChanged(String ifModifiedSince, Date date) {
-		boolean hasNotChanged = false
-		if (ifModifiedSince) {
-			final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
-			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-			try {
-				hasNotChanged = new Date(file?.lastModified()) <= sdf.parse(ifModifiedSince)
-			} catch (Exception e) {
-				log.debug("Could not parse date time or file modified date", e)
-			}
-		}
-		return hasNotChanged
-	}
-	private String getLastModifiedDate(Date date) {
-		final SimpleDateFormat sdf = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-		String lastModifiedDateTimeString = sdf.format(new Date())
-		try {
-			lastModifiedDateTimeString = sdf.format(date)
-		} catch (Exception e) {
-			log.debug("Could not get last modified date time for file", e)
-		}
-
-		return lastModifiedDateTimeString
 	}
 
 }
