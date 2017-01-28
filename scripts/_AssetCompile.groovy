@@ -39,6 +39,10 @@ target(assetCompile: "Precompiles assets in the application as specified by the 
 	assetConfig.skipNonDigests   = config.grails.assets.containsKey('skipNonDigests')   ? config.grails.assets.skipNonDigests   : true
 	assetConfig.enableDigests    = config.grails.assets.containsKey('enableDigests')    ? config.grails.assets.enableDigests    : true
 
+	if(config.grails.assets.containsKey('maxThreads')) {
+		assetConfig.maxThreads = config.grails.assets.maxThreads
+	}
+
 	//Add Resolvers for Grails
 	assetPipelineConfigHolder.registerResolver(fileSystemAssetResolver.newInstance('application',"${basedir}/grails-app/assets"))
 
