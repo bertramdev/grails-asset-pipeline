@@ -103,6 +103,9 @@ class AssetPipelineFilter implements Filter {
 				}
 
 				if(file.exists()) {
+					def fileLastModified = file.lastModified() ? new Date(file.lastModified()) : null
+					def responseBuilder = new AssetPipelineResponseBuilder(fileUri,request.getHeader('If-None-Match'), request.getHeader('If-Modified-Since'), fileLastModified)
+
 					responseBuilder.headers.each { header ->
 						response.setHeader(header.key,header.value)
 					}
@@ -191,6 +194,5 @@ class AssetPipelineFilter implements Filter {
 			chain.doFilter(request, response)
 		}
 	}
-
 
 }
