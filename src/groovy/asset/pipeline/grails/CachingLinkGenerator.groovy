@@ -12,6 +12,7 @@ import static org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest.lookup
 class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.CachingLinkGenerator {
 
 	def assetProcessorService
+	def grailsApplication
 
 
 	CachingLinkGenerator(final String serverUrl) {
@@ -21,7 +22,14 @@ class CachingLinkGenerator extends org.codehaus.groovy.grails.web.mapping.Cachin
 
 	@Override
 	String resource(final Map attrs) {
-		asset(attrs) ?: super.resource(attrs)
+		if (! grailsApplication.config.grails.assets.useGrailsResourceMethod) {
+			final String url = asset(attrs)
+			if (url) {
+				return url
+			}
+		}
+
+		super.resource(attrs)
 	}
 
 	/**
