@@ -44,6 +44,7 @@ class AssetPipelineFilter implements Filter {
 			if(fileUri.startsWith('/')) {
 			  manifestPath = fileUri.substring(1) //Omit forward slash
 			}
+			manifestPath = normalizePath(manifestPath) //JETTY Security bug, we MUST prevent 
 			fileUri = manifest?.getProperty(manifestPath, manifestPath)
 
 			AssetAttributes attributeCache = fileCache.get(fileUri)
@@ -195,4 +196,29 @@ class AssetPipelineFilter implements Filter {
 		}
 	}
 
+	 /**
+     * Normalizes a path into a standard path, stripping out all path elements that walk the path (i.e. '..' and '.')
+     * @param path String path (i.e. '/path/to/../file.js')
+     * @return normalied path String (i.e. '/path/file.js')
+     */
+    static String normalizePath(String path) {
+        String[] pathArgs = path.split("[/\\\\]")
+        List newPath = []
+        for (int counter = 0; counter < pathArgs.length; counter++) {
+            String pathElement = pathArgs[counter]
+            if (pathElement == '..') {
+                if (newPath.size() > 0) {
+                    newPath.pop()
+                } else if (counter < pathArgs.length - 1) {
+                    counter++
+                    continue;
+                }
+            } else if (pathElement == '.') {
+                // do nothing
+            } else {
+                newPath << pathElement
+            }
+        }
+        return newPath.join("/")
+    }
 }
