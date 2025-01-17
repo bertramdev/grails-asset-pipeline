@@ -12,11 +12,11 @@ NOTE: This repository is only for supporting the Grails 2 module of asset-pipeli
 
 Documentation
 -------------
-http://www.asset-pipeline.com/manual/
+http://asset-pipeline.com/manual/
 
 Release Notes
 -------------
-http://www.asset-pipeline.com/manual/index.html#release-history
+http://asset-pipeline.com/manual/index.html#release-history
 
 Things to be Done
 -----------------
